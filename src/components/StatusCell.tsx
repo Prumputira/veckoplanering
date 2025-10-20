@@ -1,6 +1,12 @@
 import { Building2, Home, Ban } from 'lucide-react';
 import { DayStatus, StatusType } from '@/types/schedule';
 import { cn } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface StatusCellProps {
   status: DayStatus;
@@ -32,28 +38,98 @@ const statusConfig = {
 };
 
 const StatusCell = ({ status, onClick }: StatusCellProps) => {
-  const config = statusConfig[status.status];
-  const Icon = config.icon;
+  // If only one segment, display as before
+  if (status.segments.length === 1) {
+    const segment = status.segments[0];
+    const config = statusConfig[segment.status];
+    const Icon = config.icon;
+    
+    const tooltipContent = segment.reason || segment.period;
 
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={onClick}
+              className={cn(
+                'w-full h-16 rounded-lg border-2 transition-all duration-200 cursor-pointer',
+                'flex flex-col items-center justify-center gap-0.5',
+                config.bgClass,
+                config.borderClass,
+                'hover:shadow-md hover:scale-105'
+              )}
+            >
+              <Icon className={cn('h-5 w-5', config.iconClass)} />
+              <span className="text-[10px] font-medium text-foreground">{config.label}</span>
+              {segment.period && (
+                <span className="text-[9px] text-muted-foreground px-1">
+                  {segment.period}
+                </span>
+              )}
+            </button>
+          </TooltipTrigger>
+          {tooltipContent && (
+            <TooltipContent>
+              <p>{tooltipContent}</p>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  // Multiple segments - split the cell
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'w-full h-16 rounded-lg border-2 transition-all duration-200 cursor-pointer',
-        'flex flex-col items-center justify-center gap-0.5',
-        config.bgClass,
-        config.borderClass,
-        'hover:shadow-md hover:scale-105'
-      )}
-    >
-      <Icon className={cn('h-5 w-5', config.iconClass)} />
-      <span className="text-[10px] font-medium text-foreground">{config.label}</span>
-      {status.reason && (
-        <span className="text-[9px] text-muted-foreground px-1 truncate max-w-full">
-          {status.reason}
-        </span>
-      )}
-    </button>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={onClick}
+            className={cn(
+              'w-full h-16 rounded-lg border-2 transition-all duration-200 cursor-pointer overflow-hidden',
+              'flex',
+              'hover:shadow-md hover:scale-105'
+            )}
+          >
+            {status.segments.map((segment, idx) => {
+              const config = statusConfig[segment.status];
+              const Icon = config.icon;
+              return (
+                <div
+                  key={idx}
+                  className={cn(
+                    'flex-1 flex flex-col items-center justify-center gap-0.5',
+                    config.bgClass,
+                    idx > 0 && 'border-l-2 border-border'
+                  )}
+                >
+                  <Icon className={cn('h-4 w-4', config.iconClass)} />
+                  {segment.period && (
+                    <span className="text-[8px] text-muted-foreground">
+                      {segment.period}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <div className="space-y-1">
+            {status.segments.map((segment, idx) => {
+              const config = statusConfig[segment.status];
+              return (
+                <div key={idx} className="text-xs">
+                  <strong>{segment.period || config.label}:</strong> {config.label}
+                  {segment.reason && ` - ${segment.reason}`}
+                </div>
+              );
+            })}
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 

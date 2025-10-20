@@ -1,8 +1,13 @@
 export type StatusType = 'office' | 'home' | 'absent';
 
-export interface DayStatus {
+export interface StatusSegment {
   status: StatusType;
   reason?: string;
+  period?: string; // e.g., "FM" (förmiddag), "EM" (eftermiddag), or custom time
+}
+
+export interface DayStatus {
+  segments: StatusSegment[];
 }
 
 export interface Employee {
