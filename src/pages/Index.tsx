@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import WeekHeader from '@/components/WeekHeader';
 import WeekTable from '@/components/WeekTable';
 import EmployeeModal from '@/components/EmployeeModal';
@@ -7,7 +8,8 @@ import { Employee, DayStatus } from '@/types/schedule';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, LogOut } from 'lucide-react';
+import { User } from '@supabase/supabase-js';
 
 const Index = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -15,7 +17,30 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalState, setEditModalState] = useState<{ isOpen: boolean; employeeId: string; currentName: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Check authentication
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate('/auth');
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigate('/auth');
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   useEffect(() => {
     fetchEmployeesAndSchedules();
@@ -239,8 +264,43 @@ const Index = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: 'Utloggad',
+        description: 'Du har loggats ut',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast({
+        title: 'Fel',
+        description: 'Kunde inte logga ut',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      <div className="border-b border-border bg-card">
+        <div className="container mx-auto px-4 py-3 flex justify-end">
+          <Button
+            onClick={handleLogout}
+            variant="ghost"
+            size="sm"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Logga ut
+          </Button>
+        </div>
+      </div>
       <WeekHeader 
         currentDate={currentDate} 
         onNavigate={handleNavigate}
