@@ -7,6 +7,7 @@ import { Employee, DayStatus } from '@/types/schedule';
 
 const Index = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  // Updated employee list with 25 employees
   const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
 
   const handleNavigate = (direction: 'prev' | 'next') => {
