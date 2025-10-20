@@ -83,7 +83,7 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: signupEmail,
         password: signupPassword,
         options: {
@@ -108,7 +108,16 @@ const Auth = () => {
             variant: 'destructive',
           });
         }
-      } else {
+      } else if (data.user) {
+        // Create employee entry for the new user
+        const { error: employeeError } = await supabase
+          .from('employees')
+          .insert({ name: signupName });
+
+        if (employeeError) {
+          console.error('Error creating employee:', employeeError);
+        }
+
         toast({
           title: 'Konto skapat',
           description: 'Du är nu inloggad',
