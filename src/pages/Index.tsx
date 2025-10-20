@@ -212,6 +212,33 @@ const Index = () => {
     }
   };
 
+  const handleDeleteEmployee = async () => {
+    if (!editModalState) return;
+
+    try {
+      const { error } = await supabase
+        .from('employees')
+        .delete()
+        .eq('id', editModalState.employeeId);
+
+      if (error) throw error;
+
+      setEmployees((prev) => prev.filter((emp) => emp.id !== editModalState.employeeId));
+
+      toast({
+        title: 'Anställd borttagen',
+        description: 'Anställd och all schemahistorik har raderats',
+      });
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+      toast({
+        title: 'Fel',
+        description: 'Kunde inte ta bort anställd',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <WeekHeader 
@@ -252,6 +279,7 @@ const Index = () => {
           isOpen={editModalState.isOpen}
           onClose={() => setEditModalState(null)}
           onSave={handleEditEmployee}
+          onDelete={handleDeleteEmployee}
           initialName={editModalState.currentName}
           title="Redigera anställd"
           description="Ändra namn på anställd"
