@@ -39,17 +39,17 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
     <button
       onClick={onClick}
       className={cn(
-        'w-full h-24 rounded-lg border-2 transition-all duration-200 cursor-pointer',
-        'flex flex-col items-center justify-center gap-1',
+        'w-full h-16 rounded-lg border-2 transition-all duration-200 cursor-pointer',
+        'flex flex-col items-center justify-center gap-0.5',
         config.bgClass,
         config.borderClass,
         'hover:shadow-md hover:scale-105'
       )}
     >
-      <Icon className={cn('h-6 w-6', config.iconClass)} />
-      <span className="text-xs font-medium text-foreground">{config.label}</span>
+      <Icon className={cn('h-5 w-5', config.iconClass)} />
+      <span className="text-[10px] font-medium text-foreground">{config.label}</span>
       {status.reason && (
-        <span className="text-xs text-muted-foreground px-2 truncate max-w-full">
+        <span className="text-[9px] text-muted-foreground px-1 truncate max-w-full">
           {status.reason}
         </span>
       )}

@@ -53,11 +53,11 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus }: WeekTableProps) =
             <table className="w-full">
               <thead>
                 <tr className="bg-primary/5 border-b border-border">
-                  <th className="text-left p-4 font-semibold text-foreground w-48">
+                  <th className="text-left p-3 font-semibold text-foreground w-44">
                     Medarbetare
                   </th>
                   {weekDays.map((day, index) => (
-                    <th key={index} className="text-center p-4 font-semibold text-foreground">
+                    <th key={index} className="text-center p-2 font-semibold text-foreground">
                       <div className="flex flex-col">
                         <span className="text-sm">{formatDayName(day)}</span>
                         <span className="text-xs text-muted-foreground">{formatDate(day)}</span>
@@ -69,17 +69,17 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus }: WeekTableProps) =
               <tbody>
                 {employees.map((employee) => (
                   <tr key={employee.id} className="border-b border-border last:border-0">
-                    <td className="p-4">
+                    <td className="p-3">
                       <div>
-                        <div className="font-medium text-foreground">{employee.name}</div>
-                        <div className="text-sm text-muted-foreground">{employee.role}</div>
+                        <div className="font-medium text-foreground text-sm">{employee.name}</div>
+                        <div className="text-xs text-muted-foreground">{employee.role}</div>
                       </div>
                     </td>
                     {weekDays.map((day, index) => {
                       const dayKey = getDayKey(day);
                       const status = employee.week[dayKey];
                       return (
-                        <td key={index} className="p-2">
+                        <td key={index} className="p-1.5">
                           <StatusCell
                             status={status}
                             onClick={() =>
