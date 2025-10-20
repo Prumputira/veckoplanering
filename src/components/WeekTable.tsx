@@ -54,10 +54,16 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
         <div className="bg-card rounded-lg shadow-lg border border-border overflow-hidden">
           {/* Desktop view */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full table-fixed">
+              <colgroup>
+                <col className="w-44" />
+                {weekDays.map((_, index) => (
+                  <col key={index} className="w-[calc((100%-11rem)/5)]" />
+                ))}
+              </colgroup>
               <thead>
                 <tr className="bg-primary/5 border-b border-border">
-                  <th className="text-left p-3 font-semibold text-foreground w-44">
+                  <th className="text-left p-3 font-semibold text-foreground">
                     Medarbetare
                   </th>
                   {weekDays.map((day, index) => (
