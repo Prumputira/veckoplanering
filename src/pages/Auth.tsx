@@ -109,10 +109,13 @@ const Auth = () => {
           });
         }
       } else if (data.user) {
-        // Create employee entry for the new user
+        // Create employee entry for the new user with user_id
         const { error: employeeError } = await supabase
           .from('employees')
-          .insert({ name: signupName });
+          .insert({ 
+            name: signupName,
+            user_id: data.user.id 
+          });
 
         if (employeeError) {
           console.error('Error creating employee:', employeeError);
