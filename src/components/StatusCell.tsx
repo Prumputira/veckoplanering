@@ -14,6 +14,13 @@ interface StatusCellProps {
 }
 
 const statusConfig = {
+  unset: {
+    icon: Building2,
+    label: 'Välj Plats',
+    bgClass: 'bg-muted/30 hover:bg-muted/50',
+    iconClass: 'text-muted-foreground',
+    borderClass: 'border-muted/50',
+  },
   office: {
     icon: Building2,
     label: 'Kontor',

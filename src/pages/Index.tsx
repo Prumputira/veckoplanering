@@ -57,11 +57,11 @@ const Index = () => {
         id: emp.id,
         name: emp.name,
         week: {
-          mon: schedulesMap.get(emp.id)?.get('mon') || { segments: [{ status: 'office' }] },
-          tue: schedulesMap.get(emp.id)?.get('tue') || { segments: [{ status: 'office' }] },
-          wed: schedulesMap.get(emp.id)?.get('wed') || { segments: [{ status: 'office' }] },
-          thu: schedulesMap.get(emp.id)?.get('thu') || { segments: [{ status: 'office' }] },
-          fri: schedulesMap.get(emp.id)?.get('fri') || { segments: [{ status: 'office' }] },
+          mon: schedulesMap.get(emp.id)?.get('mon') || { segments: [{ status: 'unset' }] },
+          tue: schedulesMap.get(emp.id)?.get('tue') || { segments: [{ status: 'unset' }] },
+          wed: schedulesMap.get(emp.id)?.get('wed') || { segments: [{ status: 'unset' }] },
+          thu: schedulesMap.get(emp.id)?.get('thu') || { segments: [{ status: 'unset' }] },
+          fri: schedulesMap.get(emp.id)?.get('fri') || { segments: [{ status: 'unset' }] },
         },
       }));
 

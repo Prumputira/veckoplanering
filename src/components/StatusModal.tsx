@@ -24,6 +24,13 @@ interface StatusModalProps {
 
 const statusOptions = [
   {
+    type: 'unset' as StatusType,
+    icon: Building2,
+    label: 'Välj Plats',
+    bgClass: 'bg-muted/30 hover:bg-muted/50 border-muted/50',
+    activeClass: 'bg-muted/50 border-muted',
+  },
+  {
     type: 'office' as StatusType,
     icon: Building2,
     label: 'Kontor',
@@ -57,7 +64,7 @@ const StatusModal = ({
   const [segments, setSegments] = useState<StatusSegment[]>(currentStatus.segments);
 
   const handleAddSegment = () => {
-    setSegments([...segments, { status: 'office', period: '' }]);
+    setSegments([...segments, { status: 'unset', period: '' }]);
   };
 
   const handleRemoveSegment = (index: number) => {
@@ -107,7 +114,7 @@ const StatusModal = ({
               
               <div className="space-y-2">
                 <Label className="text-foreground text-xs">Välj status</Label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-4 gap-2">
                   {statusOptions.map((option) => {
                     const Icon = option.icon;
                     const isActive = segment.status === option.type;
