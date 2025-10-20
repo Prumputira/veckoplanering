@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      employee_schedules: {
+        Row: {
+          created_at: string | null
+          day_key: string
+          employee_id: string
+          id: string
+          status: Json
+          updated_at: string | null
+          week_number: number
+          year: number
+        }
+        Insert: {
+          created_at?: string | null
+          day_key: string
+          employee_id: string
+          id?: string
+          status?: Json
+          updated_at?: string | null
+          week_number: number
+          year: number
+        }
+        Update: {
+          created_at?: string | null
+          day_key?: string
+          employee_id?: string
+          id?: string
+          status?: Json
+          updated_at?: string | null
+          week_number?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_schedules_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employees: {
         Row: {
           created_at: string | null
