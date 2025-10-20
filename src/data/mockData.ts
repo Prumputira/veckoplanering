@@ -4,7 +4,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '1',
     name: 'Adam',
-    role: 'Utvecklare',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -16,7 +15,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '2',
     name: 'Alan',
-    role: 'Designer',
     week: {
       mon: { segments: [{ status: 'home' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -28,7 +26,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '3',
     name: 'Anders',
-    role: 'Projektledare',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -40,7 +37,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '4',
     name: 'Björn',
-    role: 'Säljare',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'home' }] },
@@ -52,7 +48,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '5',
     name: 'Ferhat',
-    role: 'Utvecklare',
     week: {
       mon: { segments: [{ status: 'home' }] },
       tue: { segments: [{ status: 'home' }] },
@@ -64,7 +59,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '6',
     name: 'Frida',
-    role: 'UX Designer',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -76,7 +70,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '7',
     name: 'Gustavo',
-    role: 'Backend-utvecklare',
     week: {
       mon: { segments: [{ status: 'home' }] },
       tue: { segments: [{ status: 'home' }] },
@@ -88,7 +81,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '8',
     name: 'Henric',
-    role: 'Arkitekt',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -100,7 +92,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '9',
     name: 'Johan',
-    role: 'Utvecklare',
     week: {
       mon: { segments: [{ status: 'home' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -112,7 +103,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '10',
     name: 'Johanna',
-    role: 'Produktägare',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -124,7 +114,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '11',
     name: 'Jonas L',
-    role: 'Teamledare',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -136,7 +125,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '12',
     name: 'Madeleine',
-    role: 'HR-ansvarig',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'home' }] },
@@ -148,7 +136,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '13',
     name: 'Manuel',
-    role: 'Frontend-utvecklare',
     week: {
       mon: { segments: [{ status: 'home' }] },
       tue: { segments: [{ status: 'home' }] },
@@ -160,7 +147,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '14',
     name: 'Martin D',
-    role: 'DevOps',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -172,7 +158,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '15',
     name: 'Marita',
-    role: 'Ekonomiansvarig',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -184,7 +169,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '16',
     name: 'Martin L',
-    role: 'Säljchef',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -196,7 +180,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '17',
     name: 'Mattias',
-    role: 'Utvecklare',
     week: {
       mon: { segments: [{ status: 'home' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -208,7 +191,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '18',
     name: 'Olafur',
-    role: 'Tech Lead',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -220,7 +202,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '19',
     name: 'Patrik',
-    role: 'Testare',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'home' }] },
@@ -232,7 +213,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '20',
     name: 'Petra',
-    role: 'Scrum Master',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -244,7 +224,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '21',
     name: 'Rasmus',
-    role: 'Utvecklare',
     week: {
       mon: { segments: [{ status: 'home' }] },
       tue: { segments: [{ status: 'home' }] },
@@ -256,7 +235,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '22',
     name: 'Roger',
-    role: 'VD',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -268,7 +246,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '23',
     name: 'Sofia',
-    role: 'Marknadsansvarig',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -280,7 +257,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '24',
     name: 'Sven',
-    role: 'Support',
     week: {
       mon: { segments: [{ status: 'office' }] },
       tue: { segments: [{ status: 'office' }] },
@@ -292,7 +268,6 @@ export const mockEmployees: Employee[] = [
   {
     id: '25',
     name: 'Tomas',
-    role: 'Utvecklare',
     week: {
       mon: { segments: [{ status: 'home' }] },
       tue: { segments: [{ status: 'home' }] },

@@ -13,7 +13,6 @@ export interface DayStatus {
 export interface Employee {
   id: string;
   name: string;
-  role: string;
   week: {
     [key: string]: DayStatus; // mon, tue, wed, thu, fri
   };

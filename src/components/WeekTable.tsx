@@ -70,10 +70,7 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus }: WeekTableProps) =
                 {employees.map((employee) => (
                   <tr key={employee.id} className="border-b border-border last:border-0">
                     <td className="p-3">
-                      <div>
-                        <div className="font-medium text-foreground text-sm">{employee.name}</div>
-                        <div className="text-xs text-muted-foreground">{employee.role}</div>
-                      </div>
+                      <div className="font-medium text-foreground text-sm">{employee.name}</div>
                     </td>
                     {weekDays.map((day, index) => {
                       const dayKey = getDayKey(day);
@@ -99,10 +96,7 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus }: WeekTableProps) =
           <div className="md:hidden">
             {employees.map((employee) => (
               <div key={employee.id} className="border-b border-border last:border-0 p-4">
-                <div className="mb-3">
-                  <div className="font-medium text-foreground">{employee.name}</div>
-                  <div className="text-sm text-muted-foreground">{employee.role}</div>
-                </div>
+                <div className="mb-3 font-medium text-foreground">{employee.name}</div>
                 <div className="grid grid-cols-2 gap-2">
                   {weekDays.map((day, index) => {
                     const dayKey = getDayKey(day);
