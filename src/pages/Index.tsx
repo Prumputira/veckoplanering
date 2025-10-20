@@ -13,6 +13,10 @@ const Index = () => {
     setCurrentDate(navigateWeek(currentDate, direction));
   };
 
+  const handleSelectWeek = (date: Date) => {
+    setCurrentDate(date);
+  };
+
   const handleUpdateStatus = (employeeId: string, dayKey: string, status: DayStatus) => {
     setEmployees((prev) =>
       prev.map((emp) =>
@@ -31,7 +35,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <WeekHeader currentDate={currentDate} onNavigate={handleNavigate} />
+      <WeekHeader 
+        currentDate={currentDate} 
+        onNavigate={handleNavigate}
+        onSelectWeek={handleSelectWeek}
+      />
       <WeekTable
         currentDate={currentDate}
         employees={employees}
