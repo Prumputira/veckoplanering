@@ -3,15 +3,19 @@ import { Employee, DayStatus } from '@/types/schedule';
 import { getWeekDays, formatDate, formatDayName, getDayKey } from '@/utils/dateUtils';
 import StatusCell from './StatusCell';
 import StatusModal from './StatusModal';
+import { Pencil } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface WeekTableProps {
   currentDate: Date;
   employees: Employee[];
   onUpdateStatus: (employeeId: string, dayKey: string, status: DayStatus) => void;
+  onEditEmployee: (employeeId: string, currentName: string) => void;
 }
 
-const WeekTable = ({ currentDate, employees, onUpdateStatus }: WeekTableProps) => {
+const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: WeekTableProps) => {
   const weekDays = getWeekDays(currentDate);
+  const [hoveredEmployeeId, setHoveredEmployeeId] = useState<string | null>(null);
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     employeeId: string;
@@ -69,8 +73,23 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus }: WeekTableProps) =
               <tbody>
                 {employees.map((employee) => (
                   <tr key={employee.id} className="border-b border-border last:border-0">
-                    <td className="p-3">
-                      <div className="font-medium text-foreground text-sm">{employee.name}</div>
+                    <td 
+                      className="p-3"
+                      onMouseEnter={() => setHoveredEmployeeId(employee.id)}
+                      onMouseLeave={() => setHoveredEmployeeId(null)}
+                    >
+                      <div className="flex items-center gap-2 group">
+                        <div className="font-medium text-foreground text-sm">{employee.name}</div>
+                        <button
+                          onClick={() => onEditEmployee(employee.id, employee.name)}
+                          className={cn(
+                            "p-1 rounded hover:bg-muted transition-all",
+                            hoveredEmployeeId === employee.id ? "opacity-100" : "opacity-0"
+                          )}
+                        >
+                          <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                        </button>
+                      </div>
                     </td>
                     {weekDays.map((day, index) => {
                       const dayKey = getDayKey(day);
@@ -96,7 +115,15 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus }: WeekTableProps) =
           <div className="md:hidden">
             {employees.map((employee) => (
               <div key={employee.id} className="border-b border-border last:border-0 p-4">
-                <div className="mb-3 font-medium text-foreground">{employee.name}</div>
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="font-medium text-foreground flex-1">{employee.name}</div>
+                  <button
+                    onClick={() => onEditEmployee(employee.id, employee.name)}
+                    className="p-1.5 rounded hover:bg-muted transition-all"
+                  >
+                    <Pencil className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   {weekDays.map((day, index) => {
                     const dayKey = getDayKey(day);
