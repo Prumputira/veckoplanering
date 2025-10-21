@@ -7,6 +7,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { z } from 'zod';
+
+const signupSchema = z.object({
+  name: z.string().trim().min(1, 'Namn krävs').max(100, 'Namn måste vara mindre än 100 tecken'),
+  email: z.string().trim().email('Ogiltig e-postadress').max(255, 'E-post måste vara mindre än 255 tecken'),
+  password: z.string()
+    .min(8, 'Lösenord måste vara minst 8 tecken')
+    .max(100, 'Lösenord måste vara mindre än 100 tecken')
+    .regex(/[A-Z]/, 'Lösenord måste innehålla minst en stor bokstav')
+    .regex(/[a-z]/, 'Lösenord måste innehålla minst en liten bokstav')
+    .regex(/[0-9]/, 'Lösenord måste innehålla minst en siffra')
+});
+
+const loginSchema = z.object({
+  email: z.string().trim().email('Ogiltig e-postadress').max(255),
+  password: z.string().min(1, 'Lösenord krävs')
+});
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,12 +55,27 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const result = loginSchema.safeParse({
+      email: loginEmail,
+      password: loginPassword
+    });
+
+    if (!result.success) {
+      toast({
+        title: 'Valideringsfel',
+        description: result.error.errors[0].message,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email: loginEmail,
-        password: loginPassword,
+        email: result.data.email,
+        password: result.data.password,
       });
 
       if (error) {
@@ -56,7 +88,7 @@ const Auth = () => {
         } else {
           toast({
             title: 'Fel',
-            description: error.message,
+            description: 'Ett fel uppstod vid inloggning',
             variant: 'destructive',
           });
         }
@@ -67,7 +99,6 @@ const Auth = () => {
         });
       }
     } catch (error) {
-      console.error('Login error:', error);
       toast({
         title: 'Fel',
         description: 'Ett fel uppstod vid inloggning',
@@ -80,16 +111,32 @@ const Auth = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const result = signupSchema.safeParse({
+      name: signupName,
+      email: signupEmail,
+      password: signupPassword
+    });
+
+    if (!result.success) {
+      toast({
+        title: 'Valideringsfel',
+        description: result.error.errors[0].message,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: signupEmail,
-        password: signupPassword,
+        email: result.data.email,
+        password: result.data.password,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
-            name: signupName,
+            name: result.data.name,
           },
         },
       });
@@ -104,7 +151,7 @@ const Auth = () => {
         } else {
           toast({
             title: 'Fel',
-            description: error.message,
+            description: 'Ett fel uppstod vid registrering',
             variant: 'destructive',
           });
         }
@@ -115,7 +162,6 @@ const Auth = () => {
         });
       }
     } catch (error) {
-      console.error('Signup error:', error);
       toast({
         title: 'Fel',
         description: 'Ett fel uppstod vid registrering',
@@ -206,7 +252,7 @@ const Auth = () => {
                     onChange={(e) => setSignupPassword(e.target.value)}
                     required
                     disabled={isLoading}
-                    minLength={6}
+                    minLength={8}
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
