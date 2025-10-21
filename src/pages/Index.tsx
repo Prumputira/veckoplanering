@@ -96,7 +96,6 @@ const Index = () => {
 
       setEmployees(employeesWithSchedules);
     } catch (error) {
-      console.error('Error fetching data:', error);
       toast({
         title: 'Fel',
         description: 'Kunde inte hämta data',
@@ -158,7 +157,6 @@ const Index = () => {
         description: 'Status uppdaterad',
       });
     } catch (error) {
-      console.error('Error updating status:', error);
       toast({
         title: 'Fel',
         description: 'Kunde inte spara status',
@@ -190,7 +188,6 @@ const Index = () => {
         description: `Namnet har ändrats till ${newName}`,
       });
     } catch (error) {
-      console.error('Error updating employee:', error);
       toast({
         title: 'Fel',
         description: 'Kunde inte uppdatera namn',
@@ -217,7 +214,6 @@ const Index = () => {
         description: 'Anställd och all schemahistorik har raderats',
       });
     } catch (error) {
-      console.error('Error deleting employee:', error);
       toast({
         title: 'Fel',
         description: 'Kunde inte ta bort anställd',
@@ -236,7 +232,6 @@ const Index = () => {
         description: 'Du har loggats ut',
       });
     } catch (error) {
-      console.error('Logout error:', error);
       toast({
         title: 'Fel',
         description: 'Kunde inte logga ut',
