@@ -105,6 +105,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_name_from_email: { Args: { _email: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
