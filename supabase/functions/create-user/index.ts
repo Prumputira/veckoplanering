@@ -96,15 +96,16 @@ serve(async (req) => {
       );
     }
 
-    // The handle_new_user trigger will automatically create the profile record
-    // But we need to update it with the correct name
-    const { error: profileUpdateError } = await supabaseAdmin
+    // Ensure a profile row exists with the correct name (upsert)
+    const { error: profileUpsertError } = await supabaseAdmin
       .from('profiles')
-      .update({ name: employeeName })
-      .eq('id', newUser.user.id);
+      .upsert(
+        { id: newUser.user.id, email: email.toLowerCase(), name: employeeName },
+        { onConflict: 'id' }
+      );
 
-    if (profileUpdateError) {
-      console.error('Profile update error:', profileUpdateError);
+    if (profileUpsertError) {
+      console.error('Profile upsert error:', profileUpsertError);
     }
 
     // Assign 'user' role to the new user
