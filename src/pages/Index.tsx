@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import WeekHeader from '@/components/WeekHeader';
 import WeekTable from '@/components/WeekTable';
 import EmployeeModal from '@/components/EmployeeModal';
+import { AdminDashboard } from '@/components/AdminDashboard';
 import { navigateWeek, getWeekNumber, getWeekYear } from '@/utils/dateUtils';
 import { Employee, DayStatus } from '@/types/schedule';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,6 +18,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [editModalState, setEditModalState] = useState<{ isOpen: boolean; employeeId: string; currentName: string } | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -27,6 +29,7 @@ const Index = () => {
         navigate('/auth');
       } else {
         setUser(session.user);
+        checkAdminStatus(session.user.id);
       }
     });
 
@@ -35,11 +38,27 @@ const Index = () => {
         navigate('/auth');
       } else {
         setUser(session.user);
+        checkAdminStatus(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const checkAdminStatus = async (userId: string) => {
+    try {
+      const { data, error } = await supabase.rpc('has_role', {
+        _user_id: userId,
+        _role: 'admin'
+      });
+
+      if (!error && data) {
+        setIsAdmin(true);
+      }
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+    }
+  };
 
   useEffect(() => {
     fetchEmployeesAndSchedules();
@@ -258,6 +277,11 @@ const Index = () => {
           </Button>
         </div>
       </div>
+      {isAdmin && (
+        <div className="container mx-auto px-4 py-6">
+          <AdminDashboard />
+        </div>
+      )}
       <WeekHeader 
         currentDate={currentDate} 
         onNavigate={handleNavigate}
