@@ -187,6 +187,7 @@ const Index = () => {
     if (!editModalState) return;
 
     try {
+      // Update employee name - this will trigger sync to profiles via database trigger
       const { error } = await supabase
         .from('employees')
         .update({ name: newName })
