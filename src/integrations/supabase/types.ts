@@ -18,67 +18,38 @@ export type Database = {
         Row: {
           created_at: string | null
           day_key: string
-          employee_id: string
           id: string
           status: Json
           updated_at: string | null
+          user_id: string
           week_number: number
           year: number
         }
         Insert: {
           created_at?: string | null
           day_key: string
-          employee_id: string
           id?: string
           status?: Json
           updated_at?: string | null
+          user_id: string
           week_number: number
           year: number
         }
         Update: {
           created_at?: string | null
           day_key?: string
-          employee_id?: string
           id?: string
           status?: Json
           updated_at?: string | null
+          user_id?: string
           week_number?: number
           year?: number
         }
         Relationships: [
           {
-            foreignKeyName: "employee_schedules_employee_id_fkey"
-            columns: ["employee_id"]
-            isOneToOne: false
-            referencedRelation: "employees"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      employees: {
-        Row: {
-          created_at: string | null
-          id: string
-          name: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          name: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          name?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "employees_user_id_fkey"
+            foreignKeyName: "employee_schedules_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },

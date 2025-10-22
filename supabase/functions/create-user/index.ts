@@ -72,7 +72,7 @@ serve(async (req) => {
 
     const employeeName = extractNameFromEmail(email);
 
-    // Create admin client for user creation
+    // Create the user with admin API
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -95,6 +95,8 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    // The handle_new_user trigger will automatically create the profile record
 
     // Assign 'user' role to the new user
     const { error: roleInsertError } = await supabaseAdmin

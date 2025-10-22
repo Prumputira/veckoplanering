@@ -68,13 +68,13 @@ const Index = () => {
       const weekNumber = getWeekNumber(currentDate);
       const year = getWeekYear(currentDate);
 
-      // Fetch employees
-      const { data: employeesData, error: employeesError } = await supabase
-        .from('employees')
+      // Fetch profiles (which now contain all employee data)
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
         .select('*')
         .order('name');
 
-      if (employeesError) throw employeesError;
+      if (profilesError) throw profilesError;
 
       // Fetch schedules for this week
       const { data: schedulesData, error: schedulesError } = await supabase
@@ -85,29 +85,29 @@ const Index = () => {
 
       if (schedulesError) throw schedulesError;
 
-      // Build schedules map
+      // Build schedules map using user_id
       const schedulesMap = new Map<string, Map<string, DayStatus>>();
       schedulesData?.forEach((schedule) => {
-        if (!schedulesMap.has(schedule.employee_id)) {
-          schedulesMap.set(schedule.employee_id, new Map());
+        if (!schedulesMap.has(schedule.user_id)) {
+          schedulesMap.set(schedule.user_id, new Map());
         }
         // Parse JSONB status data
         const statusData = typeof schedule.status === 'string' 
           ? JSON.parse(schedule.status) 
           : schedule.status;
-        schedulesMap.get(schedule.employee_id)?.set(schedule.day_key, statusData as DayStatus);
+        schedulesMap.get(schedule.user_id)?.set(schedule.day_key, statusData as DayStatus);
       });
 
       // Initialize employees with schedules from database or default
-      const employeesWithSchedules: Employee[] = (employeesData || []).map(emp => ({
-        id: emp.id,
-        name: emp.name,
+      const employeesWithSchedules: Employee[] = (profilesData || []).map(profile => ({
+        id: profile.id,
+        name: profile.name,
         week: {
-          mon: schedulesMap.get(emp.id)?.get('mon') || { segments: [{ status: 'unset' }] },
-          tue: schedulesMap.get(emp.id)?.get('tue') || { segments: [{ status: 'unset' }] },
-          wed: schedulesMap.get(emp.id)?.get('wed') || { segments: [{ status: 'unset' }] },
-          thu: schedulesMap.get(emp.id)?.get('thu') || { segments: [{ status: 'unset' }] },
-          fri: schedulesMap.get(emp.id)?.get('fri') || { segments: [{ status: 'unset' }] },
+          mon: schedulesMap.get(profile.id)?.get('mon') || { segments: [{ status: 'unset' }] },
+          tue: schedulesMap.get(profile.id)?.get('tue') || { segments: [{ status: 'unset' }] },
+          wed: schedulesMap.get(profile.id)?.get('wed') || { segments: [{ status: 'unset' }] },
+          thu: schedulesMap.get(profile.id)?.get('thu') || { segments: [{ status: 'unset' }] },
+          fri: schedulesMap.get(profile.id)?.get('fri') || { segments: [{ status: 'unset' }] },
         },
       }));
 
@@ -136,19 +136,19 @@ const Index = () => {
     const year = getWeekYear(currentDate);
 
     try {
-      // Update database
+      // Update database - user_id instead of employee_id
       const { error } = await supabase
         .from('employee_schedules')
         .upsert(
           {
-            employee_id: employeeId,
+            user_id: employeeId,
             week_number: weekNumber,
             year: year,
             day_key: dayKey,
             status: status as any,
           },
           {
-            onConflict: 'employee_id,week_number,year,day_key'
+            onConflict: 'user_id,week_number,year,day_key'
           }
         );
 
@@ -187,9 +187,9 @@ const Index = () => {
     if (!editModalState) return;
 
     try {
-      // Update employee name - this will trigger sync to profiles via database trigger
+      // Update profile name
       const { error } = await supabase
-        .from('employees')
+        .from('profiles')
         .update({ name: newName })
         .eq('id', editModalState.employeeId);
 
@@ -218,8 +218,9 @@ const Index = () => {
     if (!editModalState) return;
 
     try {
+      // Delete profile (this will cascade delete schedules)
       const { error } = await supabase
-        .from('employees')
+        .from('profiles')
         .delete()
         .eq('id', editModalState.employeeId);
 
