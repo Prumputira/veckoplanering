@@ -94,23 +94,29 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
           </div>
         </div>
 
-        {/* Desktop: Original layout */}
-        <div className="hidden md:flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <img 
-              src={logo} 
-              alt="Nordiska Brand" 
-              className="h-12 md:h-16 w-auto object-contain"
-            />
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-primary font-display">
-                Veckoplanering
-              </h1>
-              <p className="text-muted-foreground mt-1 text-sm md:text-base">
+        {/* Desktop: New layout with centered title */}
+        <div className="hidden md:block">
+          {/* Centered title at top */}
+          <h1 className="text-3xl md:text-4xl font-bold text-primary font-display text-center mb-6">
+            Veckoplanering
+          </h1>
+          
+          {/* Content: left column (logo + info) and right column (actions) */}
+          <div className="flex items-start justify-between gap-4">
+            {/* Left column: logo, week info, stats */}
+            <div className="flex flex-col items-start gap-2">
+              <img 
+                src={logo} 
+                alt="Nordiska Brand" 
+                className="h-10 md:h-12 w-auto object-contain"
+              />
+              
+              <p className="text-muted-foreground text-sm md:text-base">
                 Vecka {weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
               </p>
+              
               {todayStats && (
-                <div className="flex gap-4 mt-2 text-sm">
+                <div className="flex gap-4 text-sm">
                   <div className="flex items-center gap-1.5 text-muted-foreground">
                     <Building2 className="h-4 w-4 text-blue-500" />
                     <span className="font-medium">{todayStats.office}</span>
@@ -129,31 +135,33 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                 </div>
               )}
             </div>
-          </div>
-          <div className="flex gap-2 items-center">
-            <ScheduleChat 
-              employees={employees}
-              currentWeek={weekNumber}
-              currentYear={year}
-            />
-            <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => onNavigate('prev')}
-                className="hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => onNavigate('next')}
-                className="hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+            
+            {/* Right column: actions */}
+            <div className="flex gap-2 items-start">
+              <ScheduleChat 
+                employees={employees}
+                currentWeek={weekNumber}
+                currentYear={year}
+              />
+              <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => onNavigate('prev')}
+                  className="hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => onNavigate('next')}
+                  className="hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
