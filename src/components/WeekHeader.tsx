@@ -94,74 +94,71 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
           </div>
         </div>
 
-        {/* Desktop: New layout with centered title */}
-        <div className="hidden md:block">
-          {/* Centered title at top */}
-          <h1 className="text-2xl md:text-3xl font-bold text-primary font-display text-center mb-3">
+        {/* Desktop: Single row layout */}
+        <div className="hidden md:flex items-center justify-between gap-4">
+          {/* Left column: logo, week info, stats */}
+          <div className="flex flex-col items-start gap-1.5">
+            <img 
+              src={logo} 
+              alt="Nordiska Brand" 
+              className="h-10 md:h-12 w-auto object-contain"
+            />
+            
+            <p className="text-muted-foreground text-sm md:text-base">
+              Vecka {weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
+            </p>
+            
+            {todayStats && (
+              <div className="flex gap-4 text-sm">
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Building2 className="h-4 w-4 text-blue-500" />
+                  <span className="font-medium">{todayStats.office}</span>
+                  <span>på kontoret</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Home className="h-4 w-4 text-green-500" />
+                  <span className="font-medium">{todayStats.home}</span>
+                  <span>hemma</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Ban className="h-4 w-4 text-orange-500" />
+                  <span className="font-medium">{todayStats.absent}</span>
+                  <span>frånvarande</span>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Center: Title */}
+          <h1 className="text-2xl md:text-3xl font-bold text-primary font-display">
             Veckoplanering
           </h1>
           
-          {/* Content: left column (logo + info) and right column (actions) */}
-          <div className="flex items-start justify-between gap-4">
-            {/* Left column: logo, week info, stats */}
-            <div className="flex flex-col items-start gap-1.5">
-              <img 
-                src={logo} 
-                alt="Nordiska Brand" 
-                className="h-10 md:h-12 w-auto object-contain"
-              />
-              
-              <p className="text-muted-foreground text-sm md:text-base">
-                Vecka {weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
-              </p>
-              
-              {todayStats && (
-                <div className="flex gap-4 text-sm">
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Building2 className="h-4 w-4 text-blue-500" />
-                    <span className="font-medium">{todayStats.office}</span>
-                    <span>på kontoret</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Home className="h-4 w-4 text-green-500" />
-                    <span className="font-medium">{todayStats.home}</span>
-                    <span>hemma</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Ban className="h-4 w-4 text-orange-500" />
-                    <span className="font-medium">{todayStats.absent}</span>
-                    <span>frånvarande</span>
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            {/* Right column: actions */}
-            <div className="flex gap-2 items-start">
-              <ScheduleChat 
-                employees={employees}
-                currentWeek={weekNumber}
-                currentYear={year}
-              />
-              <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => onNavigate('prev')}
-                  className="hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => onNavigate('next')}
-                  className="hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
+          {/* Right column: actions */}
+          <div className="flex gap-2 items-center">
+            <ScheduleChat 
+              employees={employees}
+              currentWeek={weekNumber}
+              currentYear={year}
+            />
+            <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => onNavigate('prev')}
+                className="hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => onNavigate('next')}
+                className="hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
