@@ -55,6 +55,16 @@ const WeekTable = ({
     currentStatus: DayStatus,
     dayName: string
   ) => {
+    // Only allow editing own cells
+    if (employee.id !== currentUserId) {
+      toast({
+        title: "Inte tillåtet",
+        description: "Du kan bara redigera dina egna celler",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setModalState({
       isOpen: true,
       employeeId: employee.id,
@@ -129,15 +139,17 @@ const WeekTable = ({
                               {employee.name}
                               {isCurrentUser && <span className="ml-2 text-xs text-accent/70">(Du)</span>}
                             </div>
-                        <button
-                          onClick={() => onEditEmployee(employee.id, employee.name)}
-                          className={cn(
-                            "p-1 rounded hover:bg-muted transition-all",
-                            hoveredEmployeeId === employee.id ? "opacity-100" : "opacity-0"
-                          )}
-                        >
-                          <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
-                        </button>
+                        {isCurrentUser && (
+                          <button
+                            onClick={() => onEditEmployee(employee.id, employee.name)}
+                            className={cn(
+                              "p-1 rounded hover:bg-muted transition-all",
+                              hoveredEmployeeId === employee.id ? "opacity-100" : "opacity-0"
+                            )}
+                          >
+                            <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                          </button>
+                        )}
                       </div>
                     </td>
                     {weekDays.map((day, index) => {
@@ -155,37 +167,39 @@ const WeekTable = ({
                       );
                     })}
                     <td className="p-1 text-center">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            className="h-8 w-8 p-0 hover:bg-accent/20"
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
-                            <Copy className="h-4 w-4 mr-2" />
-                            Kopiera vecka
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => onPasteWeek(employee.id)}
-                            disabled={!hasCopiedWeek}
-                          >
-                            <Clipboard className="h-4 w-4 mr-2" />
-                            Klistra in vecka
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => onClearWeek(employee.id)}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Töm vecka
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      {isCurrentUser && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="h-8 w-8 p-0 hover:bg-accent/20"
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
+                              <Copy className="h-4 w-4 mr-2" />
+                              Kopiera vecka
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => onPasteWeek(employee.id)}
+                              disabled={!hasCopiedWeek}
+                            >
+                              <Clipboard className="h-4 w-4 mr-2" />
+                              Klistra in vecka
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => onClearWeek(employee.id)}
+                              className="text-destructive focus:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Töm vecka
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </td>
                   </tr>
                   {isCurrentUser && index < employees.length - 1 && (
@@ -223,43 +237,47 @@ const WeekTable = ({
                         {employee.name}
                         {isCurrentUser && <span className="ml-2 text-xs text-accent/70">(Du)</span>}
                       </div>
-                      <button
-                        onClick={() => onEditEmployee(employee.id, employee.name)}
-                        className="p-1.5 rounded hover:bg-muted transition-all"
-                      >
-                        <Pencil className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            className="h-8 w-8 p-0 hover:bg-accent/20"
+                      {isCurrentUser && (
+                        <>
+                          <button
+                            onClick={() => onEditEmployee(employee.id, employee.name)}
+                            className="p-1.5 rounded hover:bg-muted transition-all"
                           >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
-                            <Copy className="h-4 w-4 mr-2" />
-                            Kopiera vecka
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => onPasteWeek(employee.id)}
-                            disabled={!hasCopiedWeek}
-                          >
-                            <Clipboard className="h-4 w-4 mr-2" />
-                            Klistra in vecka
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => onClearWeek(employee.id)}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Töm vecka
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            <Pencil className="h-4 w-4 text-muted-foreground" />
+                          </button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="h-8 w-8 p-0 hover:bg-accent/20"
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
+                                <Copy className="h-4 w-4 mr-2" />
+                                Kopiera vecka
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => onPasteWeek(employee.id)}
+                                disabled={!hasCopiedWeek}
+                              >
+                                <Clipboard className="h-4 w-4 mr-2" />
+                                Klistra in vecka
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => onClearWeek(employee.id)}
+                                className="text-destructive focus:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Töm vecka
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </>
+                      )}
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       {weekDays.map((day, index) => {
