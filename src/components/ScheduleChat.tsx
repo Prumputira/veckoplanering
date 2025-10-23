@@ -74,7 +74,7 @@ const ScheduleChat = ({ employees, currentWeek, currentYear }: ScheduleChatProps
           <div className="flex items-center justify-between p-3 border-b border-border">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4 text-primary" />
-              <span className="font-medium text-sm">Sarkastisk Schema-AI</span>
+              <span className="font-medium text-sm">Schema Assistent</span>
             </div>
             <Button
               variant="ghost"
@@ -89,7 +89,7 @@ const ScheduleChat = ({ employees, currentWeek, currentYear }: ScheduleChatProps
           <div className="h-64 overflow-y-auto p-3 space-y-2">
             {chatHistory.length === 0 && (
               <p className="text-sm text-muted-foreground italic">
-                Fråga mig vad som helst om schemat... om du vågar! 😏
+                Ställ dina frågor om schemat här
               </p>
             )}
             {chatHistory.map((msg, idx) => (
@@ -106,7 +106,7 @@ const ScheduleChat = ({ employees, currentWeek, currentYear }: ScheduleChatProps
             ))}
             {isLoading && (
               <div className="bg-muted p-2 rounded text-sm mr-8 animate-pulse">
-                Tänker sarkastiskt...
+                Analyserar...
               </div>
             )}
           </div>
