@@ -3,17 +3,38 @@ import { Employee, DayStatus } from '@/types/schedule';
 import { getWeekDays, formatDate, formatDayName, getDayKey } from '@/utils/dateUtils';
 import StatusCell from './StatusCell';
 import StatusModal from './StatusModal';
-import { Pencil } from 'lucide-react';
+import { Pencil, Copy, Clipboard, Trash2, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 interface WeekTableProps {
   currentDate: Date;
   employees: Employee[];
   onUpdateStatus: (employeeId: string, dayKey: string, status: DayStatus) => void;
   onEditEmployee: (employeeId: string, currentName: string) => void;
+  onCopyWeek: (employeeId: string) => void;
+  onPasteWeek: (employeeId: string) => void;
+  onClearWeek: (employeeId: string) => void;
+  hasCopiedWeek: boolean;
 }
 
-const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: WeekTableProps) => {
+const WeekTable = ({ 
+  currentDate, 
+  employees, 
+  onUpdateStatus, 
+  onEditEmployee, 
+  onCopyWeek, 
+  onPasteWeek, 
+  onClearWeek,
+  hasCopiedWeek 
+}: WeekTableProps) => {
   const weekDays = getWeekDays(currentDate);
   const [hoveredEmployeeId, setHoveredEmployeeId] = useState<string | null>(null);
   const [modalState, setModalState] = useState<{
@@ -24,6 +45,7 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
     employeeName: string;
     dayName: string;
   } | null>(null);
+  const { toast } = useToast();
 
   const handleCellClick = (
     employee: Employee,
@@ -58,8 +80,9 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
               <colgroup>
                 <col className="w-44" />
                 {weekDays.map((_, index) => (
-                  <col key={index} className="w-[calc((100%-11rem)/5)]" />
+                  <col key={index} className="w-[calc((100%-14rem)/5)]" />
                 ))}
+                <col className="w-20" />
               </colgroup>
               <thead>
                 <tr className="bg-primary/5 border-b border-border">
@@ -74,6 +97,9 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
                       </div>
                     </th>
                   ))}
+                  <th className="text-center px-2 py-1.5 font-semibold text-foreground">
+                    Åtgärder
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -111,6 +137,39 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
                         </td>
                       );
                     })}
+                    <td className="p-1 text-center">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:bg-accent/20"
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
+                            <Copy className="h-4 w-4 mr-2" />
+                            Kopiera vecka
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => onPasteWeek(employee.id)}
+                            disabled={!hasCopiedWeek}
+                          >
+                            <Clipboard className="h-4 w-4 mr-2" />
+                            Klistra in vecka
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => onClearWeek(employee.id)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Töm vecka
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -129,6 +188,37 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
                   >
                     <Pencil className="h-4 w-4 text-muted-foreground" />
                   </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="h-8 w-8 p-0 hover:bg-accent/20"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
+                        <Copy className="h-4 w-4 mr-2" />
+                        Kopiera vecka
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => onPasteWeek(employee.id)}
+                        disabled={!hasCopiedWeek}
+                      >
+                        <Clipboard className="h-4 w-4 mr-2" />
+                        Klistra in vecka
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => onClearWeek(employee.id)}
+                        className="text-destructive focus:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Töm vecka
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {weekDays.map((day, index) => {

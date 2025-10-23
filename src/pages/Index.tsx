@@ -19,6 +19,7 @@ const Index = () => {
   const [editModalState, setEditModalState] = useState<{ isOpen: boolean; employeeId: string; currentName: string } | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [copiedWeek, setCopiedWeek] = useState<{ [key: string]: DayStatus } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -259,6 +260,130 @@ const Index = () => {
     }
   };
 
+  const handleCopyWeek = (employeeId: string) => {
+    const employee = employees.find(emp => emp.id === employeeId);
+    if (employee) {
+      setCopiedWeek({ ...employee.week });
+      toast({
+        title: 'Vecka kopierad',
+        description: `${employee.name}s vecka har kopierats`,
+      });
+    }
+  };
+
+  const handlePasteWeek = async (employeeId: string) => {
+    if (!copiedWeek) return;
+
+    const weekNumber = getWeekNumber(currentDate);
+    const year = getWeekYear(currentDate);
+    const employee = employees.find(emp => emp.id === employeeId);
+
+    try {
+      // Update all days for this employee
+      const days = ['mon', 'tue', 'wed', 'thu', 'fri'];
+      
+      for (const dayKey of days) {
+        const status = copiedWeek[dayKey];
+        if (status) {
+          await supabase
+            .from('employee_schedules')
+            .upsert(
+              {
+                user_id: employeeId,
+                week_number: weekNumber,
+                year: year,
+                day_key: dayKey,
+                status: status as any,
+              },
+              {
+                onConflict: 'user_id,week_number,year,day_key'
+              }
+            );
+        }
+      }
+
+      // Update local state
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp.id === employeeId
+            ? {
+                ...emp,
+                week: { ...copiedWeek },
+              }
+            : emp
+        )
+      );
+
+      toast({
+        title: 'Vecka inklistrad',
+        description: `Veckan har klistrats in för ${employee?.name}`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Fel',
+        description: 'Kunde inte klistra in vecka',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleClearWeek = async (employeeId: string) => {
+    const weekNumber = getWeekNumber(currentDate);
+    const year = getWeekYear(currentDate);
+    const employee = employees.find(emp => emp.id === employeeId);
+
+    try {
+      const emptyStatus: DayStatus = { segments: [{ status: 'unset' }] };
+      const days = ['mon', 'tue', 'wed', 'thu', 'fri'];
+      
+      for (const dayKey of days) {
+        await supabase
+          .from('employee_schedules')
+          .upsert(
+            {
+              user_id: employeeId,
+              week_number: weekNumber,
+              year: year,
+              day_key: dayKey,
+              status: emptyStatus as any,
+            },
+            {
+              onConflict: 'user_id,week_number,year,day_key'
+            }
+          );
+      }
+
+      // Update local state
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp.id === employeeId
+            ? {
+                ...emp,
+                week: {
+                  mon: emptyStatus,
+                  tue: emptyStatus,
+                  wed: emptyStatus,
+                  thu: emptyStatus,
+                  fri: emptyStatus,
+                },
+              }
+            : emp
+        )
+      );
+
+      toast({
+        title: 'Vecka tömd',
+        description: `Veckan har tömts för ${employee?.name}`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Fel',
+        description: 'Kunde inte tömma vecka',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (!user) {
     return null;
   }
@@ -299,6 +424,10 @@ const Index = () => {
         onEditEmployee={(employeeId, currentName) =>
           setEditModalState({ isOpen: true, employeeId, currentName })
         }
+        onCopyWeek={handleCopyWeek}
+        onPasteWeek={handlePasteWeek}
+        onClearWeek={handleClearWeek}
+        hasCopiedWeek={copiedWeek !== null}
       />
       {editModalState && (
         <EmployeeModal
