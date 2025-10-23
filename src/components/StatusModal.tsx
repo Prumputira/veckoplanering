@@ -215,6 +215,9 @@ const StatusModal = ({
                       ))}
                     </div>
                   </RadioGroup>
+                  <p className="text-xs text-muted-foreground mt-1.5 italic">
+                    💡 Du kan ange standardkontor i inställningarna
+                  </p>
                 </div>
               )}
 
