@@ -60,8 +60,10 @@ const Index = () => {
   }, [navigate]);
 
   useEffect(() => {
-    fetchEmployeesAndSchedules();
-  }, [currentDate]);
+    if (user) {
+      fetchEmployeesAndSchedules();
+    }
+  }, [currentDate, user]);
 
   const fetchEmployeesAndSchedules = async () => {
     setLoading(true);
