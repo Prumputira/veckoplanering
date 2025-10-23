@@ -8,6 +8,7 @@ import { navigateWeek, getWeekNumber, getWeekYear, getDayKey } from '@/utils/dat
 import { Employee, DayStatus } from '@/types/schedule';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useSwipe } from '@/hooks/use-swipe';
 import { Button } from '@/components/ui/button';
 import { LogOut, Settings } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
@@ -136,6 +137,12 @@ const Index = () => {
   const handleNavigate = (direction: 'prev' | 'next') => {
     setCurrentDate(navigateWeek(currentDate, direction));
   };
+
+  // Enable swipe gestures on mobile
+  useSwipe({
+    onSwipeLeft: () => handleNavigate('next'),
+    onSwipeRight: () => handleNavigate('prev'),
+  });
 
   const handleSelectWeek = (date: Date) => {
     setCurrentDate(date);
