@@ -3,8 +3,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui/carousel';
 import WeekTable from '@/components/WeekTable';
@@ -61,31 +59,10 @@ export function WeekCarousel({
   useEffect(() => {
     if (!api) return;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        api.scrollPrev();
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        api.scrollNext();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [api]);
-
-  const handleScrollPrev = () => {
-    if (currentIndex === 1) {
-      onNavigate('prev');
-    }
-  };
-
-  const handleScrollNext = () => {
-    if (currentIndex === 1) {
-      onNavigate('next');
-    }
-  };
+    // When parent navigates, we need to update carousel position
+    // Always keep carousel centered on current week (index 1)
+    api.scrollTo(1, true);
+  }, [currentDate, api]);
 
   return (
     <div className="week-carousel-container relative">
@@ -96,6 +73,7 @@ export function WeekCarousel({
           align: 'center',
           skipSnaps: false,
           dragFree: false,
+          watchDrag: false,
           duration: 25,
           startIndex: 1,
         }}
@@ -169,15 +147,6 @@ export function WeekCarousel({
             </div>
           </CarouselItem>
         </CarouselContent>
-
-        <CarouselPrevious 
-          onClick={handleScrollPrev}
-          className="left-4 z-20 bg-background/80 backdrop-blur-sm hover:bg-background"
-        />
-        <CarouselNext 
-          onClick={handleScrollNext}
-          className="right-4 z-20 bg-background/80 backdrop-blur-sm hover:bg-background"
-        />
       </Carousel>
     </div>
   );
