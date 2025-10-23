@@ -8,107 +8,103 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 215 25% 15%;
+    /* NordiskaBrand Colors - Light Mode */
+    --background: 204 23% 96%; /* Ångan (Steam) #F2F5F7 */
+    --foreground: 217 87% 16%; /* Djupet (Depth) #05234F */
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 217 87% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 217 87% 16%;
 
-    --primary: 215 85% 25%;
+    --primary: 203 100% 37%; /* Vågen (Wave) #0075BF */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 15% 92%;
-    --secondary-foreground: 215 25% 15%;
+    --secondary: 195 92% 49%; /* Droppen (Drop) #0BBBEF */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 15% 92%;
-    --muted-foreground: 215 15% 45%;
+    --muted: 204 23% 92%;
+    --muted-foreground: 217 50% 35%;
 
-    --accent: 210 15% 92%;
-    --accent-foreground: 215 25% 15%;
+    --accent: 22 100% 70%; /* Glöden (Glow) #FFA168 */
+    --accent-foreground: 217 87% 16%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 20% 88%;
-    --input: 215 20% 88%;
-    --ring: 215 85% 25%;
+    --border: 204 20% 88%;
+    --input: 204 20% 88%;
+    --ring: 203 100% 37%;
 
     --radius: 0.75rem;
     
-    /* Status colors */
-    --status-office: 28 85% 55%;
-    --status-home: 142 70% 45%;
-    --status-absent: 215 15% 60%;
+    /* Status colors - using brand palette */
+    --status-office: 22 100% 70%; /* Glöden orange for office */
+    --status-home: 195 92% 49%; /* Droppen light blue for home */
+    --status-absent: 204 20% 70%; /* Muted gray-blue for absent */
     
     /* Hover states */
-    --hover-office: 28 85% 48%;
-    --hover-home: 142 70% 38%;
-    --hover-absent: 215 15% 50%;
+    --hover-office: 22 100% 65%;
+    --hover-home: 195 92% 44%;
+    --hover-absent: 204 20% 60%;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 217 87% 16%;
+    --sidebar-primary: 203 100% 37%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 204 23% 96%;
+    --sidebar-accent-foreground: 217 87% 16%;
+    --sidebar-border: 204 20% 90%;
+    --sidebar-ring: 203 100% 37%;
   }
 
   .dark {
-    --background: 215 25% 12%;
-    --foreground: 210 20% 95%;
+    /* NordiskaBrand Colors - Dark Mode */
+    --background: 217 87% 16%; /* Djupet (Depth) #05234F */
+    --foreground: 204 23% 96%; /* Ångan (Steam) */
 
-    --card: 215 25% 15%;
-    --card-foreground: 210 20% 95%;
+    --card: 217 70% 20%;
+    --card-foreground: 204 23% 96%;
 
-    --popover: 215 25% 15%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 217 70% 20%;
+    --popover-foreground: 204 23% 96%;
 
-    --primary: 215 85% 55%;
+    --primary: 195 92% 49%; /* Droppen (Drop) lighter for dark mode */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 25% 20%;
-    --secondary-foreground: 210 20% 95%;
+    --secondary: 203 100% 37%; /* Vågen (Wave) */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 215 25% 20%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 217 70% 25%;
+    --muted-foreground: 204 23% 75%;
 
-    --accent: 215 25% 20%;
-    --accent-foreground: 210 20% 95%;
+    --accent: 22 100% 70%; /* Glöden (Glow) */
+    --accent-foreground: 217 87% 16%;
 
     --destructive: 0 62.8% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 25% 22%;
-    --input: 215 25% 22%;
-    --ring: 215 85% 55%;
+    --border: 217 50% 30%;
+    --input: 217 50% 30%;
+    --ring: 195 92% 49%;
     
-    --status-office: 28 85% 55%;
-    --status-home: 142 70% 45%;
-    --status-absent: 215 15% 40%;
+    --status-office: 22 100% 70%;
+    --status-home: 195 92% 49%;
+    --status-absent: 217 30% 50%;
     
-    --hover-office: 28 85% 62%;
-    --hover-home: 142 70% 52%;
-    --hover-absent: 215 15% 48%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --hover-office: 22 100% 75%;
+    --hover-home: 195 92% 54%;
+    --hover-absent: 217 30% 55%;
+    
+    --sidebar-background: 217 87% 16%;
+    --sidebar-foreground: 204 23% 96%;
+    --sidebar-primary: 195 92% 49%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 217 70% 25%;
+    --sidebar-accent-foreground: 204 23% 96%;
+    --sidebar-border: 217 50% 30%;
+    --sidebar-ring: 195 92% 49%;
   }
 }
 
@@ -119,5 +115,11 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
   }
 }
