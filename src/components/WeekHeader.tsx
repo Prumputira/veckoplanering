@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Building2, Home, Ban } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getWeekNumber, getWeekYear, formatDate, getWeekDays } from '@/utils/dateUtils';
 import WeekPicker from './WeekPicker';
@@ -8,9 +8,14 @@ interface WeekHeaderProps {
   currentDate: Date;
   onNavigate: (direction: 'prev' | 'next') => void;
   onSelectWeek: (date: Date) => void;
+  todayStats?: {
+    office: number;
+    home: number;
+    absent: number;
+  };
 }
 
-const WeekHeader = ({ currentDate, onNavigate, onSelectWeek }: WeekHeaderProps) => {
+const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, todayStats }: WeekHeaderProps) => {
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
@@ -32,6 +37,25 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek }: WeekHeaderProps) 
               <p className="text-muted-foreground mt-1 text-sm md:text-base">
                 Vecka {weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
               </p>
+              {todayStats && (
+                <div className="flex gap-4 mt-2 text-sm">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Building2 className="h-4 w-4 text-blue-500" />
+                    <span className="font-medium">{todayStats.office}</span>
+                    <span className="hidden sm:inline">på kontoret</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Home className="h-4 w-4 text-green-500" />
+                    <span className="font-medium">{todayStats.home}</span>
+                    <span className="hidden sm:inline">hemma</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Ban className="h-4 w-4 text-orange-500" />
+                    <span className="font-medium">{todayStats.absent}</span>
+                    <span className="hidden sm:inline">frånvarande</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex gap-2 items-center">

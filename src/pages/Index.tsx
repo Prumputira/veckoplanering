@@ -4,7 +4,7 @@ import WeekHeader from '@/components/WeekHeader';
 import WeekTable from '@/components/WeekTable';
 import EmployeeModal from '@/components/EmployeeModal';
 import AdminDashboard from '@/components/AdminDashboard';
-import { navigateWeek, getWeekNumber, getWeekYear } from '@/utils/dateUtils';
+import { navigateWeek, getWeekNumber, getWeekYear, getDayKey } from '@/utils/dateUtils';
 import { Employee, DayStatus } from '@/types/schedule';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -269,6 +269,41 @@ const Index = () => {
     }
   };
 
+  // Calculate today's stats
+  const getTodayStats = () => {
+    const today = new Date();
+    const todayKey = getDayKey(today);
+    
+    // Only show stats if we're viewing the current week
+    const currentWeekNum = getWeekNumber(today);
+    const currentYear = getWeekYear(today);
+    const viewingWeekNum = getWeekNumber(currentDate);
+    const viewingYear = getWeekYear(currentDate);
+    
+    if (currentWeekNum !== viewingWeekNum || currentYear !== viewingYear) {
+      return null;
+    }
+
+    let office = 0;
+    let home = 0;
+    let absent = 0;
+
+    employees.forEach((employee) => {
+      const dayStatus = employee.week[todayKey];
+      if (dayStatus && dayStatus.segments) {
+        dayStatus.segments.forEach((segment) => {
+          if (segment.status === 'office') office++;
+          else if (segment.status === 'home') home++;
+          else if (segment.status === 'absent') absent++;
+        });
+      }
+    });
+
+    return { office, home, absent };
+  };
+
+  const todayStats = getTodayStats();
+
   const handleCopyWeek = (employeeId: string) => {
     const employee = employees.find(emp => emp.id === employeeId);
     if (employee) {
@@ -425,6 +460,7 @@ const Index = () => {
         currentDate={currentDate} 
         onNavigate={handleNavigate}
         onSelectWeek={handleSelectWeek}
+        todayStats={todayStats}
       />
       <WeekTable
         currentDate={currentDate}
