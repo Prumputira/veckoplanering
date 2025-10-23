@@ -9,7 +9,7 @@ import { Employee, DayStatus } from '@/types/schedule';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import { LogOut, Settings } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 
 const Index = () => {
@@ -266,7 +266,16 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-3 flex justify-end">
+        <div className="container mx-auto px-4 py-3 flex justify-end gap-2">
+          <Button
+            onClick={() => navigate('/settings')}
+            variant="ghost"
+            size="sm"
+            className="hover:bg-accent/10"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Inställningar
+          </Button>
           <Button
             onClick={handleLogout}
             variant="ghost"
