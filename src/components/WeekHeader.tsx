@@ -25,13 +25,82 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
 
   return (
     <div className="bg-gradient-to-r from-background to-background/95 border-b border-primary/10 sticky top-0 z-10 shadow-md backdrop-blur-sm">
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-4 gap-4">
+      <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 md:py-6">
+        {/* Mobile: Two-level header */}
+        <div className="md:hidden space-y-3">
+          {/* First row: Logo + Navigation */}
+          <div className="flex items-center justify-between">
+            <img 
+              src={logo} 
+              alt="Nordiska Brand" 
+              className="h-8 xs:h-10 w-auto object-contain"
+            />
+            <div className="flex gap-1.5">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => onNavigate('prev')}
+                className="h-9 w-9 hover:bg-accent hover:text-accent-foreground hover:border-accent"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => onNavigate('next')}
+                className="h-9 w-9 hover:bg-accent hover:text-accent-foreground hover:border-accent"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Second row: Title + Week info */}
+          <div>
+            <h1 className="text-lg font-bold text-primary font-display">
+              Veckoplanering
+            </h1>
+            <p className="text-muted-foreground text-xs">
+              V{weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
+            </p>
+          </div>
+
+          {/* Third row: Stats + Actions */}
+          <div className="flex items-center justify-between gap-2">
+            {todayStats && (
+              <div className="flex gap-3 text-xs">
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <Building2 className="h-3.5 w-3.5 text-blue-500" />
+                  <span className="font-medium">{todayStats.office}</span>
+                </div>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <Home className="h-3.5 w-3.5 text-green-500" />
+                  <span className="font-medium">{todayStats.home}</span>
+                </div>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <Ban className="h-3.5 w-3.5 text-orange-500" />
+                  <span className="font-medium">{todayStats.absent}</span>
+                </div>
+              </div>
+            )}
+            <div className="flex gap-1.5">
+              <ScheduleChat 
+                employees={employees}
+                currentWeek={weekNumber}
+                currentYear={year}
+              />
+              <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: Original layout */}
+        <div className="hidden md:flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <img 
               src={logo} 
               alt="Nordiska Brand" 
-              className="h-12 w-auto md:h-16 object-contain"
+              className="h-12 md:h-16 w-auto object-contain"
             />
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-primary font-display">
@@ -45,17 +114,17 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                   <div className="flex items-center gap-1.5 text-muted-foreground">
                     <Building2 className="h-4 w-4 text-blue-500" />
                     <span className="font-medium">{todayStats.office}</span>
-                    <span className="hidden sm:inline">på kontoret</span>
+                    <span>på kontoret</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-muted-foreground">
                     <Home className="h-4 w-4 text-green-500" />
                     <span className="font-medium">{todayStats.home}</span>
-                    <span className="hidden sm:inline">hemma</span>
+                    <span>hemma</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-muted-foreground">
                     <Ban className="h-4 w-4 text-orange-500" />
                     <span className="font-medium">{todayStats.absent}</span>
-                    <span className="hidden sm:inline">frånvarande</span>
+                    <span>frånvarande</span>
                   </div>
                 </div>
               )}

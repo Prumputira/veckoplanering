@@ -225,23 +225,23 @@ const WeekTable = ({
                   <div 
                     key={employee.id} 
                     className={cn(
-                      "border-b border-border last:border-0 p-3",
+                      "border-b border-border last:border-0 p-4",
                       isCurrentUser && "bg-accent/10"
                     )}
                   >
-                    <div className="mb-2 flex items-center gap-2">
+                    <div className="mb-3 flex items-center gap-2">
                       <div className={cn(
-                        "font-medium flex-1",
-                        isCurrentUser ? "text-accent font-semibold" : "text-foreground"
+                        "font-semibold flex-1 text-base",
+                        isCurrentUser ? "text-accent" : "text-foreground"
                       )}>
                         {employee.name}
-                        {isCurrentUser && <span className="ml-2 text-xs text-accent/70">(Du)</span>}
+                        {isCurrentUser && <span className="ml-2 text-xs text-accent/70 font-normal">(Du)</span>}
                       </div>
                       {isCurrentUser && (
                         <>
                           <button
                             onClick={() => onEditEmployee(employee.id, employee.name)}
-                            className="p-1.5 rounded hover:bg-muted transition-all"
+                            className="p-2 rounded hover:bg-muted transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
                           >
                             <Pencil className="h-4 w-4 text-muted-foreground" />
                           </button>
@@ -250,26 +250,27 @@ const WeekTable = ({
                               <Button 
                                 variant="ghost" 
                                 size="sm"
-                                className="h-8 w-8 p-0 hover:bg-accent/20"
+                                className="h-11 w-11 p-0 hover:bg-accent/20"
                               >
-                                <MoreVertical className="h-4 w-4" />
+                                <MoreVertical className="h-5 w-5" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
+                            <DropdownMenuContent align="end" className="w-48">
+                              <DropdownMenuItem onClick={() => onCopyWeek(employee.id)} className="py-3">
                                 <Copy className="h-4 w-4 mr-2" />
                                 Kopiera vecka
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 onClick={() => onPasteWeek(employee.id)}
                                 disabled={!hasCopiedWeek}
+                                className="py-3"
                               >
                                 <Clipboard className="h-4 w-4 mr-2" />
                                 Klistra in vecka
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 onClick={() => onClearWeek(employee.id)}
-                                className="text-destructive focus:text-destructive"
+                                className="text-destructive focus:text-destructive py-3"
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Töm vecka
@@ -279,28 +280,35 @@ const WeekTable = ({
                         </>
                       )}
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
+                    
+                    {/* Vertical list layout for better readability */}
+                    <div className="space-y-2">
                       {weekDays.map((day, index) => {
                         const dayKey = getDayKey(day);
                         const status = employee.week[dayKey];
                         return (
-                          <div key={index}>
-                            <div className="text-xs text-muted-foreground mb-1">
-                              {formatDayName(day)} {formatDate(day)}
+                          <div key={index} className="flex items-center gap-3">
+                            <div className="min-w-[90px] text-sm font-medium text-foreground">
+                              {formatDayName(day)}
+                              <span className="text-xs text-muted-foreground ml-1">
+                                {formatDate(day)}
+                              </span>
                             </div>
-                            <StatusCell
-                              status={status}
-                              onClick={() =>
-                                handleCellClick(employee, dayKey, status, formatDayName(day))
-                              }
-                            />
+                            <div className="flex-1">
+                              <StatusCell
+                                status={status}
+                                onClick={() =>
+                                  handleCellClick(employee, dayKey, status, formatDayName(day))
+                                }
+                              />
+                            </div>
                           </div>
                         );
                       })}
                     </div>
                   </div>
                   {isCurrentUser && index < employees.length - 1 && (
-                    <div className="border-t-2 border-accent/30 my-2 mx-3"></div>
+                    <div className="border-t-2 border-accent/30 my-2 mx-4"></div>
                   )}
                 </>
               );
