@@ -25,7 +25,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
 
   return (
     <div className="bg-gradient-to-r from-background to-background/95 border-b border-primary/10 sticky top-0 z-10 shadow-md backdrop-blur-sm">
-      <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 md:py-6">
+      <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 md:py-4">
         {/* Mobile: Two-level header */}
         <div className="md:hidden space-y-3">
           {/* First row: Logo + Navigation */}
@@ -97,14 +97,14 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
         {/* Desktop: New layout with centered title */}
         <div className="hidden md:block">
           {/* Centered title at top */}
-          <h1 className="text-3xl md:text-4xl font-bold text-primary font-display text-center mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-primary font-display text-center mb-3">
             Veckoplanering
           </h1>
           
           {/* Content: left column (logo + info) and right column (actions) */}
           <div className="flex items-start justify-between gap-4">
             {/* Left column: logo, week info, stats */}
-            <div className="flex flex-col items-start gap-2">
+            <div className="flex flex-col items-start gap-1.5">
               <img 
                 src={logo} 
                 alt="Nordiska Brand" 
