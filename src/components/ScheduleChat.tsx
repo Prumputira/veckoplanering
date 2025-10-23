@@ -70,7 +70,7 @@ const ScheduleChat = ({ employees, currentWeek, currentYear }: ScheduleChatProps
           <span className="hidden md:inline">Fråga AI</span>
         </Button>
       ) : (
-        <div className="absolute right-0 top-0 z-50 w-80 bg-background border border-border rounded-lg shadow-lg">
+        <div className="fixed md:absolute right-2 md:right-0 top-2 md:top-0 z-50 w-[calc(100vw-1rem)] max-w-sm md:w-80 bg-background border border-border rounded-lg shadow-lg">
           <div className="flex items-center justify-between p-3 border-b border-border">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4 text-primary" />
