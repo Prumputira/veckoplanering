@@ -460,6 +460,7 @@ const Index = () => {
         currentDate={currentDate} 
         onNavigate={handleNavigate}
         onSelectWeek={handleSelectWeek}
+        employees={employees}
         todayStats={todayStats}
       />
       <WeekTable

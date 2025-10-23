@@ -2,12 +2,15 @@ import { ChevronLeft, ChevronRight, Building2, Home, Ban } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getWeekNumber, getWeekYear, formatDate, getWeekDays } from '@/utils/dateUtils';
 import WeekPicker from './WeekPicker';
+import ScheduleChat from './ScheduleChat';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
+import { Employee } from '@/types/schedule';
 
 interface WeekHeaderProps {
   currentDate: Date;
   onNavigate: (direction: 'prev' | 'next') => void;
   onSelectWeek: (date: Date) => void;
+  employees: Employee[];
   todayStats?: {
     office: number;
     home: number;
@@ -15,7 +18,7 @@ interface WeekHeaderProps {
   };
 }
 
-const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, todayStats }: WeekHeaderProps) => {
+const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todayStats }: WeekHeaderProps) => {
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
@@ -59,6 +62,11 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, todayStats }: WeekH
             </div>
           </div>
           <div className="flex gap-2 items-center">
+            <ScheduleChat 
+              employees={employees}
+              currentWeek={weekNumber}
+              currentYear={year}
+            />
             <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
             <div className="flex gap-2">
               <Button
