@@ -11,7 +11,9 @@ import { z } from 'zod';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
 
 const passwordSchema = z.object({
-  newPassword: z.string().min(6, 'Lösenordet måste vara minst 6 tecken'),
+  newPassword: z.string()
+    .min(8, 'Lösenordet måste vara minst 8 tecken')
+    .max(128, 'Lösenordet får vara högst 128 tecken'),
   confirmPassword: z.string()
 }).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Lösenorden matchar inte",
@@ -125,7 +127,7 @@ const Settings = () => {
                   <Input
                     id="newPassword"
                     type="password"
-                    placeholder="Minst 6 tecken"
+                    placeholder="Minst 8 tecken"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
