@@ -5,10 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Lock } from 'lucide-react';
+import { ArrowLeft, Lock, Building2 } from 'lucide-react';
 import { z } from 'zod';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
+
+const offices = ['Solna', 'Sundsvall', 'Enköping', 'Nyköping'];
 
 const passwordSchema = z.object({
   newPassword: z.string()
@@ -24,15 +27,30 @@ const Settings = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [defaultOffice, setDefaultOffice] = useState('');
+  const [profileLoading, setProfileLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check authentication
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check authentication and load profile
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) {
         navigate('/auth');
+        return;
       }
+
+      // Load user profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('default_office')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profile) {
+        setDefaultOffice(profile.default_office || '');
+      }
+      setProfileLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -85,6 +103,33 @@ const Settings = () => {
     }
   };
 
+  const handleSaveDefaultOffice = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ default_office: defaultOffice || null })
+        .eq('id', session.user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Standardkontor sparat',
+        description: defaultOffice 
+          ? `${defaultOffice} är nu ditt standardkontor` 
+          : 'Standardkontor borttaget',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Fel',
+        description: error.message || 'Kunde inte spara standardkontor',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-8">
@@ -109,6 +154,57 @@ const Settings = () => {
             <h1 className="text-3xl font-bold text-primary font-display">Inställningar</h1>
             <p className="text-muted-foreground mt-2">Hantera ditt konto</p>
           </div>
+
+          <Card className="shadow-lg border-primary/10">
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+              <CardTitle className="flex items-center gap-2 font-display text-primary">
+                <Building2 className="h-5 w-5 text-accent" />
+                Standardkontor
+              </CardTitle>
+              <CardDescription>
+                Välj ditt standardkontor för att slippa välja varje gång
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              {profileLoading ? (
+                <div className="text-center py-4 text-muted-foreground">Laddar...</div>
+              ) : (
+                <div className="space-y-4">
+                  <RadioGroup value={defaultOffice} onValueChange={setDefaultOffice}>
+                    <div className="grid grid-cols-2 gap-3">
+                      {offices.map((office) => (
+                        <div key={office} className="flex items-center space-x-2">
+                          <RadioGroupItem value={office} id={office} />
+                          <Label htmlFor={office} className="cursor-pointer">
+                            {office}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </RadioGroup>
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={handleSaveDefaultOffice}
+                      className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+                    >
+                      Spara standardkontor
+                    </Button>
+                    {defaultOffice && (
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setDefaultOffice('');
+                          handleSaveDefaultOffice();
+                        }}
+                      >
+                        Rensa
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           <Card className="shadow-lg border-primary/10">
             <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">

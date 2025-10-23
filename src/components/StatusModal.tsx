@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Building2, Home, Ban, Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
   DialogContent,
@@ -65,6 +66,26 @@ const StatusModal = ({
   onSave,
 }: StatusModalProps) => {
   const [segments, setSegments] = useState<StatusSegment[]>(currentStatus.segments);
+  const [defaultOffice, setDefaultOffice] = useState<string>('');
+
+  // Load default office from profile
+  useEffect(() => {
+    const loadDefaultOffice = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('default_office')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profile?.default_office) {
+        setDefaultOffice(profile.default_office);
+      }
+    };
+    loadDefaultOffice();
+  }, []);
 
   const handleAddSegment = () => {
     setSegments([...segments, { status: 'unset', period: '' }]);
@@ -79,6 +100,12 @@ const StatusModal = ({
   const handleUpdateSegment = (index: number, field: keyof StatusSegment, value: string) => {
     const newSegments = [...segments];
     newSegments[index] = { ...newSegments[index], [field]: value };
+    
+    // Auto-select default office when switching to office status
+    if (field === 'status' && value === 'office' && defaultOffice && !newSegments[index].office) {
+      newSegments[index].office = defaultOffice;
+    }
+    
     setSegments(newSegments);
   };
 
