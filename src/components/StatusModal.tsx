@@ -28,28 +28,28 @@ const statusOptions = [
     icon: Building2,
     label: 'Välj Plats',
     bgClass: 'bg-muted/30 hover:bg-muted/50 border-muted/50',
-    activeClass: 'bg-muted/50 border-muted',
+    activeClass: 'bg-muted/60 border-muted shadow-md',
   },
   {
     type: 'office' as StatusType,
     icon: Building2,
     label: 'Kontor',
-    bgClass: 'bg-status-office/10 hover:bg-status-office/20 border-status-office/30',
-    activeClass: 'bg-status-office/30 border-status-office',
+    bgClass: 'bg-status-office/20 hover:bg-status-office/30 border-status-office/40',
+    activeClass: 'bg-status-office/40 border-status-office shadow-md',
   },
   {
     type: 'home' as StatusType,
     icon: Home,
     label: 'Hemarbete',
-    bgClass: 'bg-status-home/10 hover:bg-status-home/20 border-status-home/30',
-    activeClass: 'bg-status-home/30 border-status-home',
+    bgClass: 'bg-status-home/20 hover:bg-status-home/30 border-status-home/40',
+    activeClass: 'bg-status-home/40 border-status-home shadow-md',
   },
   {
     type: 'absent' as StatusType,
     icon: Ban,
     label: 'Frånvarande',
-    bgClass: 'bg-status-absent/10 hover:bg-status-absent/20 border-status-absent/30',
-    activeClass: 'bg-status-absent/30 border-status-absent',
+    bgClass: 'bg-status-absent/20 hover:bg-status-absent/30 border-status-absent/40',
+    activeClass: 'bg-status-absent/40 border-status-absent shadow-md',
   },
 ];
 
@@ -88,16 +88,16 @@ const StatusModal = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px] bg-card max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Ändra status</DialogTitle>
+          <DialogTitle className="text-primary font-display text-xl">Ändra status</DialogTitle>
           <DialogDescription className="text-muted-foreground">
             {employeeName} • {dayName}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           {segments.map((segment, index) => (
-            <div key={index} className="space-y-3 p-3 border rounded-lg bg-background/50">
+            <div key={index} className="space-y-3 p-3 border-2 border-primary/10 rounded-lg bg-gradient-to-br from-muted/40 to-muted/20 shadow-sm">
               <div className="flex items-center justify-between">
-                <Label className="text-foreground text-sm font-semibold">
+                <Label className="text-primary text-sm font-semibold font-display">
                   {segments.length > 1 ? `Del ${index + 1}` : 'Status'}
                 </Label>
                 {segments.length > 1 && (
@@ -123,7 +123,7 @@ const StatusModal = ({
                         key={option.type}
                         onClick={() => handleUpdateSegment(index, 'status', option.type)}
                         className={cn(
-                          'flex flex-col items-center justify-center gap-1 p-3 rounded-lg border-2 transition-all',
+                          'flex flex-col items-center justify-center gap-1 p-3 rounded-lg border-2 transition-all duration-200 hover:scale-[1.02]',
                           isActive ? option.activeClass : option.bgClass
                         )}
                       >
@@ -179,7 +179,12 @@ const StatusModal = ({
           <Button variant="outline" onClick={onClose}>
             Avbryt
           </Button>
-          <Button onClick={handleSave}>Spara</Button>
+          <Button 
+            onClick={handleSave}
+            className="bg-accent hover:bg-accent/90 text-accent-foreground transition-all duration-200"
+          >
+            Spara
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

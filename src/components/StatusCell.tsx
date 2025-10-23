@@ -24,23 +24,23 @@ const statusConfig = {
   office: {
     icon: Building2,
     label: 'Kontor',
-    bgClass: 'bg-status-office/10 hover:bg-status-office/20',
+    bgClass: 'bg-status-office/25 hover:bg-status-office/35',
     iconClass: 'text-status-office',
-    borderClass: 'border-status-office/30',
+    borderClass: 'border-status-office/40',
   },
   home: {
     icon: Home,
     label: 'Hemarbete',
-    bgClass: 'bg-status-home/10 hover:bg-status-home/20',
+    bgClass: 'bg-status-home/25 hover:bg-status-home/35',
     iconClass: 'text-status-home',
-    borderClass: 'border-status-home/30',
+    borderClass: 'border-status-home/40',
   },
   absent: {
     icon: Ban,
     label: 'Frånvarande',
-    bgClass: 'bg-status-absent/10 hover:bg-status-absent/20',
+    bgClass: 'bg-status-absent/25 hover:bg-status-absent/35',
     iconClass: 'text-status-absent',
-    borderClass: 'border-status-absent/30',
+    borderClass: 'border-status-absent/40',
   },
 };
 
@@ -64,7 +64,7 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
                 'flex flex-col items-center justify-center gap-0.5',
                 config.bgClass,
                 config.borderClass,
-                'hover:shadow-md hover:scale-105'
+                'hover:shadow-md hover:scale-[1.03]'
               )}
             >
               <Icon className={cn('h-5 w-5', config.iconClass)} />
@@ -96,7 +96,7 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
             className={cn(
               'w-full h-16 rounded-lg border-2 transition-all duration-200 cursor-pointer overflow-hidden',
               'flex',
-              'hover:shadow-md hover:scale-105'
+              'hover:shadow-md hover:scale-[1.03]'
             )}
           >
             {status.segments.map((segment, idx) => {

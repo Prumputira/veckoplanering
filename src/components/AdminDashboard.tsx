@@ -45,10 +45,10 @@ const AdminDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <UserPlus className="h-5 w-5" />
+      <Card className="shadow-lg border-primary/10">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+          <CardTitle className="flex items-center gap-2 font-display text-primary">
+            <UserPlus className="h-5 w-5 text-accent" />
             Admin: Skapa ny användare
           </CardTitle>
           <CardDescription>
@@ -84,7 +84,11 @@ const AdminDashboard = () => {
                 Användaren kommer få ett mail för att återställa lösenordet.
               </p>
             </div>
-            <Button type="submit" disabled={loading}>
+            <Button 
+              type="submit" 
+              disabled={loading}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-200"
+            >
               {loading ? 'Skapar...' : 'Skapa användare'}
             </Button>
           </form>

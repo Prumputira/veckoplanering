@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { z } from 'zod';
+import logo from '@/assets/nordiska-brand-logo-primary.png';
 
 const loginSchema = z.object({
   email: z.string().trim().email('Ogiltig e-postadress').max(255),
@@ -15,8 +16,8 @@ const loginSchema = z.object({
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -42,8 +43,8 @@ const Auth = () => {
     e.preventDefault();
     
     const result = loginSchema.safeParse({
-      email: loginEmail,
-      password: loginPassword
+      email: email,
+      password: password
     });
 
     if (!result.success) {
@@ -96,43 +97,61 @@ const Auth = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Schemahantering</CardTitle>
-          <CardDescription>Logga in med ditt konto</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="din@email.com"
-                value={loginEmail}
-                onChange={(e) => setLoginEmail(e.target.value)}
-                required
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
+      <div className="w-full max-w-md space-y-6">
+        <div className="flex justify-center">
+          <img 
+            src={logo} 
+            alt="Nordiska Brand" 
+            className="h-20 w-auto object-contain"
+          />
+        </div>
+        <Card className="shadow-lg border-primary/10">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-display text-primary text-center">
+              Schemahantering
+            </CardTitle>
+            <CardDescription className="text-center">
+              Logga in för att hantera veckoscheman
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">E-postadress</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="din.epost@nordiskabrand.se"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Lösenord</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
+                  required
+                />
+              </div>
+              <Button 
+                type="submit" 
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-200" 
                 disabled={isLoading}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Lösenord</Label>
-              <Input
-                id="password"
-                type="password"
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Loggar in...' : 'Logga in'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              >
+                {isLoading ? 'Loggar in...' : 'Logga in'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
