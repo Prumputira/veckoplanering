@@ -138,8 +138,8 @@ const Index = () => {
     setCurrentDate(navigateWeek(currentDate, direction));
   };
 
-  // Enable swipe gestures on mobile
-  useSwipe({
+  // Enable swipe gestures on mobile with smooth animation
+  const { offset: swipeOffset, isSwiping } = useSwipe({
     onSwipeLeft: () => handleNavigate('next'),
     onSwipeRight: () => handleNavigate('prev'),
   });
@@ -470,19 +470,27 @@ const Index = () => {
         employees={employees}
         todayStats={todayStats}
       />
-      <WeekTable
-        currentDate={currentDate}
-        employees={employees}
-        onUpdateStatus={handleUpdateStatus}
-        onEditEmployee={(employeeId, currentName) =>
-          setEditModalState({ isOpen: true, employeeId, currentName })
-        }
-        onCopyWeek={handleCopyWeek}
-        onPasteWeek={handlePasteWeek}
-        onClearWeek={handleClearWeek}
-        hasCopiedWeek={copiedWeek !== null}
-        currentUserId={user?.id || null}
-      />
+      <div 
+        className="touch-pan-y overflow-hidden"
+        style={{
+          transform: `translateX(${swipeOffset}px)`,
+          transition: isSwiping ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
+      >
+        <WeekTable
+          currentDate={currentDate}
+          employees={employees}
+          onUpdateStatus={handleUpdateStatus}
+          onEditEmployee={(employeeId, currentName) =>
+            setEditModalState({ isOpen: true, employeeId, currentName })
+          }
+          onCopyWeek={handleCopyWeek}
+          onPasteWeek={handlePasteWeek}
+          onClearWeek={handleClearWeek}
+          hasCopiedWeek={copiedWeek !== null}
+          currentUserId={user?.id || null}
+        />
+      </div>
       {editModalState && (
         <EmployeeModal
           isOpen={editModalState.isOpen}
