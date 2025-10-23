@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Building2, Home, Ban, Plus, Trash2 } from 'lucide-react';
+import { Building2, Home, Ban, Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -79,6 +79,13 @@ const StatusModal = ({
     setSegments(newSegments);
   };
 
+  const handleMoveSegment = (index: number, direction: 'up' | 'down') => {
+    const newSegments = [...segments];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    [newSegments[index], newSegments[newIndex]] = [newSegments[newIndex], newSegments[index]];
+    setSegments(newSegments);
+  };
+
   const handleSave = () => {
     onSave({ segments });
     onClose();
@@ -101,14 +108,36 @@ const StatusModal = ({
                   {segments.length > 1 ? `Del ${index + 1}` : 'Status'}
                 </Label>
                 {segments.length > 1 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemoveSegment(index)}
-                    className="h-7 w-7 p-0"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex gap-1">
+                    {index > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleMoveSegment(index, 'up')}
+                        className="h-7 w-7 p-0"
+                      >
+                        <ChevronUp className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {index < segments.length - 1 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleMoveSegment(index, 'down')}
+                        className="h-7 w-7 p-0"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveSegment(index)}
+                      className="h-7 w-7 p-0"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 )}
               </div>
               
