@@ -69,6 +69,11 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
             >
               <Icon className={cn('h-5 w-5', config.iconClass)} />
               <span className="text-[10px] font-medium text-foreground">{config.label}</span>
+              {segment.office && segment.status === 'office' && (
+                <span className="text-[9px] text-muted-foreground px-1 font-semibold">
+                  {segment.office}
+                </span>
+              )}
               {segment.period && (
                 <span className="text-[9px] text-muted-foreground px-1">
                   {segment.period}
@@ -112,6 +117,11 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
                   )}
                 >
                   <Icon className={cn('h-4 w-4', config.iconClass)} />
+                  {segment.office && segment.status === 'office' && (
+                    <span className="text-[8px] text-muted-foreground font-semibold">
+                      {segment.office}
+                    </span>
+                  )}
                   {segment.period && (
                     <span className="text-[8px] text-muted-foreground">
                       {segment.period}
@@ -129,6 +139,7 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
               return (
                 <div key={idx} className="text-xs">
                   <strong>{segment.period || config.label}:</strong> {config.label}
+                  {segment.office && segment.status === 'office' && ` (${segment.office})`}
                   {segment.reason && ` - ${segment.reason}`}
                 </div>
               );

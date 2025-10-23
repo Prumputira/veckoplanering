@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { StatusType, DayStatus, StatusSegment } from '@/types/schedule';
 import { cn } from '@/lib/utils';
 
@@ -52,6 +53,8 @@ const statusOptions = [
     activeClass: 'bg-status-absent/40 border-status-absent shadow-md',
   },
 ];
+
+const offices = ['Solna', 'Sundsvall', 'Enköping', 'Nyköping'];
 
 const StatusModal = ({
   isOpen,
@@ -163,6 +166,30 @@ const StatusModal = ({
                   })}
                 </div>
               </div>
+
+              {segment.status === 'office' && (
+                <div className="space-y-2">
+                  <Label className="text-foreground text-xs">Välj kontor</Label>
+                  <RadioGroup
+                    value={segment.office || ''}
+                    onValueChange={(value) => handleUpdateSegment(index, 'office', value)}
+                  >
+                    <div className="grid grid-cols-2 gap-2">
+                      {offices.map((office) => (
+                        <div key={office} className="flex items-center space-x-2">
+                          <RadioGroupItem value={office} id={`${office}-${index}`} />
+                          <Label
+                            htmlFor={`${office}-${index}`}
+                            className="text-sm cursor-pointer"
+                          >
+                            {office}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </RadioGroup>
+                </div>
+              )}
 
               {segments.length > 1 && (
                 <div className="space-y-2">

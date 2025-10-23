@@ -4,6 +4,7 @@ export interface StatusSegment {
   status: StatusType;
   reason?: string;
   period?: string; // e.g., "FM" (förmiddag), "EM" (eftermiddag), or custom time
+  office?: string; // e.g., "Solna", "Sundsvall", "Enköping", "Nyköping"
 }
 
 export interface DayStatus {
