@@ -4,11 +4,13 @@ import WeekHeader from '@/components/WeekHeader';
 import WeekTable from '@/components/WeekTable';
 import EmployeeModal from '@/components/EmployeeModal';
 import AdminDashboard from '@/components/AdminDashboard';
+import { WeekCarousel } from '@/components/WeekCarousel';
 import { navigateWeek, getWeekNumber, getWeekYear, getDayKey } from '@/utils/dateUtils';
 import { Employee, DayStatus } from '@/types/schedule';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useSwipe } from '@/hooks/use-swipe';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { LogOut, Settings } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
@@ -16,6 +18,8 @@ import { User } from '@supabase/supabase-js';
 const Index = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [prevWeekEmployees, setPrevWeekEmployees] = useState<Employee[]>([]);
+  const [nextWeekEmployees, setNextWeekEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModalState, setEditModalState] = useState<{ isOpen: boolean; employeeId: string; currentName: string } | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -23,6 +27,7 @@ const Index = () => {
   const [copiedWeek, setCopiedWeek] = useState<{ [key: string]: DayStatus } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const checkAdminStatus = async (userId: string) => {
     const { data, error } = await supabase.rpc('has_role', {
@@ -63,6 +68,9 @@ const Index = () => {
   useEffect(() => {
     if (user) {
       fetchEmployeesAndSchedules();
+      if (!isMobile) {
+        fetchAdjacentWeeks();
+      }
     }
   }, [currentDate, user]);
 
@@ -131,6 +139,96 @@ const Index = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAdjacentWeeks = async () => {
+    if (!user) return;
+
+    const prevWeekDate = navigateWeek(currentDate, 'prev');
+    const nextWeekDate = navigateWeek(currentDate, 'next');
+
+    try {
+      // Fetch prev week
+      const prevWeekNumber = getWeekNumber(prevWeekDate);
+      const prevYear = getWeekYear(prevWeekDate);
+      
+      const { data: prevProfiles } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('name');
+
+      const { data: prevSchedules } = await supabase
+        .from('employee_schedules')
+        .select('*')
+        .eq('week_number', prevWeekNumber)
+        .eq('year', prevYear);
+
+      const prevSchedulesMap = new Map<string, Map<string, DayStatus>>();
+      prevSchedules?.forEach(schedule => {
+        if (!prevSchedulesMap.has(schedule.user_id)) {
+          prevSchedulesMap.set(schedule.user_id, new Map());
+        }
+        const statusData = typeof schedule.status === 'string' 
+          ? JSON.parse(schedule.status) 
+          : schedule.status;
+        prevSchedulesMap.get(schedule.user_id)?.set(schedule.day_key, statusData as DayStatus);
+      });
+
+      const prevWeekData: Employee[] = (prevProfiles || []).map(profile => ({
+        id: profile.id,
+        name: profile.name,
+        week: {
+          mon: prevSchedulesMap.get(profile.id)?.get('mon') || { segments: [{ status: 'unset' }] },
+          tue: prevSchedulesMap.get(profile.id)?.get('tue') || { segments: [{ status: 'unset' }] },
+          wed: prevSchedulesMap.get(profile.id)?.get('wed') || { segments: [{ status: 'unset' }] },
+          thu: prevSchedulesMap.get(profile.id)?.get('thu') || { segments: [{ status: 'unset' }] },
+          fri: prevSchedulesMap.get(profile.id)?.get('fri') || { segments: [{ status: 'unset' }] },
+        },
+      }));
+
+      // Fetch next week
+      const nextWeekNumber = getWeekNumber(nextWeekDate);
+      const nextYear = getWeekYear(nextWeekDate);
+      
+      const { data: nextProfiles } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('name');
+
+      const { data: nextSchedules } = await supabase
+        .from('employee_schedules')
+        .select('*')
+        .eq('week_number', nextWeekNumber)
+        .eq('year', nextYear);
+
+      const nextSchedulesMap = new Map<string, Map<string, DayStatus>>();
+      nextSchedules?.forEach(schedule => {
+        if (!nextSchedulesMap.has(schedule.user_id)) {
+          nextSchedulesMap.set(schedule.user_id, new Map());
+        }
+        const statusData = typeof schedule.status === 'string' 
+          ? JSON.parse(schedule.status) 
+          : schedule.status;
+        nextSchedulesMap.get(schedule.user_id)?.set(schedule.day_key, statusData as DayStatus);
+      });
+
+      const nextWeekData: Employee[] = (nextProfiles || []).map(profile => ({
+        id: profile.id,
+        name: profile.name,
+        week: {
+          mon: nextSchedulesMap.get(profile.id)?.get('mon') || { segments: [{ status: 'unset' }] },
+          tue: nextSchedulesMap.get(profile.id)?.get('tue') || { segments: [{ status: 'unset' }] },
+          wed: nextSchedulesMap.get(profile.id)?.get('wed') || { segments: [{ status: 'unset' }] },
+          thu: nextSchedulesMap.get(profile.id)?.get('thu') || { segments: [{ status: 'unset' }] },
+          fri: nextSchedulesMap.get(profile.id)?.get('fri') || { segments: [{ status: 'unset' }] },
+        },
+      }));
+
+      setPrevWeekEmployees(prevWeekData);
+      setNextWeekEmployees(nextWeekData);
+    } catch (error) {
+      console.error('Error fetching adjacent weeks:', error);
     }
   };
 
@@ -470,16 +568,38 @@ const Index = () => {
         employees={employees}
         todayStats={todayStats}
       />
-      <div 
-        className="touch-pan-y overflow-hidden"
-        style={{
-          transform: `translateX(${swipeOffset}px)`,
-          transition: isSwiping ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        }}
-      >
-        <WeekTable
+      
+      {isMobile ? (
+        <div 
+          className="touch-pan-y overflow-hidden"
+          style={{
+            transform: `translateX(${swipeOffset}px)`,
+            transition: isSwiping ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
+        >
+          <WeekTable
+            currentDate={currentDate}
+            employees={employees}
+            onUpdateStatus={handleUpdateStatus}
+            onEditEmployee={(employeeId, currentName) =>
+              setEditModalState({ isOpen: true, employeeId, currentName })
+            }
+            onCopyWeek={handleCopyWeek}
+            onPasteWeek={handlePasteWeek}
+            onClearWeek={handleClearWeek}
+            hasCopiedWeek={copiedWeek !== null}
+            currentUserId={user?.id || null}
+          />
+        </div>
+      ) : (
+        <WeekCarousel
+          prevWeekEmployees={prevWeekEmployees}
+          currentWeekEmployees={employees}
+          nextWeekEmployees={nextWeekEmployees}
+          prevWeekDate={navigateWeek(currentDate, 'prev')}
           currentDate={currentDate}
-          employees={employees}
+          nextWeekDate={navigateWeek(currentDate, 'next')}
+          onNavigate={handleNavigate}
           onUpdateStatus={handleUpdateStatus}
           onEditEmployee={(employeeId, currentName) =>
             setEditModalState({ isOpen: true, employeeId, currentName })
@@ -490,7 +610,7 @@ const Index = () => {
           hasCopiedWeek={copiedWeek !== null}
           currentUserId={user?.id || null}
         />
-      </div>
+      )}
       {editModalState && (
         <EmployeeModal
           isOpen={editModalState.isOpen}
