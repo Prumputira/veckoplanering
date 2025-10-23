@@ -63,11 +63,11 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
               </colgroup>
               <thead>
                 <tr className="bg-primary/5 border-b border-border">
-                  <th className="text-left p-3 font-semibold text-foreground">
+                  <th className="text-left px-3 py-1.5 font-semibold text-foreground">
                     Medarbetare
                   </th>
                   {weekDays.map((day, index) => (
-                    <th key={index} className="text-center p-2 font-semibold text-foreground">
+                    <th key={index} className="text-center px-2 py-1.5 font-semibold text-foreground">
                       <div className="flex flex-col">
                         <span className="text-sm">{formatDayName(day)}</span>
                         <span className="text-xs text-muted-foreground">{formatDate(day)}</span>
@@ -80,7 +80,7 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
                 {employees.map((employee) => (
                   <tr key={employee.id} className="border-b border-border last:border-0">
                     <td 
-                      className="p-3"
+                      className="px-3 py-1.5"
                       onMouseEnter={() => setHoveredEmployeeId(employee.id)}
                       onMouseLeave={() => setHoveredEmployeeId(null)}
                     >
@@ -101,7 +101,7 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
                       const dayKey = getDayKey(day);
                       const status = employee.week[dayKey];
                       return (
-                        <td key={index} className="p-1.5">
+                        <td key={index} className="p-1">
                           <StatusCell
                             status={status}
                             onClick={() =>
@@ -120,8 +120,8 @@ const WeekTable = ({ currentDate, employees, onUpdateStatus, onEditEmployee }: W
           {/* Mobile view */}
           <div className="md:hidden">
             {employees.map((employee) => (
-              <div key={employee.id} className="border-b border-border last:border-0 p-4">
-                <div className="mb-3 flex items-center gap-2">
+              <div key={employee.id} className="border-b border-border last:border-0 p-3">
+                <div className="mb-2 flex items-center gap-2">
                   <div className="font-medium text-foreground flex-1">{employee.name}</div>
                   <button
                     onClick={() => onEditEmployee(employee.id, employee.name)}
