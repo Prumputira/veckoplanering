@@ -53,9 +53,50 @@ serve(async (req) => {
     // Get request data
     const { email, password } = await req.json();
 
+    // Validate input presence
     if (!email || !password) {
       return new Response(
         JSON.stringify({ error: 'Email and password are required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid email format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate email length
+    if (email.length > 255) {
+      return new Response(
+        JSON.stringify({ error: 'Email address is too long' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate password length (8-128 characters for security and practicality)
+    if (password.length < 8) {
+      return new Response(
+        JSON.stringify({ error: 'Password must be at least 8 characters' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (password.length > 128) {
+      return new Response(
+        JSON.stringify({ error: 'Password is too long (max 128 characters)' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Optional: Validate company email domain
+    if (!email.endsWith('@nordiskabrand.se')) {
+      return new Response(
+        JSON.stringify({ error: 'Only @nordiskabrand.se email addresses are allowed' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
