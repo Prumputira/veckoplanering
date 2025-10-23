@@ -112,7 +112,14 @@ const Index = () => {
         },
       }));
 
-      setEmployees(employeesWithSchedules);
+      // Sort so current user is first
+      const sortedEmployees = employeesWithSchedules.sort((a, b) => {
+        if (a.id === user?.id) return -1;
+        if (b.id === user?.id) return 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      setEmployees(sortedEmployees);
     } catch (error) {
       toast({
         title: 'Fel',
@@ -428,6 +435,7 @@ const Index = () => {
         onPasteWeek={handlePasteWeek}
         onClearWeek={handleClearWeek}
         hasCopiedWeek={copiedWeek !== null}
+        currentUserId={user?.id || null}
       />
       {editModalState && (
         <EmployeeModal

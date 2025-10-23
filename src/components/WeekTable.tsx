@@ -23,6 +23,7 @@ interface WeekTableProps {
   onPasteWeek: (employeeId: string) => void;
   onClearWeek: (employeeId: string) => void;
   hasCopiedWeek: boolean;
+  currentUserId: string | null;
 }
 
 const WeekTable = ({ 
@@ -33,7 +34,8 @@ const WeekTable = ({
   onCopyWeek, 
   onPasteWeek, 
   onClearWeek,
-  hasCopiedWeek 
+  hasCopiedWeek,
+  currentUserId 
 }: WeekTableProps) => {
   const weekDays = getWeekDays(currentDate);
   const [hoveredEmployeeId, setHoveredEmployeeId] = useState<string | null>(null);
@@ -103,15 +105,30 @@ const WeekTable = ({
                 </tr>
               </thead>
               <tbody>
-                {employees.map((employee) => (
-                  <tr key={employee.id} className="border-b border-border last:border-0">
-                    <td 
-                      className="px-3 py-1.5"
-                      onMouseEnter={() => setHoveredEmployeeId(employee.id)}
-                      onMouseLeave={() => setHoveredEmployeeId(null)}
-                    >
-                      <div className="flex items-center gap-2 group">
-                        <div className="font-medium text-foreground text-sm">{employee.name}</div>
+                {employees.map((employee, index) => {
+                  const isCurrentUser = employee.id === currentUserId;
+                  return (
+                    <>
+                      <tr 
+                        key={employee.id} 
+                        className={cn(
+                          "border-b border-border last:border-0",
+                          isCurrentUser && "bg-accent/10"
+                        )}
+                      >
+                        <td 
+                          className="px-3 py-1.5"
+                          onMouseEnter={() => setHoveredEmployeeId(employee.id)}
+                          onMouseLeave={() => setHoveredEmployeeId(null)}
+                        >
+                          <div className="flex items-center gap-2 group">
+                            <div className={cn(
+                              "font-medium text-sm",
+                              isCurrentUser ? "text-accent font-semibold" : "text-foreground"
+                            )}>
+                              {employee.name}
+                              {isCurrentUser && <span className="ml-2 text-xs text-accent/70">(Du)</span>}
+                            </div>
                         <button
                           onClick={() => onEditEmployee(employee.id, employee.name)}
                           className={cn(
@@ -171,76 +188,105 @@ const WeekTable = ({
                       </DropdownMenu>
                     </td>
                   </tr>
-                ))}
+                  {isCurrentUser && index < employees.length - 1 && (
+                    <tr>
+                      <td colSpan={7} className="p-0">
+                        <div className="border-t-2 border-accent/30 my-1"></div>
+                      </td>
+                    </tr>
+                  )}
+                </>
+                  );
+                })}
               </tbody>
             </table>
           </div>
 
           {/* Mobile view */}
           <div className="md:hidden">
-            {employees.map((employee) => (
-              <div key={employee.id} className="border-b border-border last:border-0 p-3">
-                <div className="mb-2 flex items-center gap-2">
-                  <div className="font-medium text-foreground flex-1">{employee.name}</div>
-                  <button
-                    onClick={() => onEditEmployee(employee.id, employee.name)}
-                    className="p-1.5 rounded hover:bg-muted transition-all"
+            {employees.map((employee, index) => {
+              const isCurrentUser = employee.id === currentUserId;
+              return (
+                <>
+                  <div 
+                    key={employee.id} 
+                    className={cn(
+                      "border-b border-border last:border-0 p-3",
+                      isCurrentUser && "bg-accent/10"
+                    )}
                   >
-                    <Pencil className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="h-8 w-8 p-0 hover:bg-accent/20"
-                      >
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
-                        <Copy className="h-4 w-4 mr-2" />
-                        Kopiera vecka
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => onPasteWeek(employee.id)}
-                        disabled={!hasCopiedWeek}
-                      >
-                        <Clipboard className="h-4 w-4 mr-2" />
-                        Klistra in vecka
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => onClearWeek(employee.id)}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Töm vecka
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {weekDays.map((day, index) => {
-                    const dayKey = getDayKey(day);
-                    const status = employee.week[dayKey];
-                    return (
-                      <div key={index}>
-                        <div className="text-xs text-muted-foreground mb-1">
-                          {formatDayName(day)} {formatDate(day)}
-                        </div>
-                        <StatusCell
-                          status={status}
-                          onClick={() =>
-                            handleCellClick(employee, dayKey, status, formatDayName(day))
-                          }
-                        />
+                    <div className="mb-2 flex items-center gap-2">
+                      <div className={cn(
+                        "font-medium flex-1",
+                        isCurrentUser ? "text-accent font-semibold" : "text-foreground"
+                      )}>
+                        {employee.name}
+                        {isCurrentUser && <span className="ml-2 text-xs text-accent/70">(Du)</span>}
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
+                      <button
+                        onClick={() => onEditEmployee(employee.id, employee.name)}
+                        className="p-1.5 rounded hover:bg-muted transition-all"
+                      >
+                        <Pencil className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:bg-accent/20"
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
+                            <Copy className="h-4 w-4 mr-2" />
+                            Kopiera vecka
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => onPasteWeek(employee.id)}
+                            disabled={!hasCopiedWeek}
+                          >
+                            <Clipboard className="h-4 w-4 mr-2" />
+                            Klistra in vecka
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => onClearWeek(employee.id)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Töm vecka
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {weekDays.map((day, index) => {
+                        const dayKey = getDayKey(day);
+                        const status = employee.week[dayKey];
+                        return (
+                          <div key={index}>
+                            <div className="text-xs text-muted-foreground mb-1">
+                              {formatDayName(day)} {formatDate(day)}
+                            </div>
+                            <StatusCell
+                              status={status}
+                              onClick={() =>
+                                handleCellClick(employee, dayKey, status, formatDayName(day))
+                              }
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  {isCurrentUser && index < employees.length - 1 && (
+                    <div className="border-t-2 border-accent/30 my-2 mx-3"></div>
+                  )}
+                </>
+              );
+            })}
           </div>
         </div>
       </div>
