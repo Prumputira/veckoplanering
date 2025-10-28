@@ -1,4 +1,4 @@
-import { Building2, Home, Ban } from 'lucide-react';
+import { Building2, Home, Ban, MapPin } from 'lucide-react';
 import { DayStatus, StatusType } from '@/types/schedule';
 import { cn } from '@/lib/utils';
 import {
@@ -34,6 +34,13 @@ const statusConfig = {
     bgClass: 'bg-status-home/25 hover:bg-status-home/35',
     iconClass: 'text-status-home',
     borderClass: 'border-status-home/40',
+  },
+  site_visit: {
+    icon: MapPin,
+    label: 'Platsbesök',
+    bgClass: 'bg-status-site-visit/25 hover:bg-status-site-visit/35',
+    iconClass: 'text-status-site-visit',
+    borderClass: 'border-status-site-visit/40',
   },
   absent: {
     icon: Ban,
@@ -72,6 +79,11 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
               {segment.office && segment.status === 'office' && (
                 <span className="text-[9px] text-muted-foreground px-1 font-semibold">
                   {segment.office}
+                </span>
+              )}
+              {segment.reason && segment.status === 'site_visit' && (
+                <span className="text-[9px] text-muted-foreground px-1 font-semibold">
+                  {segment.reason}
                 </span>
               )}
               {segment.period && (
@@ -120,6 +132,11 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
                   {segment.office && segment.status === 'office' && (
                     <span className="text-[8px] text-muted-foreground font-semibold">
                       {segment.office}
+                    </span>
+                  )}
+                  {segment.reason && segment.status === 'site_visit' && (
+                    <span className="text-[8px] text-muted-foreground font-semibold">
+                      {segment.reason}
                     </span>
                   )}
                   {segment.period && (

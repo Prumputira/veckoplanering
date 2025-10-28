@@ -43,11 +43,13 @@ All colors MUST be HSL.
     --status-office: 22 100% 70%; /* Glöden orange for office */
     --status-home: 195 92% 49%; /* Droppen light blue for home */
     --status-absent: 204 20% 70%; /* Muted gray-blue for absent */
+    --status-site-visit: 270 80% 60%; /* Purple for site visits */
     
     /* Hover states */
     --hover-office: 22 100% 65%;
     --hover-home: 195 92% 44%;
     --hover-absent: 204 20% 60%;
+    --hover-site-visit: 270 80% 55%;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 217 87% 16%;
@@ -92,10 +94,12 @@ All colors MUST be HSL.
     --status-office: 22 100% 70%;
     --status-home: 195 92% 49%;
     --status-absent: 217 30% 50%;
+    --status-site-visit: 270 80% 65%;
     
     --hover-office: 22 100% 75%;
     --hover-home: 195 92% 54%;
     --hover-absent: 217 30% 55%;
+    --hover-site-visit: 270 80% 70%;
     
     --sidebar-background: 217 87% 16%;
     --sidebar-foreground: 204 23% 96%;

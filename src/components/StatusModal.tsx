@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Building2, Home, Ban, Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import { Building2, Home, Ban, Plus, Trash2, ChevronUp, ChevronDown, MapPin } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
@@ -45,6 +45,13 @@ const statusOptions = [
     label: 'Hemarbete',
     bgClass: 'bg-status-home/20 hover:bg-status-home/30 border-status-home/40',
     activeClass: 'bg-status-home/40 border-status-home shadow-md',
+  },
+  {
+    type: 'site_visit' as StatusType,
+    icon: MapPin,
+    label: 'Platsbesök',
+    bgClass: 'bg-status-site-visit/20 hover:bg-status-site-visit/30 border-status-site-visit/40',
+    activeClass: 'bg-status-site-visit/40 border-status-site-visit shadow-md',
   },
   {
     type: 'absent' as StatusType,
@@ -173,7 +180,7 @@ const StatusModal = ({
               
               <div className="space-y-2">
                 <Label className="text-foreground text-xs">Välj status</Label>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {statusOptions.map((option) => {
                     const Icon = option.icon;
                     const isActive = segment.status === option.type;
@@ -221,6 +228,21 @@ const StatusModal = ({
                 </div>
               )}
 
+              {segment.status === 'site_visit' && (
+                <div className="space-y-2">
+                  <Label htmlFor={`location-${index}`} className="text-foreground text-xs">
+                    Plats för besöket (t.ex. Kund, Projekt, Ort)
+                  </Label>
+                  <Input
+                    id={`location-${index}`}
+                    placeholder="T.ex. Kund Stockholm, Projektplats..."
+                    value={segment.reason || ''}
+                    onChange={(e) => handleUpdateSegment(index, 'reason', e.target.value)}
+                    className="bg-background h-8 text-sm"
+                  />
+                </div>
+              )}
+
               {segments.length > 1 && (
                 <div className="space-y-2">
                   <Label htmlFor={`period-${index}`} className="text-foreground text-xs">
@@ -236,18 +258,20 @@ const StatusModal = ({
                 </div>
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor={`reason-${index}`} className="text-foreground text-xs">
-                  Kommentar (valfritt)
-                </Label>
-                <Input
-                  id={`reason-${index}`}
-                  placeholder="T.ex. Semester, Kundmöte..."
-                  value={segment.reason || ''}
-                  onChange={(e) => handleUpdateSegment(index, 'reason', e.target.value)}
-                  className="bg-background h-8 text-sm"
-                />
-              </div>
+              {segment.status !== 'site_visit' && (
+                <div className="space-y-2">
+                  <Label htmlFor={`reason-${index}`} className="text-foreground text-xs">
+                    Kommentar (valfritt)
+                  </Label>
+                  <Input
+                    id={`reason-${index}`}
+                    placeholder="T.ex. Semester, Kundmöte..."
+                    value={segment.reason || ''}
+                    onChange={(e) => handleUpdateSegment(index, 'reason', e.target.value)}
+                    className="bg-background h-8 text-sm"
+                  />
+                </div>
+              )}
             </div>
           ))}
           

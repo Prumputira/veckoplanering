@@ -1,4 +1,4 @@
-export type StatusType = 'unset' | 'office' | 'home' | 'absent';
+export type StatusType = 'unset' | 'office' | 'home' | 'absent' | 'site_visit';
 
 export interface StatusSegment {
   status: StatusType;
