@@ -392,19 +392,40 @@ const Index = () => {
     let office = 0;
     let home = 0;
     let absent = 0;
+    const officeByLocation: { [office: string]: string[] } = {};
+    const homeNames: string[] = [];
+    const absentNames: string[] = [];
 
     employees.forEach((employee) => {
       const dayStatus = employee.week[todayKey];
       if (dayStatus && dayStatus.segments) {
         dayStatus.segments.forEach((segment) => {
-          if (segment.status === 'office') office++;
-          else if (segment.status === 'home') home++;
-          else if (segment.status === 'absent') absent++;
+          if (segment.status === 'office') {
+            office++;
+            const location = segment.office || 'Okänt kontor';
+            if (!officeByLocation[location]) {
+              officeByLocation[location] = [];
+            }
+            officeByLocation[location].push(employee.name);
+          } else if (segment.status === 'home') {
+            home++;
+            homeNames.push(employee.name);
+          } else if (segment.status === 'absent') {
+            absent++;
+            absentNames.push(employee.name);
+          }
         });
       }
     });
 
-    return { office, home, absent };
+    return { 
+      office, 
+      home, 
+      absent, 
+      officeByLocation, 
+      homeNames, 
+      absentNames 
+    };
   };
 
   const todayStats = getTodayStats();
