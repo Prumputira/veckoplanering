@@ -6,7 +6,6 @@ import ScheduleChat from './ScheduleChat';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
 import { Employee } from '@/types/schedule';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PersonInfo {
   name: string;
@@ -97,21 +96,12 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                             <span className="font-medium text-xs text-blue-600">{office}</span>
                             <div className="flex flex-wrap gap-1.5">
                               {persons.map((person, i) => (
-                                <TooltipProvider key={i}>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <span className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20 cursor-default">
-                                        {person.name}
-                                      </span>
-                                    </TooltipTrigger>
-                                    {(person.period || person.reason) && (
-                                      <TooltipContent>
-                                        {person.period && <p className="font-medium">{person.period}</p>}
-                                        {person.reason && <p className="text-xs">{person.reason}</p>}
-                                      </TooltipContent>
-                                    )}
-                                  </Tooltip>
-                                </TooltipProvider>
+                                <span key={i} className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20">
+                                  <span className="font-medium">{person.name}</span>
+                                  {person.period && (
+                                    <span className="text-[10px] text-muted-foreground ml-1">({person.period})</span>
+                                  )}
+                                </span>
                               ))}
                             </div>
                           </div>
@@ -136,21 +126,12 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       {todayStats.homeNames && todayStats.homeNames.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
                           {todayStats.homeNames.map((person, i) => (
-                            <TooltipProvider key={i}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <span className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20 cursor-default">
-                                    {person.name}
-                                  </span>
-                                </TooltipTrigger>
-                                {(person.period || person.reason) && (
-                                  <TooltipContent>
-                                    {person.period && <p className="font-medium">{person.period}</p>}
-                                    {person.reason && <p className="text-xs">{person.reason}</p>}
-                                  </TooltipContent>
-                                )}
-                              </Tooltip>
-                            </TooltipProvider>
+                            <span key={i} className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20">
+                              <span className="font-medium">{person.name}</span>
+                              {person.period && (
+                                <span className="text-[10px] text-muted-foreground ml-1">({person.period})</span>
+                              )}
+                            </span>
                           ))}
                         </div>
                       ) : (
@@ -173,21 +154,12 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       {todayStats.absentNames && todayStats.absentNames.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
                           {todayStats.absentNames.map((person, i) => (
-                            <TooltipProvider key={i}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <span className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20 cursor-default">
-                                    {person.name}
-                                  </span>
-                                </TooltipTrigger>
-                                {(person.period || person.reason) && (
-                                  <TooltipContent>
-                                    {person.period && <p className="font-medium">{person.period}</p>}
-                                    {person.reason && <p className="text-xs">{person.reason}</p>}
-                                  </TooltipContent>
-                                )}
-                              </Tooltip>
-                            </TooltipProvider>
+                            <span key={i} className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20">
+                              <span className="font-medium">{person.name}</span>
+                              {person.period && (
+                                <span className="text-[10px] text-muted-foreground ml-1">({person.period})</span>
+                              )}
+                            </span>
                           ))}
                         </div>
                       ) : (
@@ -243,21 +215,12 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                             <span className="font-medium text-sm text-blue-600">{office}</span>
                             <div className="flex flex-wrap gap-2">
                               {persons.map((person, i) => (
-                                <TooltipProvider key={i}>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <span className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20 cursor-default">
-                                        {person.name}
-                                      </span>
-                                    </TooltipTrigger>
-                                    {(person.period || person.reason) && (
-                                      <TooltipContent>
-                                        {person.period && <p className="font-medium">{person.period}</p>}
-                                        {person.reason && <p className="text-xs">{person.reason}</p>}
-                                      </TooltipContent>
-                                    )}
-                                  </Tooltip>
-                                </TooltipProvider>
+                                <span key={i} className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20">
+                                  <span className="font-medium">{person.name}</span>
+                                  {person.period && (
+                                    <span className="text-xs text-muted-foreground ml-1.5">({person.period})</span>
+                                  )}
+                                </span>
                               ))}
                             </div>
                           </div>
@@ -283,21 +246,12 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       {todayStats.homeNames && todayStats.homeNames.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {todayStats.homeNames.map((person, i) => (
-                            <TooltipProvider key={i}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <span className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20 cursor-default">
-                                    {person.name}
-                                  </span>
-                                </TooltipTrigger>
-                                {(person.period || person.reason) && (
-                                  <TooltipContent>
-                                    {person.period && <p className="font-medium">{person.period}</p>}
-                                    {person.reason && <p className="text-xs">{person.reason}</p>}
-                                  </TooltipContent>
-                                )}
-                              </Tooltip>
-                            </TooltipProvider>
+                            <span key={i} className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20">
+                              <span className="font-medium">{person.name}</span>
+                              {person.period && (
+                                <span className="text-xs text-muted-foreground ml-1.5">({person.period})</span>
+                              )}
+                            </span>
                           ))}
                         </div>
                       ) : (
@@ -321,21 +275,12 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       {todayStats.absentNames && todayStats.absentNames.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {todayStats.absentNames.map((person, i) => (
-                            <TooltipProvider key={i}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <span className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20 cursor-default">
-                                    {person.name}
-                                  </span>
-                                </TooltipTrigger>
-                                {(person.period || person.reason) && (
-                                  <TooltipContent>
-                                    {person.period && <p className="font-medium">{person.period}</p>}
-                                    {person.reason && <p className="text-xs">{person.reason}</p>}
-                                  </TooltipContent>
-                                )}
-                              </Tooltip>
-                            </TooltipProvider>
+                            <span key={i} className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20">
+                              <span className="font-medium">{person.name}</span>
+                              {person.period && (
+                                <span className="text-xs text-muted-foreground ml-1.5">({person.period})</span>
+                              )}
+                            </span>
                           ))}
                         </div>
                       ) : (
