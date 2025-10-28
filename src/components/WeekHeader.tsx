@@ -7,6 +7,12 @@ import logo from '@/assets/nordiska-brand-logo-primary.png';
 import { Employee } from '@/types/schedule';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 
+interface PersonInfo {
+  name: string;
+  period?: string;
+  reason?: string;
+}
+
 interface WeekHeaderProps {
   currentDate: Date;
   onNavigate: (direction: 'prev' | 'next') => void;
@@ -16,9 +22,9 @@ interface WeekHeaderProps {
     office: number;
     home: number;
     absent: number;
-    officeByLocation?: { [office: string]: string[] };
-    homeNames?: string[];
-    absentNames?: string[];
+    officeByLocation?: { [office: string]: PersonInfo[] };
+    homeNames?: PersonInfo[];
+    absentNames?: PersonInfo[];
   };
 }
 
@@ -85,14 +91,20 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       <h4 className="font-semibold text-xs">På kontoret idag</h4>
                       {todayStats.officeByLocation && Object.entries(todayStats.officeByLocation)
                         .sort(([a], [b]) => a.localeCompare(b))
-                        .map(([office, names]) => (
+                        .map(([office, persons]) => (
                           <div key={office} className="space-y-1.5">
                             <span className="font-medium text-xs text-blue-600">{office}</span>
                             <div className="flex flex-wrap gap-1.5">
-                              {names.map((name) => (
-                                <span key={name} className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20">
-                                  {name}
-                                </span>
+                              {persons.map((person, i) => (
+                                <div key={i} className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20">
+                                  <span className="font-medium">{person.name}</span>
+                                  {person.period && (
+                                    <span className="text-[10px] text-muted-foreground ml-1">({person.period})</span>
+                                  )}
+                                  {person.reason && (
+                                    <span className="text-[10px] text-muted-foreground ml-1">- {person.reason}</span>
+                                  )}
+                                </div>
                               ))}
                             </div>
                           </div>
@@ -116,10 +128,16 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       <h4 className="font-semibold text-xs">Hemma idag</h4>
                       {todayStats.homeNames && todayStats.homeNames.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
-                          {todayStats.homeNames.map((name) => (
-                            <span key={name} className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20">
-                              {name}
-                            </span>
+                          {todayStats.homeNames.map((person, i) => (
+                            <div key={i} className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20">
+                              <span className="font-medium">{person.name}</span>
+                              {person.period && (
+                                <span className="text-[10px] text-muted-foreground ml-1">({person.period})</span>
+                              )}
+                              {person.reason && (
+                                <span className="text-[10px] text-muted-foreground ml-1">- {person.reason}</span>
+                              )}
+                            </div>
                           ))}
                         </div>
                       ) : (
@@ -141,10 +159,16 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       <h4 className="font-semibold text-xs">Frånvarande idag</h4>
                       {todayStats.absentNames && todayStats.absentNames.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
-                          {todayStats.absentNames.map((name) => (
-                            <span key={name} className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20">
-                              {name}
-                            </span>
+                          {todayStats.absentNames.map((person, i) => (
+                            <div key={i} className="px-2 py-0.5 bg-primary/10 text-foreground text-xs rounded-md border border-primary/20">
+                              <span className="font-medium">{person.name}</span>
+                              {person.period && (
+                                <span className="text-[10px] text-muted-foreground ml-1">({person.period})</span>
+                              )}
+                              {person.reason && (
+                                <span className="text-[10px] text-muted-foreground ml-1">- {person.reason}</span>
+                              )}
+                            </div>
                           ))}
                         </div>
                       ) : (
@@ -195,14 +219,20 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       <h4 className="font-semibold text-sm">På kontoret idag</h4>
                       {todayStats.officeByLocation && Object.entries(todayStats.officeByLocation)
                         .sort(([a], [b]) => a.localeCompare(b))
-                        .map(([office, names]) => (
+                        .map(([office, persons]) => (
                           <div key={office} className="space-y-2">
                             <span className="font-medium text-sm text-blue-600">{office}</span>
                             <div className="flex flex-wrap gap-2">
-                              {names.map((name) => (
-                                <span key={name} className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20">
-                                  {name}
-                                </span>
+                              {persons.map((person, i) => (
+                                <div key={i} className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20">
+                                  <span className="font-medium">{person.name}</span>
+                                  {person.period && (
+                                    <span className="text-xs text-muted-foreground ml-1.5">({person.period})</span>
+                                  )}
+                                  {person.reason && (
+                                    <span className="text-xs text-muted-foreground ml-1.5">- {person.reason}</span>
+                                  )}
+                                </div>
                               ))}
                             </div>
                           </div>
@@ -227,10 +257,16 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       <h4 className="font-semibold text-sm">Hemma idag</h4>
                       {todayStats.homeNames && todayStats.homeNames.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
-                          {todayStats.homeNames.map((name) => (
-                            <span key={name} className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20">
-                              {name}
-                            </span>
+                          {todayStats.homeNames.map((person, i) => (
+                            <div key={i} className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20">
+                              <span className="font-medium">{person.name}</span>
+                              {person.period && (
+                                <span className="text-xs text-muted-foreground ml-1.5">({person.period})</span>
+                              )}
+                              {person.reason && (
+                                <span className="text-xs text-muted-foreground ml-1.5">- {person.reason}</span>
+                              )}
+                            </div>
                           ))}
                         </div>
                       ) : (
@@ -253,10 +289,16 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
                       <h4 className="font-semibold text-sm">Frånvarande idag</h4>
                       {todayStats.absentNames && todayStats.absentNames.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
-                          {todayStats.absentNames.map((name) => (
-                            <span key={name} className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20">
-                              {name}
-                            </span>
+                          {todayStats.absentNames.map((person, i) => (
+                            <div key={i} className="px-2.5 py-1 bg-primary/10 text-foreground text-sm rounded-md border border-primary/20">
+                              <span className="font-medium">{person.name}</span>
+                              {person.period && (
+                                <span className="text-xs text-muted-foreground ml-1.5">({person.period})</span>
+                              )}
+                              {person.reason && (
+                                <span className="text-xs text-muted-foreground ml-1.5">- {person.reason}</span>
+                              )}
+                            </div>
                           ))}
                         </div>
                       ) : (

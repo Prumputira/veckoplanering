@@ -374,6 +374,12 @@ const Index = () => {
     }
   };
 
+  interface PersonInfo {
+    name: string;
+    period?: string;
+    reason?: string;
+  }
+
   // Calculate today's stats
   const getTodayStats = () => {
     const today = new Date();
@@ -392,9 +398,9 @@ const Index = () => {
     let office = 0;
     let home = 0;
     let absent = 0;
-    const officeByLocation: { [office: string]: string[] } = {};
-    const homeNames: string[] = [];
-    const absentNames: string[] = [];
+    const officeByLocation: { [office: string]: PersonInfo[] } = {};
+    const homeNames: PersonInfo[] = [];
+    const absentNames: PersonInfo[] = [];
 
     employees.forEach((employee) => {
       const dayStatus = employee.week[todayKey];
@@ -406,13 +412,34 @@ const Index = () => {
             if (!officeByLocation[location]) {
               officeByLocation[location] = [];
             }
-            officeByLocation[location].push(employee.name);
+            const personInfo: PersonInfo = {
+              name: employee.name,
+              period: segment.period,
+              reason: segment.reason
+            };
+            if (!officeByLocation[location].some(p => p.name === employee.name && p.period === segment.period)) {
+              officeByLocation[location].push(personInfo);
+            }
           } else if (segment.status === 'home') {
             home++;
-            homeNames.push(employee.name);
+            const personInfo: PersonInfo = {
+              name: employee.name,
+              period: segment.period,
+              reason: segment.reason
+            };
+            if (!homeNames.some(p => p.name === employee.name && p.period === segment.period)) {
+              homeNames.push(personInfo);
+            }
           } else if (segment.status === 'absent') {
             absent++;
-            absentNames.push(employee.name);
+            const personInfo: PersonInfo = {
+              name: employee.name,
+              period: segment.period,
+              reason: segment.reason
+            };
+            if (!absentNames.some(p => p.name === employee.name && p.period === segment.period)) {
+              absentNames.push(personInfo);
+            }
           }
         });
       }
