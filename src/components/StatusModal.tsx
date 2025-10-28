@@ -26,13 +26,6 @@ interface StatusModalProps {
 
 const statusOptions = [
   {
-    type: 'unset' as StatusType,
-    icon: Building2,
-    label: 'Välj Plats',
-    bgClass: 'bg-muted/30 hover:bg-muted/50 border-muted/50',
-    activeClass: 'bg-muted/60 border-muted shadow-md',
-  },
-  {
     type: 'office' as StatusType,
     icon: Building2,
     label: 'Kontor',
@@ -180,7 +173,7 @@ const StatusModal = ({
               
               <div className="space-y-2">
                 <Label className="text-foreground text-xs">Välj status</Label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {statusOptions.map((option) => {
                     const Icon = option.icon;
                     const isActive = segment.status === option.type;
