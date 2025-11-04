@@ -44,7 +44,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             <img 
               src={logo} 
               alt="Nordiska Brand" 
-              className="h-8 xs:h-10 w-auto object-contain"
+              className="h-12 xs:h-14 w-auto object-contain"
             />
             <div className="flex gap-1.5">
               <Button
@@ -72,13 +72,10 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
               Veckoplanering
             </h1>
             {officeResponsible && officeResponsible.length > 0 && (
-              <p className="text-sm font-medium text-foreground mt-1.5 mb-1">
+              <p className="text-sm font-medium text-foreground mt-1.5">
                 Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
               </p>
             )}
-            <p className="text-muted-foreground text-xs">
-              V{weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
-            </p>
           </div>
 
           {/* Third row: Stats + Actions */}
@@ -190,16 +187,12 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
         {/* Desktop: Single row layout */}
         <div className="hidden md:flex items-center justify-between gap-4">
           {/* Left column: logo, week info, stats */}
-          <div className="flex flex-col items-start gap-1.5">
+          <div className="flex flex-col items-start">
             <img 
               src={logo} 
               alt="Nordiska Brand" 
-              className="h-10 md:h-12 w-auto object-contain"
+              className="h-16 md:h-20 w-auto object-contain"
             />
-            
-            <p className="text-muted-foreground text-sm md:text-base">
-              Vecka {weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
-            </p>
             
             {todayStats && (
               <div className="flex gap-4 text-sm">
