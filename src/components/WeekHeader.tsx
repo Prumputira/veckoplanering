@@ -292,16 +292,11 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             )}
           </div>
           
-          {/* Center: Title, office responsible, and week navigation */}
+          {/* Center: Title and week navigation */}
           <div className="flex flex-col items-center gap-3">
             <h1 className="text-2xl md:text-3xl font-bold text-primary font-display">
               Veckoplanering
             </h1>
-            {officeResponsible && officeResponsible.length > 0 && (
-              <p className="text-base font-medium text-foreground text-center">
-                Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
-              </p>
-            )}
             <div className="flex gap-2 items-center">
               <Button
                 variant="outline"
@@ -323,8 +318,13 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             </div>
           </div>
           
-          {/* Right column: actions */}
-          <div className="flex gap-2 items-center justify-end">
+          {/* Right column: office responsible and actions */}
+          <div className="flex flex-col items-end gap-2">
+            {officeResponsible && officeResponsible.length > 0 && (
+              <p className="text-sm font-medium text-foreground text-right">
+                Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
+              </p>
+            )}
             <ScheduleChat 
               employees={employees}
               currentWeek={weekNumber}
