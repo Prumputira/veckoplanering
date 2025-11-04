@@ -157,7 +157,7 @@ const WeekTable = ({
                         className={cn(
                           "border-b border-border last:border-0",
                           isCurrentUser && "bg-accent/10",
-                          hasOfficeWeek && "border-2 border-accent bg-accent/5 shadow-md"
+                          hasOfficeWeek && "border-2 border-green-500/40 bg-green-50 dark:bg-green-950/30 shadow-md"
                         )}
                       >
                         <td 
@@ -170,7 +170,7 @@ const WeekTable = ({
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger>
-                                    <Building2 className="h-4 w-4 text-accent" />
+                                    <Building2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                                   </TooltipTrigger>
                                   <TooltipContent>
                                     <p>Kontorsvecka</p>
@@ -283,7 +283,7 @@ const WeekTable = ({
                     className={cn(
                       "border-b border-border last:border-0 p-4",
                       isCurrentUser && "bg-accent/10",
-                      hasOfficeWeek && "border-2 border-accent bg-accent/5 shadow-md"
+                      hasOfficeWeek && "border-2 border-green-500/40 bg-green-50 dark:bg-green-950/30 shadow-md"
                     )}
                   >
                     <div className="mb-3 flex items-center gap-2">
@@ -291,7 +291,7 @@ const WeekTable = ({
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Building2 className="h-5 w-5 text-accent" />
+                              <Building2 className="h-5 w-5 text-green-600 dark:text-green-400" />
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Kontorsvecka</p>
