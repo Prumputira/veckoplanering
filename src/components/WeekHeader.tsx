@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Building2, Home, Ban } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Building2, Home, Ban, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getWeekNumber, getWeekYear, formatDate, getWeekDays } from '@/utils/dateUtils';
 import WeekPicker from './WeekPicker';
@@ -6,6 +6,7 @@ import ScheduleChat from './ScheduleChat';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
 import { Employee } from '@/types/schedule';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PersonInfo {
   name: string;
@@ -27,16 +28,19 @@ interface WeekHeaderProps {
     homeNames?: PersonInfo[];
     absentNames?: PersonInfo[];
   };
+  onNavigateSettings: () => void;
+  onLogout: () => void;
 }
 
-const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeResponsible, todayStats }: WeekHeaderProps) => {
+const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeResponsible, todayStats, onNavigateSettings, onLogout }: WeekHeaderProps) => {
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
 
   return (
-    <div className="bg-gradient-to-r from-background to-background/95 border-b border-primary/10 sticky top-0 z-10 shadow-md backdrop-blur-sm">
-      <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
+    <TooltipProvider>
+      <div className="bg-gradient-to-r from-background to-background/95 border-b border-primary/10 sticky top-0 z-10 shadow-md backdrop-blur-sm">
+        <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
         {/* Mobile: Two-level header */}
         <div className="md:hidden space-y-2">
           {/* First row: Logo */}
@@ -176,11 +180,43 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                 </HoverCard>
               </div>
             )}
-            <ScheduleChat 
-              employees={employees}
-              currentWeek={weekNumber}
-              currentYear={year}
-            />
+            <div className="flex items-center gap-1.5">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={onNavigateSettings}
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Inställningar</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={onLogout}
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Logga ut</p>
+                </TooltipContent>
+              </Tooltip>
+              <ScheduleChat 
+                employees={employees}
+                currentWeek={weekNumber}
+                currentYear={year}
+              />
+            </div>
           </div>
         </div>
 
@@ -320,11 +356,43 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
           
           {/* Right column: actions and office responsible */}
           <div className="flex flex-col items-end justify-center gap-2">
-            <ScheduleChat 
-              employees={employees}
-              currentWeek={weekNumber}
-              currentYear={year}
-            />
+            <div className="flex items-center gap-1.5">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={onNavigateSettings}
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Inställningar</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={onLogout}
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Logga ut</p>
+                </TooltipContent>
+              </Tooltip>
+              <ScheduleChat 
+                employees={employees}
+                currentWeek={weekNumber}
+                currentYear={year}
+              />
+            </div>
             {officeResponsible && officeResponsible.length > 0 && (
               <div className="text-right">
                 <p className="text-sm font-medium text-foreground">
@@ -337,8 +405,9 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             )}
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 

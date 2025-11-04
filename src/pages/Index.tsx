@@ -630,27 +630,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-3 flex justify-end gap-2">
-          <Button
-            onClick={() => navigate('/settings')}
-            variant="ghost"
-            size="sm"
-            className="hover:bg-accent/10"
-          >
-            <Settings className="h-4 w-4 mr-2" />
-            Inställningar
-          </Button>
-          <Button
-            onClick={handleLogout}
-            variant="ghost"
-            size="sm"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logga ut
-          </Button>
-        </div>
-      </div>
       <WeekHeader
         currentDate={currentDate} 
         onNavigate={handleNavigate}
@@ -658,6 +637,8 @@ const Index = () => {
         employees={employees}
         officeResponsible={getOfficeResponsible()}
         todayStats={todayStats}
+        onNavigateSettings={() => navigate('/settings')}
+        onLogout={handleLogout}
       />
       
       {isMobile ? (
