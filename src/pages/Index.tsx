@@ -143,6 +143,7 @@ const Index = () => {
 
       setEmployees(sortedEmployees);
     } catch (error) {
+      console.error('Error fetching data:', error);
       toast({
         title: 'Fel',
         description: 'Kunde inte hämta data',
@@ -151,6 +152,19 @@ const Index = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Get office responsible people for current week
+  const getOfficeResponsible = (): string[] => {
+    if (!currentWeekOfficeWeeks.length) return [];
+    
+    const responsibleIds = currentWeekOfficeWeeks
+      .filter(week => week.user_id && !week.is_closed)
+      .map(week => week.user_id);
+    
+    return employees
+      .filter(emp => responsibleIds.includes(emp.id))
+      .map(emp => emp.name);
   };
 
   const fetchAdjacentWeeks = async () => {
@@ -642,6 +656,7 @@ const Index = () => {
         onNavigate={handleNavigate}
         onSelectWeek={handleSelectWeek}
         employees={employees}
+        officeResponsible={getOfficeResponsible()}
         todayStats={todayStats}
       />
       

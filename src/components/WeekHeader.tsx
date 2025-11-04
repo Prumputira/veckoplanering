@@ -18,6 +18,7 @@ interface WeekHeaderProps {
   onNavigate: (direction: 'prev' | 'next') => void;
   onSelectWeek: (date: Date) => void;
   employees: Employee[];
+  officeResponsible?: string[];
   todayStats?: {
     office: number;
     home: number;
@@ -28,7 +29,7 @@ interface WeekHeaderProps {
   };
 }
 
-const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todayStats }: WeekHeaderProps) => {
+const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeResponsible, todayStats }: WeekHeaderProps) => {
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
@@ -73,6 +74,11 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
             <p className="text-muted-foreground text-xs">
               V{weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
             </p>
+            {officeResponsible && officeResponsible.length > 0 && (
+              <p className="text-muted-foreground text-xs mt-1">
+                <span className="font-medium text-primary">Kontorsansvariga:</span> {officeResponsible.join(', ')}
+              </p>
+            )}
           </div>
 
           {/* Third row: Stats + Actions */}
@@ -194,6 +200,12 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, todaySta
             <p className="text-muted-foreground text-sm md:text-base">
               Vecka {weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
             </p>
+            
+            {officeResponsible && officeResponsible.length > 0 && (
+              <p className="text-muted-foreground text-sm">
+                <span className="font-medium text-primary">Kontorsansvariga:</span> {officeResponsible.join(', ')}
+              </p>
+            )}
             
             {todayStats && (
               <div className="flex gap-4 text-sm">
