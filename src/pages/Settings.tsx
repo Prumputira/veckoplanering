@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Lock, Building2 } from 'lucide-react';
+import { ArrowLeft, Lock, Building2, UserPlus } from 'lucide-react';
 import { z } from 'zod';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
 import { OfficeWeeksManager } from '@/components/OfficeWeeksManager';
@@ -31,6 +31,9 @@ const Settings = () => {
   const [defaultOffice, setDefaultOffice] = useState('');
   const [profileLoading, setProfileLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserPassword, setNewUserPassword] = useState('');
+  const [creatingUser, setCreatingUser] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -142,6 +145,36 @@ const Settings = () => {
     }
   };
 
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreatingUser(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-user', {
+        body: { email: newUserEmail, password: newUserPassword }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: 'Användare skapad',
+          description: `${data.user.name} (${data.user.email}) har skapats. Ett återställningsmail för lösenord har skickats.`,
+        });
+        setNewUserEmail('');
+        setNewUserPassword('');
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Fel',
+        description: error.message || 'Kunde inte skapa användare',
+        variant: 'destructive',
+      });
+    } finally {
+      setCreatingUser(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-8">
@@ -219,20 +252,72 @@ const Settings = () => {
           </Card>
 
           {isAdmin && (
-            <Card className="shadow-lg border-primary/10">
-              <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
-                <CardTitle className="flex items-center gap-2 font-display text-primary">
-                  <Building2 className="h-5 w-5 text-accent" />
-                  Kontorveckor (Admin)
-                </CardTitle>
-                <CardDescription>
-                  Hantera vilka användare som har kontorsvecka för varje vecka
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <OfficeWeeksManager />
-              </CardContent>
-            </Card>
+            <>
+              <Card className="shadow-lg border-primary/10">
+                <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+                  <CardTitle className="flex items-center gap-2 font-display text-primary">
+                    <UserPlus className="h-5 w-5 text-accent" />
+                    Skapa ny användare
+                  </CardTitle>
+                  <CardDescription>
+                    Skapa en ny användare med e-post och ett tillfälligt lösenord. Användarens namn skapas automatiskt från e-postadressen.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <form onSubmit={handleCreateUser} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="newUserEmail">E-postadress</Label>
+                      <Input
+                        id="newUserEmail"
+                        type="email"
+                        placeholder="fornamn.efternamn@nordiskabrand.se"
+                        value={newUserEmail}
+                        onChange={(e) => setNewUserEmail(e.target.value)}
+                        required
+                        disabled={creatingUser}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="newUserPassword">Tillfälligt lösenord</Label>
+                      <Input
+                        id="newUserPassword"
+                        type="password"
+                        placeholder="Ange ett tillfälligt lösenord"
+                        value={newUserPassword}
+                        onChange={(e) => setNewUserPassword(e.target.value)}
+                        required
+                        disabled={creatingUser}
+                      />
+                      <p className="text-sm text-muted-foreground">
+                        Användaren kommer få ett mail för att återställa lösenordet.
+                      </p>
+                    </div>
+                    <Button 
+                      type="submit" 
+                      disabled={creatingUser}
+                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-200"
+                    >
+                      {creatingUser ? 'Skapar...' : 'Skapa användare'}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-lg border-primary/10">
+                <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+                  <CardTitle className="flex items-center gap-2 font-display text-primary">
+                    <Building2 className="h-5 w-5 text-accent" />
+                    Kontorveckor
+                  </CardTitle>
+                  <CardDescription>
+                    Hantera vilka användare som har kontorsvecka för varje vecka
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <OfficeWeeksManager />
+                </CardContent>
+              </Card>
+            </>
           )}
 
           <Card className="shadow-lg border-primary/10">

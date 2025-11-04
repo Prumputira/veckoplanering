@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import WeekHeader from '@/components/WeekHeader';
 import WeekTable from '@/components/WeekTable';
 import EmployeeModal from '@/components/EmployeeModal';
-import AdminDashboard from '@/components/AdminDashboard';
 import { WeekCarousel } from '@/components/WeekCarousel';
 import { navigateWeek, getWeekNumber, getWeekYear, getDayKey } from '@/utils/dateUtils';
 import { Employee, DayStatus, OfficeWeek } from '@/types/schedule';
@@ -638,8 +637,7 @@ const Index = () => {
           </Button>
         </div>
       </div>
-      {isAdmin && <AdminDashboard />}
-      <WeekHeader 
+      <WeekHeader
         currentDate={currentDate} 
         onNavigate={handleNavigate}
         onSelectWeek={handleSelectWeek}
