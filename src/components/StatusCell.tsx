@@ -11,6 +11,7 @@ import {
 interface StatusCellProps {
   status: DayStatus;
   onClick: () => void;
+  isToday?: boolean;
 }
 
 const statusConfig = {
@@ -51,7 +52,7 @@ const statusConfig = {
   },
 };
 
-const StatusCell = ({ status, onClick }: StatusCellProps) => {
+const StatusCell = ({ status, onClick, isToday = false }: StatusCellProps) => {
   // If only one segment, display as before
   if (status.segments.length === 1) {
     const segment = status.segments[0];
@@ -67,11 +68,11 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
             <button
               onClick={onClick}
               className={cn(
-                'w-full h-16 rounded-lg border-2 transition-all duration-200 cursor-pointer',
+                'w-full h-16 rounded-lg transition-all duration-200 cursor-pointer',
                 'flex flex-col items-center justify-center gap-0.5',
                 config.bgClass,
-                config.borderClass,
-                'hover:shadow-md hover:scale-[1.03]'
+                'hover:shadow-md hover:scale-[1.03]',
+                isToday ? 'border-2 border-primary/50 ring-2 ring-primary/20' : cn('border-2', config.borderClass)
               )}
             >
               <Icon className={cn('h-5 w-5', config.iconClass)} />
@@ -111,9 +112,10 @@ const StatusCell = ({ status, onClick }: StatusCellProps) => {
           <button
             onClick={onClick}
             className={cn(
-              'w-full h-16 rounded-lg border-2 transition-all duration-200 cursor-pointer overflow-hidden',
+              'w-full h-16 rounded-lg transition-all duration-200 cursor-pointer overflow-hidden',
               'flex',
-              'hover:shadow-md hover:scale-[1.03]'
+              'hover:shadow-md hover:scale-[1.03]',
+              isToday ? 'border-2 border-primary/50 ring-2 ring-primary/20' : 'border-2'
             )}
           >
             {status.segments.map((segment, idx) => {

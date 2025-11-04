@@ -44,6 +44,14 @@ const WeekTable = ({
   const [hoveredEmployeeId, setHoveredEmployeeId] = useState<string | null>(null);
   const currentWeekNumber = getWeekNumber(currentDate);
   const currentYear = currentDate.getFullYear();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const isToday = (date: Date) => {
+    const checkDate = new Date(date);
+    checkDate.setHours(0, 0, 0, 0);
+    return checkDate.getTime() === today.getTime();
+  };
   
   // Create a map for quick office week lookup
   const officeWeekMap = new Map(
@@ -111,14 +119,27 @@ const WeekTable = ({
                   <th className="text-left px-3 py-1.5 font-semibold text-foreground">
                     Medarbetare
                   </th>
-                  {weekDays.map((day, index) => (
-                    <th key={index} className="text-center px-2 py-1.5 font-semibold text-foreground">
-                      <div className="flex flex-col">
-                        <span className="text-sm">{formatDayName(day)}</span>
-                        <span className="text-xs text-muted-foreground">{formatDate(day)}</span>
-                      </div>
-                    </th>
-                  ))}
+                  {weekDays.map((day, index) => {
+                    const isTodayColumn = isToday(day);
+                    return (
+                      <th 
+                        key={index} 
+                        className={cn(
+                          "text-center px-2 py-1.5 font-semibold text-foreground",
+                          isTodayColumn && "bg-primary/10 border-x-2 border-t-2 border-primary/30"
+                        )}
+                      >
+                        <div className="flex flex-col">
+                          <span className={cn("text-sm", isTodayColumn && "text-primary font-bold")}>
+                            {formatDayName(day)}
+                          </span>
+                          <span className={cn("text-xs", isTodayColumn ? "text-primary/70 font-semibold" : "text-muted-foreground")}>
+                            {formatDate(day)}
+                          </span>
+                        </div>
+                      </th>
+                    );
+                  })}
                   <th className="text-center px-2 py-1.5 font-semibold text-foreground">
                     Åtgärder
                   </th>
@@ -180,13 +201,21 @@ const WeekTable = ({
                     {weekDays.map((day, index) => {
                       const dayKey = getDayKey(day);
                       const status = employee.week[dayKey];
+                      const isTodayColumn = isToday(day);
                       return (
-                        <td key={index} className="p-1">
+                        <td 
+                          key={index} 
+                          className={cn(
+                            "p-1",
+                            isTodayColumn && "bg-primary/10 border-x-2 border-primary/30"
+                          )}
+                        >
                           <StatusCell
                             status={status}
                             onClick={() =>
                               handleCellClick(employee, dayKey, status, formatDayName(day))
                             }
+                            isToday={isTodayColumn}
                           />
                         </td>
                       );
@@ -323,28 +352,38 @@ const WeekTable = ({
                     
                     {/* Vertical list layout for better readability */}
                     <div className="space-y-2">
-                      {weekDays.map((day, index) => {
-                        const dayKey = getDayKey(day);
-                        const status = employee.week[dayKey];
-                        return (
-                          <div key={index} className="flex items-center gap-3">
-                            <div className="min-w-[90px] text-sm font-medium text-foreground">
+                    {weekDays.map((day, index) => {
+                      const dayKey = getDayKey(day);
+                      const status = employee.week[dayKey];
+                      const isTodayColumn = isToday(day);
+                      return (
+                        <div 
+                          key={index} 
+                          className={cn(
+                            "flex items-center gap-3 p-2 rounded-md",
+                            isTodayColumn && "bg-primary/10 border-2 border-primary/30"
+                          )}
+                        >
+                          <div className="min-w-[90px] text-sm font-medium">
+                            <span className={cn(isTodayColumn && "text-primary font-bold")}>
                               {formatDayName(day)}
-                              <span className="text-xs text-muted-foreground ml-1">
-                                {formatDate(day)}
-                              </span>
-                            </div>
-                            <div className="flex-1">
-                              <StatusCell
-                                status={status}
-                                onClick={() =>
-                                  handleCellClick(employee, dayKey, status, formatDayName(day))
-                                }
-                              />
-                            </div>
+                            </span>
+                            <span className={cn("text-xs ml-1", isTodayColumn ? "text-primary/70 font-semibold" : "text-muted-foreground")}>
+                              {formatDate(day)}
+                            </span>
                           </div>
-                        );
-                      })}
+                          <div className="flex-1">
+                            <StatusCell
+                              status={status}
+                              onClick={() =>
+                                handleCellClick(employee, dayKey, status, formatDayName(day))
+                              }
+                              isToday={isTodayColumn}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
                     </div>
                   </div>
                   {isCurrentUser && index < employees.length - 1 && (
