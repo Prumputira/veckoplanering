@@ -16,6 +16,7 @@ export interface OfficeWeek {
   week_number: number;
   year: number;
   user_id: string;
+  is_closed?: boolean;
   created_at?: string;
   updated_at?: string;
 }

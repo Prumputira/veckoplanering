@@ -59,6 +59,7 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          is_closed: boolean | null
           updated_at: string | null
           user_id: string
           week_number: number
@@ -67,6 +68,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string
+          is_closed?: boolean | null
           updated_at?: string | null
           user_id: string
           week_number: number
@@ -75,6 +77,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string
+          is_closed?: boolean | null
           updated_at?: string | null
           user_id?: string
           week_number?: number
