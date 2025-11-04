@@ -126,7 +126,7 @@ const WeekTable = ({
                         key={index} 
                         className={cn(
                           "text-center px-2 py-1.5 font-semibold text-foreground",
-                          isTodayColumn && "bg-primary/10 border-x-2 border-t-2 border-primary/30"
+                          isTodayColumn && "bg-primary/10"
                         )}
                       >
                         <div className="flex flex-col">
@@ -207,7 +207,7 @@ const WeekTable = ({
                           key={index} 
                           className={cn(
                             "p-1",
-                            isTodayColumn && "bg-primary/10 border-x-2 border-primary/30"
+                            isTodayColumn && "bg-primary/10"
                           )}
                         >
                           <StatusCell
@@ -361,7 +361,7 @@ const WeekTable = ({
                           key={index} 
                           className={cn(
                             "flex items-center gap-3 p-2 rounded-md",
-                            isTodayColumn && "bg-primary/10 border-2 border-primary/30"
+                            isTodayColumn && "bg-primary/10"
                           )}
                         >
                           <div className="min-w-[90px] text-sm font-medium">
