@@ -89,21 +89,23 @@ export const useOfficeWeeks = () => {
 
     if (deleteError) throw deleteError;
 
-    // If week is closed or no users selected, we're done
-    if (isClosed || userIds.length === 0) {
-      // Insert a single record marking the week as closed
-      if (isClosed) {
-        const { error: insertError } = await supabase
-          .from('office_weeks')
-          .insert({
-            week_number: weekNumber,
-            year: year,
-            user_id: userIds[0] || '00000000-0000-0000-0000-000000000000', // placeholder
-            is_closed: true,
-          });
-        
-        if (insertError) throw insertError;
-      }
+    // If week is closed, insert a record with NULL user_id
+    if (isClosed) {
+      const { error: insertError } = await supabase
+        .from('office_weeks')
+        .insert({
+          week_number: weekNumber,
+          year: year,
+          user_id: null,
+          is_closed: true,
+        });
+      
+      if (insertError) throw insertError;
+      return;
+    }
+
+    // If no users selected and week is not closed, we're done (just delete)
+    if (userIds.length === 0) {
       return;
     }
 

@@ -61,7 +61,7 @@ export type Database = {
           id: string
           is_closed: boolean | null
           updated_at: string | null
-          user_id: string
+          user_id: string | null
           week_number: number
           year: number
         }
@@ -70,7 +70,7 @@ export type Database = {
           id?: string
           is_closed?: boolean | null
           updated_at?: string | null
-          user_id: string
+          user_id?: string | null
           week_number: number
           year: number
         }
@@ -79,7 +79,7 @@ export type Database = {
           id?: string
           is_closed?: boolean | null
           updated_at?: string | null
-          user_id?: string
+          user_id?: string | null
           week_number?: number
           year?: number
         }
