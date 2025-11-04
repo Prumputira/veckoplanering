@@ -256,13 +256,6 @@ const WeekTable = ({
                       )}
                     </td>
                   </tr>
-                  {isCurrentUser && index < employees.length - 1 && (
-                    <tr>
-                      <td colSpan={7} className="p-0">
-                        <div className="border-t-2 border-accent/30 my-1"></div>
-                      </td>
-                    </tr>
-                  )}
                 </>
                   );
                 })}
@@ -386,9 +379,6 @@ const WeekTable = ({
                     })}
                     </div>
                   </div>
-                  {isCurrentUser && index < employees.length - 1 && (
-                    <div className="border-t-2 border-accent/30 my-2 mx-4"></div>
-                  )}
                 </>
               );
             })}
