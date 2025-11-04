@@ -73,7 +73,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             </h1>
             {officeResponsible && officeResponsible.length > 0 && (
               <p className="text-sm font-medium text-foreground mt-1.5 mb-1">
-                Kontorsansvariga: <span className="text-primary">{officeResponsible.join(', ')}</span>
+                Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
               </p>
             )}
             <p className="text-muted-foreground text-xs">
@@ -306,7 +306,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             </h1>
             {officeResponsible && officeResponsible.length > 0 && (
               <p className="text-base font-medium text-foreground">
-                Kontorsansvariga: <span className="text-primary">{officeResponsible.join(', ')}</span>
+                Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
               </p>
             )}
           </div>
