@@ -39,35 +39,17 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
       <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 md:py-4">
         {/* Mobile: Two-level header */}
         <div className="md:hidden space-y-3">
-          {/* First row: Logo + Navigation */}
-          <div className="flex items-center justify-between">
+          {/* First row: Logo */}
+          <div className="flex items-center justify-center">
             <img 
               src={logo} 
               alt="Nordiska Brand" 
               className="h-12 xs:h-14 w-auto object-contain"
             />
-            <div className="flex gap-1.5">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => onNavigate('prev')}
-                className="h-9 w-9 hover:bg-accent hover:text-accent-foreground hover:border-accent"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => onNavigate('next')}
-                className="h-9 w-9 hover:bg-accent hover:text-accent-foreground hover:border-accent"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
           </div>
 
           {/* Second row: Title + Week info */}
-          <div>
+          <div className="text-center">
             <h1 className="text-lg font-bold text-primary font-display">
               Veckoplanering
             </h1>
@@ -78,7 +60,28 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             )}
           </div>
 
-          {/* Third row: Stats + Actions */}
+          {/* Third row: Week navigation */}
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => onNavigate('prev')}
+              className="h-9 w-9 hover:bg-accent hover:text-accent-foreground hover:border-accent"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => onNavigate('next')}
+              className="h-9 w-9 hover:bg-accent hover:text-accent-foreground hover:border-accent"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* Fourth row: Stats + Actions */}
           <div className="flex items-center justify-between gap-2">
             {todayStats && (
               <div className="flex gap-3 text-xs">
@@ -173,20 +176,17 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                 </HoverCard>
               </div>
             )}
-            <div className="flex gap-1.5">
-              <ScheduleChat 
-                employees={employees}
-                currentWeek={weekNumber}
-                currentYear={year}
-              />
-              <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
-            </div>
+            <ScheduleChat 
+              employees={employees}
+              currentWeek={weekNumber}
+              currentYear={year}
+            />
           </div>
         </div>
 
         {/* Desktop: Single row layout */}
         <div className="hidden md:flex items-center justify-between gap-4">
-          {/* Left column: logo, week info, stats */}
+          {/* Left column: logo and stats */}
           <div className="flex flex-col items-start">
             <img 
               src={logo} 
@@ -195,7 +195,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             />
             
             {todayStats && (
-              <div className="flex gap-4 text-sm">
+              <div className="flex gap-4 text-sm mt-3">
                 <HoverCard>
                   <HoverCardTrigger asChild>
                     <div className="flex items-center gap-1.5 text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
@@ -292,8 +292,8 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             )}
           </div>
           
-          {/* Center: Title and office responsible */}
-          <div className="flex flex-col items-center gap-2">
+          {/* Center: Title, office responsible, and week navigation */}
+          <div className="flex flex-col items-center gap-3">
             <h1 className="text-2xl md:text-3xl font-bold text-primary font-display">
               Veckoplanering
             </h1>
@@ -302,17 +302,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                 Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
               </p>
             )}
-          </div>
-          
-          {/* Right column: actions */}
-          <div className="flex gap-2 items-center">
-            <ScheduleChat 
-              employees={employees}
-              currentWeek={weekNumber}
-              currentYear={year}
-            />
-            <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <Button
                 variant="outline"
                 size="icon"
@@ -321,6 +311,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
+              <WeekPicker currentDate={currentDate} onSelectWeek={onSelectWeek} />
               <Button
                 variant="outline"
                 size="icon"
@@ -330,6 +321,15 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
+          </div>
+          
+          {/* Right column: actions */}
+          <div className="flex gap-2 items-center">
+            <ScheduleChat 
+              employees={employees}
+              currentWeek={weekNumber}
+              currentYear={year}
+            />
           </div>
         </div>
       </div>
