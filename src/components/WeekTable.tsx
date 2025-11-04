@@ -183,7 +183,6 @@ const WeekTable = ({
                               isCurrentUser ? "text-accent font-semibold" : "text-foreground"
                             )}>
                               {employee.name}
-                              {isCurrentUser && <span className="ml-2 text-xs text-accent/70">(Du)</span>}
                             </div>
                         {isCurrentUser && (
                           <button
@@ -297,7 +296,6 @@ const WeekTable = ({
                         isCurrentUser ? "text-accent" : "text-foreground"
                       )}>
                         {employee.name}
-                        {isCurrentUser && <span className="ml-2 text-xs text-accent/70 font-normal">(Du)</span>}
                       </div>
                       {isCurrentUser && (
                         <>
