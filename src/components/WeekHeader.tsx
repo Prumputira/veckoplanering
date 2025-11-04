@@ -71,14 +71,14 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             <h1 className="text-lg font-bold text-primary font-display">
               Veckoplanering
             </h1>
+            {officeResponsible && officeResponsible.length > 0 && (
+              <p className="text-sm font-medium text-foreground mt-1.5 mb-1">
+                Kontorsansvariga: <span className="text-primary">{officeResponsible.join(', ')}</span>
+              </p>
+            )}
             <p className="text-muted-foreground text-xs">
               V{weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
             </p>
-            {officeResponsible && officeResponsible.length > 0 && (
-              <p className="text-muted-foreground text-xs mt-1">
-                <span className="font-medium text-primary">Kontorsansvariga:</span> {officeResponsible.join(', ')}
-              </p>
-            )}
           </div>
 
           {/* Third row: Stats + Actions */}
@@ -201,12 +201,6 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
               Vecka {weekNumber}, {year} • {formatDate(weekDays[0])} - {formatDate(weekDays[4])}
             </p>
             
-            {officeResponsible && officeResponsible.length > 0 && (
-              <p className="text-muted-foreground text-sm">
-                <span className="font-medium text-primary">Kontorsansvariga:</span> {officeResponsible.join(', ')}
-              </p>
-            )}
-            
             {todayStats && (
               <div className="flex gap-4 text-sm">
                 <HoverCard>
@@ -305,10 +299,17 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             )}
           </div>
           
-          {/* Center: Title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-primary font-display">
-            Veckoplanering
-          </h1>
+          {/* Center: Title and office responsible */}
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-primary font-display">
+              Veckoplanering
+            </h1>
+            {officeResponsible && officeResponsible.length > 0 && (
+              <p className="text-base font-medium text-foreground">
+                Kontorsansvariga: <span className="text-primary">{officeResponsible.join(', ')}</span>
+              </p>
+            )}
+          </div>
           
           {/* Right column: actions */}
           <div className="flex gap-2 items-center">
