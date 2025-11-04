@@ -39,7 +39,16 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
       <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
         {/* Mobile: Two-level header */}
         <div className="md:hidden space-y-2">
-          {/* First row: Title + Week info */}
+          {/* First row: Logo */}
+          <div className="flex items-center justify-center">
+            <img 
+              src={logo} 
+              alt="Nordiska Brand" 
+              className="h-10 xs:h-12 w-auto object-contain"
+            />
+          </div>
+
+          {/* Second row: Title + Week info */}
           <div className="text-center">
             <h1 className="text-base font-bold text-primary font-display">
               Veckoplanering
@@ -49,15 +58,6 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                 Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
               </p>
             )}
-          </div>
-
-          {/* Second row: Logo */}
-          <div className="flex items-center justify-center">
-            <img 
-              src={logo} 
-              alt="Nordiska Brand" 
-              className="h-10 xs:h-12 w-auto object-contain"
-            />
           </div>
 
           {/* Third row: Week navigation */}
@@ -186,11 +186,13 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
 
         {/* Desktop: Single row layout */}
         <div className="hidden md:grid md:grid-cols-3 gap-3 items-center">
-          {/* Left column: title and stats */}
+          {/* Left column: logo and stats */}
           <div className="flex flex-col items-start justify-center">
-            <h1 className="text-xl font-bold text-primary font-display mb-2">
-              Veckoplanering
-            </h1>
+            <img 
+              src={logo} 
+              alt="Nordiska Brand" 
+              className="h-14 w-auto object-contain mb-2"
+            />
             
             {todayStats && (
               <div className="flex gap-3 text-sm">
@@ -290,13 +292,11 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             )}
           </div>
           
-          {/* Center: Logo and week navigation */}
+          {/* Center: Title and week navigation */}
           <div className="flex flex-col items-center justify-center gap-2">
-            <img 
-              src={logo} 
-              alt="Nordiska Brand" 
-              className="h-14 w-auto object-contain"
-            />
+            <h1 className="text-xl font-bold text-primary font-display">
+              Veckoplanering
+            </h1>
             <div className="flex gap-1.5 items-center">
               <Button
                 variant="outline"
