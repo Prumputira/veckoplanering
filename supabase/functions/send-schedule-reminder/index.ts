@@ -10,6 +10,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Helper function to add delay for rate limiting (Resend free tier: 2 emails/second)
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Helper function to send email via Resend API
 async function sendEmail(to: string, subject: string, html: string) {
   const response = await fetch('https://api.resend.com/emails', {
@@ -85,7 +90,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     let emailsSent = 0;
     let emailsFailed = 0;
+    let emailsSkipped = 0;
     const errors: string[] = [];
+    
+    console.log(`Starting to process ${profiles?.length || 0} users at ${new Date().toISOString()}`);
 
     // Check each user and send reminder if needed
     for (const profile of profiles || []) {
@@ -137,8 +145,11 @@ const handler = async (req: Request): Promise<Response> => {
               `Påminnelse: Fyll i din närvaro för vecka ${nextWeek.week}`,
               html
             );
-            console.log(`Successfully sent reminder to ${profile.email}`);
+            console.log(`[${new Date().toISOString()}] Successfully sent reminder to ${profile.email}`);
             emailsSent++;
+            
+            // Rate limiting: Wait 500ms between emails to respect Resend free tier (2 emails/second)
+            await sleep(500);
           } catch (emailError: any) {
             console.error(`Failed to send email to ${profile.email}:`, emailError);
             emailsFailed++;
@@ -146,6 +157,7 @@ const handler = async (req: Request): Promise<Response> => {
           }
         } else {
           console.log(`User ${profile.email} has already filled in week ${nextWeek.week}`);
+          emailsSkipped++;
         }
       } catch (error: any) {
         console.error(`Error processing user ${profile.email}:`, error);
@@ -160,7 +172,9 @@ const handler = async (req: Request): Promise<Response> => {
       totalUsers: profiles?.length || 0,
       emailsSent,
       emailsFailed,
+      emailsSkipped,
       errors: errors.length > 0 ? errors : undefined,
+      completedAt: new Date().toISOString(),
     };
 
     console.log("Reminder job completed:", result);
