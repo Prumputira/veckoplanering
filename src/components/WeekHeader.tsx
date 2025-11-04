@@ -298,7 +298,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
               Veckoplanering
             </h1>
             {officeResponsible && officeResponsible.length > 0 && (
-              <p className="text-base font-medium text-foreground">
+              <p className="text-base font-medium text-foreground text-center">
                 Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
               </p>
             )}
