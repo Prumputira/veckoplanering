@@ -36,37 +36,37 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
 
   return (
     <div className="bg-gradient-to-r from-background to-background/95 border-b border-primary/10 sticky top-0 z-10 shadow-md backdrop-blur-sm">
-      <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 md:py-4">
+      <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
         {/* Mobile: Two-level header */}
-        <div className="md:hidden space-y-3">
+        <div className="md:hidden space-y-2">
           {/* First row: Logo */}
           <div className="flex items-center justify-center">
             <img 
               src={logo} 
               alt="Nordiska Brand" 
-              className="h-12 xs:h-14 w-auto object-contain"
+              className="h-10 xs:h-12 w-auto object-contain"
             />
           </div>
 
           {/* Second row: Title + Week info */}
           <div className="text-center">
-            <h1 className="text-lg font-bold text-primary font-display">
+            <h1 className="text-base font-bold text-primary font-display">
               Veckoplanering
             </h1>
             {officeResponsible && officeResponsible.length > 0 && (
-              <p className="text-sm font-medium text-foreground mt-1.5">
+              <p className="text-xs font-medium text-foreground mt-1">
                 Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
               </p>
             )}
           </div>
 
           {/* Third row: Week navigation */}
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-1.5">
             <Button
               variant="outline"
               size="icon"
               onClick={() => onNavigate('prev')}
-              className="h-9 w-9 hover:bg-accent hover:text-accent-foreground hover:border-accent"
+              className="h-8 w-8 hover:bg-accent hover:text-accent-foreground hover:border-accent"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -75,7 +75,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
               variant="outline"
               size="icon"
               onClick={() => onNavigate('next')}
-              className="h-9 w-9 hover:bg-accent hover:text-accent-foreground hover:border-accent"
+              className="h-8 w-8 hover:bg-accent hover:text-accent-foreground hover:border-accent"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
@@ -84,7 +84,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
           {/* Fourth row: Stats + Actions */}
           <div className="flex items-center justify-between gap-2">
             {todayStats && (
-              <div className="flex gap-3 text-xs">
+              <div className="flex gap-2 text-xs">
                 <HoverCard>
                   <HoverCardTrigger asChild>
                     <div className="flex items-center gap-1 text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
@@ -185,17 +185,17 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
         </div>
 
         {/* Desktop: Single row layout */}
-        <div className="hidden md:grid md:grid-cols-3 gap-4 items-start">
+        <div className="hidden md:grid md:grid-cols-3 gap-3 items-center">
           {/* Left column: logo and stats */}
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start justify-center">
             <img 
               src={logo} 
               alt="Nordiska Brand" 
-              className="h-16 md:h-20 w-auto object-contain"
+              className="h-14 w-auto object-contain mb-2"
             />
             
             {todayStats && (
-              <div className="flex gap-4 text-sm mt-3">
+              <div className="flex gap-3 text-sm">
                 <HoverCard>
                   <HoverCardTrigger asChild>
                     <div className="flex items-center gap-1.5 text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
@@ -293,11 +293,11 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
           </div>
           
           {/* Center: Title and week navigation */}
-          <div className="flex flex-col items-center gap-3">
-            <h1 className="text-2xl md:text-3xl font-bold text-primary font-display">
+          <div className="flex flex-col items-center justify-center gap-2">
+            <h1 className="text-xl font-bold text-primary font-display">
               Veckoplanering
             </h1>
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-1.5 items-center">
               <Button
                 variant="outline"
                 size="icon"
@@ -319,7 +319,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
           </div>
           
           {/* Right column: actions and office responsible */}
-          <div className="flex flex-col items-end gap-3">
+          <div className="flex flex-col items-end justify-center gap-2">
             <ScheduleChat 
               employees={employees}
               currentWeek={weekNumber}
@@ -327,10 +327,10 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             />
             {officeResponsible && officeResponsible.length > 0 && (
               <div className="text-right">
-                <p className="text-sm font-medium text-foreground">
+                <p className="text-xs font-medium text-foreground">
                   Kontorsansvariga vecka {weekNumber}:
                 </p>
-                <p className="text-sm font-medium text-primary mt-0.5">
+                <p className="text-xs font-medium text-primary mt-0.5">
                   {officeResponsible.join(', ')}
                 </p>
               </div>
