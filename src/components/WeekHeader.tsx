@@ -327,10 +327,10 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             />
             {officeResponsible && officeResponsible.length > 0 && (
               <div className="text-right">
-                <p className="text-xs font-medium text-foreground">
+                <p className="text-sm font-medium text-foreground">
                   Kontorsansvariga vecka {weekNumber}:
                 </p>
-                <p className="text-xs font-medium text-primary mt-0.5">
+                <p className="text-sm font-medium text-primary mt-0.5">
                   {officeResponsible.join(', ')}
                 </p>
               </div>
