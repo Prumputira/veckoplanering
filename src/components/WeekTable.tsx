@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Employee, DayStatus } from '@/types/schedule';
-import { getWeekDays, formatDate, formatDayName, getDayKey } from '@/utils/dateUtils';
+import { Employee, DayStatus, OfficeWeek } from '@/types/schedule';
+import { getWeekDays, formatDate, formatDayName, getDayKey, getWeekNumber } from '@/utils/dateUtils';
 import StatusCell from './StatusCell';
 import StatusModal from './StatusModal';
-import { Pencil, Copy, Clipboard, Trash2, MoreVertical } from 'lucide-react';
+import { Pencil, Copy, Clipboard, Trash2, MoreVertical, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +25,7 @@ interface WeekTableProps {
   onClearWeek: (employeeId: string) => void;
   hasCopiedWeek: boolean;
   currentUserId: string | null;
+  officeWeeks?: OfficeWeek[];
 }
 
 const WeekTable = ({ 
@@ -35,10 +37,18 @@ const WeekTable = ({
   onPasteWeek, 
   onClearWeek,
   hasCopiedWeek,
-  currentUserId 
+  currentUserId,
+  officeWeeks = []
 }: WeekTableProps) => {
   const weekDays = getWeekDays(currentDate);
   const [hoveredEmployeeId, setHoveredEmployeeId] = useState<string | null>(null);
+  const currentWeekNumber = getWeekNumber(currentDate);
+  const currentYear = currentDate.getFullYear();
+  
+  // Create a map for quick office week lookup
+  const officeWeekMap = new Map(
+    officeWeeks.map(ow => [`${ow.user_id}-${ow.week_number}-${ow.year}`, true])
+  );
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     employeeId: string;
@@ -117,13 +127,16 @@ const WeekTable = ({
               <tbody>
                 {employees.map((employee, index) => {
                   const isCurrentUser = employee.id === currentUserId;
+                  const hasOfficeWeek = officeWeekMap.has(`${employee.id}-${currentWeekNumber}-${currentYear}`);
+                  
                   return (
                     <>
                       <tr 
                         key={employee.id} 
                         className={cn(
                           "border-b border-border last:border-0",
-                          isCurrentUser && "bg-accent/10"
+                          isCurrentUser && "bg-accent/10",
+                          hasOfficeWeek && "border-2 border-accent bg-accent/5 shadow-md"
                         )}
                       >
                         <td 
@@ -132,6 +145,18 @@ const WeekTable = ({
                           onMouseLeave={() => setHoveredEmployeeId(null)}
                         >
                           <div className="flex items-center gap-2 group">
+                            {hasOfficeWeek && (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <Building2 className="h-4 w-4 text-accent" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Kontorsvecka</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
                             <div className={cn(
                               "font-medium text-sm",
                               isCurrentUser ? "text-accent font-semibold" : "text-foreground"
@@ -220,16 +245,31 @@ const WeekTable = ({
           <div className="md:hidden">
             {employees.map((employee, index) => {
               const isCurrentUser = employee.id === currentUserId;
+              const hasOfficeWeek = officeWeekMap.has(`${employee.id}-${currentWeekNumber}-${currentYear}`);
+              
               return (
                 <>
                   <div 
                     key={employee.id} 
                     className={cn(
                       "border-b border-border last:border-0 p-4",
-                      isCurrentUser && "bg-accent/10"
+                      isCurrentUser && "bg-accent/10",
+                      hasOfficeWeek && "border-2 border-accent bg-accent/5 shadow-md"
                     )}
                   >
                     <div className="mb-3 flex items-center gap-2">
+                      {hasOfficeWeek && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Building2 className="h-5 w-5 text-accent" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Kontorsvecka</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
                       <div className={cn(
                         "font-semibold flex-1 text-base",
                         isCurrentUser ? "text-accent" : "text-foreground"

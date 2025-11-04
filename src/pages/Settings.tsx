@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Lock, Building2 } from 'lucide-react';
 import { z } from 'zod';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
+import { OfficeWeeksManager } from '@/components/OfficeWeeksManager';
 
 const offices = ['Solna', 'Sundsvall', 'Enköping', 'Nyköping'];
 
@@ -29,6 +30,7 @@ const Settings = () => {
   const [loading, setLoading] = useState(false);
   const [defaultOffice, setDefaultOffice] = useState('');
   const [profileLoading, setProfileLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -50,6 +52,16 @@ const Settings = () => {
       if (profile) {
         setDefaultOffice(profile.default_office || '');
       }
+
+      // Check if user is admin
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      setIsAdmin(!!roleData);
       setProfileLoading(false);
     });
 
@@ -205,6 +217,23 @@ const Settings = () => {
               )}
             </CardContent>
           </Card>
+
+          {isAdmin && (
+            <Card className="shadow-lg border-primary/10">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+                <CardTitle className="flex items-center gap-2 font-display text-primary">
+                  <Building2 className="h-5 w-5 text-accent" />
+                  Kontorveckor (Admin)
+                </CardTitle>
+                <CardDescription>
+                  Hantera vilka användare som har kontorsvecka för varje vecka
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <OfficeWeeksManager />
+              </CardContent>
+            </Card>
+          )}
 
           <Card className="shadow-lg border-primary/10">
             <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">

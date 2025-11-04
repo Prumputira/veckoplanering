@@ -6,7 +6,7 @@ import {
   type CarouselApi,
 } from '@/components/ui/carousel';
 import WeekTable from '@/components/WeekTable';
-import { Employee, DayStatus } from '@/types/schedule';
+import { Employee, DayStatus, OfficeWeek } from '@/types/schedule';
 import { getWeekNumber, getWeekYear } from '@/utils/dateUtils';
 
 interface WeekCarouselProps {
@@ -24,6 +24,9 @@ interface WeekCarouselProps {
   onClearWeek: (employeeId: string) => void;
   hasCopiedWeek: boolean;
   currentUserId: string | null;
+  prevWeekOfficeWeeks?: OfficeWeek[];
+  currentWeekOfficeWeeks?: OfficeWeek[];
+  nextWeekOfficeWeeks?: OfficeWeek[];
 }
 
 export function WeekCarousel({
@@ -41,6 +44,9 @@ export function WeekCarousel({
   onClearWeek,
   hasCopiedWeek,
   currentUserId,
+  prevWeekOfficeWeeks = [],
+  currentWeekOfficeWeeks = [],
+  nextWeekOfficeWeeks = [],
 }: WeekCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -100,6 +106,7 @@ export function WeekCarousel({
                 onClearWeek={onClearWeek}
                 hasCopiedWeek={hasCopiedWeek}
                 currentUserId={currentUserId}
+                officeWeeks={prevWeekOfficeWeeks}
               />
             </div>
           </CarouselItem>
@@ -119,6 +126,7 @@ export function WeekCarousel({
                 onClearWeek={onClearWeek}
                 hasCopiedWeek={hasCopiedWeek}
                 currentUserId={currentUserId}
+                officeWeeks={currentWeekOfficeWeeks}
               />
             </div>
           </CarouselItem>
@@ -143,6 +151,7 @@ export function WeekCarousel({
                 onClearWeek={onClearWeek}
                 hasCopiedWeek={hasCopiedWeek}
                 currentUserId={currentUserId}
+                officeWeeks={nextWeekOfficeWeeks}
               />
             </div>
           </CarouselItem>

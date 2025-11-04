@@ -11,12 +11,22 @@ export interface DayStatus {
   segments: StatusSegment[];
 }
 
+export interface OfficeWeek {
+  id: string;
+  week_number: number;
+  year: number;
+  user_id: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface Employee {
   id: string;
   name: string;
   week: {
     [key: string]: DayStatus; // mon, tue, wed, thu, fri
   };
+  hasOfficeWeek?: boolean;
 }
 
 export interface WeekData {

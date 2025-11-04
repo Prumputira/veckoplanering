@@ -6,7 +6,7 @@ import EmployeeModal from '@/components/EmployeeModal';
 import AdminDashboard from '@/components/AdminDashboard';
 import { WeekCarousel } from '@/components/WeekCarousel';
 import { navigateWeek, getWeekNumber, getWeekYear, getDayKey } from '@/utils/dateUtils';
-import { Employee, DayStatus } from '@/types/schedule';
+import { Employee, DayStatus, OfficeWeek } from '@/types/schedule';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useSwipe } from '@/hooks/use-swipe';
@@ -20,6 +20,9 @@ const Index = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [prevWeekEmployees, setPrevWeekEmployees] = useState<Employee[]>([]);
   const [nextWeekEmployees, setNextWeekEmployees] = useState<Employee[]>([]);
+  const [currentWeekOfficeWeeks, setCurrentWeekOfficeWeeks] = useState<OfficeWeek[]>([]);
+  const [prevWeekOfficeWeeks, setPrevWeekOfficeWeeks] = useState<OfficeWeek[]>([]);
+  const [nextWeekOfficeWeeks, setNextWeekOfficeWeeks] = useState<OfficeWeek[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModalState, setEditModalState] = useState<{ isOpen: boolean; employeeId: string; currentName: string } | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -97,6 +100,15 @@ const Index = () => {
 
       if (schedulesError) throw schedulesError;
 
+      // Fetch office weeks for current week
+      const { data: officeWeeksData } = await supabase
+        .from('office_weeks')
+        .select('*')
+        .eq('week_number', weekNumber)
+        .eq('year', year);
+
+      setCurrentWeekOfficeWeeks(officeWeeksData || []);
+
       // Build schedules map using user_id
       const schedulesMap = new Map<string, Map<string, DayStatus>>();
       schedulesData?.forEach((schedule) => {
@@ -164,6 +176,15 @@ const Index = () => {
         .eq('week_number', prevWeekNumber)
         .eq('year', prevYear);
 
+      // Fetch office weeks for prev week
+      const { data: prevOfficeWeeks } = await supabase
+        .from('office_weeks')
+        .select('*')
+        .eq('week_number', prevWeekNumber)
+        .eq('year', prevYear);
+
+      setPrevWeekOfficeWeeks(prevOfficeWeeks || []);
+
       const prevSchedulesMap = new Map<string, Map<string, DayStatus>>();
       prevSchedules?.forEach(schedule => {
         if (!prevSchedulesMap.has(schedule.user_id)) {
@@ -201,6 +222,15 @@ const Index = () => {
         .select('*')
         .eq('week_number', nextWeekNumber)
         .eq('year', nextYear);
+
+      // Fetch office weeks for next week
+      const { data: nextOfficeWeeks } = await supabase
+        .from('office_weeks')
+        .select('*')
+        .eq('week_number', nextWeekNumber)
+        .eq('year', nextYear);
+
+      setNextWeekOfficeWeeks(nextOfficeWeeks || []);
 
       const nextSchedulesMap = new Map<string, Map<string, DayStatus>>();
       nextSchedules?.forEach(schedule => {
@@ -637,6 +667,7 @@ const Index = () => {
             onClearWeek={handleClearWeek}
             hasCopiedWeek={copiedWeek !== null}
             currentUserId={user?.id || null}
+            officeWeeks={currentWeekOfficeWeeks}
           />
         </div>
       ) : (
@@ -657,6 +688,9 @@ const Index = () => {
           onClearWeek={handleClearWeek}
           hasCopiedWeek={copiedWeek !== null}
           currentUserId={user?.id || null}
+          prevWeekOfficeWeeks={prevWeekOfficeWeeks}
+          currentWeekOfficeWeeks={currentWeekOfficeWeeks}
+          nextWeekOfficeWeeks={nextWeekOfficeWeeks}
         />
       )}
       {editModalState && (

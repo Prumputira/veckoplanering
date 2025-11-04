@@ -55,6 +55,41 @@ export type Database = {
           },
         ]
       }
+      office_weeks: {
+        Row: {
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+          week_number: number
+          year: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+          week_number: number
+          year: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+          week_number?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "office_weeks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
