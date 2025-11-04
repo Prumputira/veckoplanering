@@ -185,7 +185,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
         </div>
 
         {/* Desktop: Single row layout */}
-        <div className="hidden md:flex items-center justify-between gap-4">
+        <div className="hidden md:grid md:grid-cols-3 gap-4 items-start">
           {/* Left column: logo and stats */}
           <div className="flex flex-col items-start">
             <img 
@@ -324,7 +324,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
           </div>
           
           {/* Right column: actions */}
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center justify-end">
             <ScheduleChat 
               employees={employees}
               currentWeek={weekNumber}
