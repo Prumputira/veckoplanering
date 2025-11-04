@@ -318,18 +318,23 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             </div>
           </div>
           
-          {/* Right column: office responsible and actions */}
-          <div className="flex flex-col items-end gap-2">
-            {officeResponsible && officeResponsible.length > 0 && (
-              <p className="text-sm font-medium text-foreground text-right">
-                Kontorsansvariga vecka {weekNumber}: <span className="text-primary">{officeResponsible.join(', ')}</span>
-              </p>
-            )}
+          {/* Right column: actions and office responsible */}
+          <div className="flex flex-col items-end gap-3">
             <ScheduleChat 
               employees={employees}
               currentWeek={weekNumber}
               currentYear={year}
             />
+            {officeResponsible && officeResponsible.length > 0 && (
+              <div className="text-right">
+                <p className="text-sm font-medium text-foreground">
+                  Kontorsansvariga vecka {weekNumber}:
+                </p>
+                <p className="text-sm font-medium text-primary mt-0.5">
+                  {officeResponsible.join(', ')}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
