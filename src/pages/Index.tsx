@@ -4,6 +4,7 @@ import WeekHeader from '@/components/WeekHeader';
 import WeekTable from '@/components/WeekTable';
 import EmployeeModal from '@/components/EmployeeModal';
 import { WeekCarousel } from '@/components/WeekCarousel';
+import { OfficeWeekReminder } from '@/components/OfficeWeekReminder';
 import { navigateWeek, getWeekNumber, getWeekYear, getDayKey } from '@/utils/dateUtils';
 import { Employee, DayStatus, OfficeWeek } from '@/types/schedule';
 import { supabase } from '@/integrations/supabase/client';
@@ -630,6 +631,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <OfficeWeekReminder userId={user?.id || null} />
       <WeekHeader
         currentDate={currentDate} 
         onNavigate={handleNavigate}
