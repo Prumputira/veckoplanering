@@ -23,12 +23,6 @@ export const OfficeWeekReminder = ({ userId }: OfficeWeekReminderProps) => {
     const checkOfficeWeek = async () => {
       if (!userId) return;
 
-      // Check if we've already shown the reminder this session
-      const sessionKey = `office-week-reminder-shown-${userId}`;
-      const alreadyShown = sessionStorage.getItem(sessionKey);
-      
-      if (alreadyShown) return;
-
       const currentDate = new Date();
       const currentWeek = getWeekNumber(currentDate);
       const currentYear = getWeekYear(currentDate);
@@ -41,8 +35,6 @@ export const OfficeWeekReminder = ({ userId }: OfficeWeekReminderProps) => {
 
         if (hasOfficeWeek) {
           setShowReminder(true);
-          // Mark as shown for this session
-          sessionStorage.setItem(sessionKey, 'true');
           // Trigger confetti
           fireConfetti();
         }
