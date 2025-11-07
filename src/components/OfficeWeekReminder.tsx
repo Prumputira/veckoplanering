@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import {
   Dialog,
@@ -18,10 +18,12 @@ interface OfficeWeekReminderProps {
 export const OfficeWeekReminder = ({ userId }: OfficeWeekReminderProps) => {
   const [showReminder, setShowReminder] = useState(false);
   const { getOfficeWeeksForUser } = useOfficeWeeks();
+  const hasCheckedRef = useRef(false);
 
   useEffect(() => {
     const checkOfficeWeek = async () => {
-      if (!userId) return;
+      if (!userId || hasCheckedRef.current) return;
+      hasCheckedRef.current = true;
 
       const currentDate = new Date();
       const currentWeek = getWeekNumber(currentDate);
