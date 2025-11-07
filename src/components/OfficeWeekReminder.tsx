@@ -95,7 +95,7 @@ export const OfficeWeekReminder = ({ userId }: OfficeWeekReminderProps) => {
               Du har vunnit veckans kontorsvecka!
             </p>
             <p className="text-muted-foreground">
-              Ja, du hörde rätt. Just DU får äran att vara på kontoret denna veckan. 
+              Ja, du hörde rätt. Just DU får äran att ha kontorsvecka denna veckan. 
               Lycka till! ☕️
             </p>
           </DialogDescription>
