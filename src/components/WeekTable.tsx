@@ -26,6 +26,7 @@ interface WeekTableProps {
   hasCopiedWeek: boolean;
   currentUserId: string | null;
   officeWeeks?: OfficeWeek[];
+  isAdmin?: boolean;
 }
 
 const WeekTable = ({ 
@@ -38,7 +39,8 @@ const WeekTable = ({
   onClearWeek,
   hasCopiedWeek,
   currentUserId,
-  officeWeeks = []
+  officeWeeks = [],
+  isAdmin = false
 }: WeekTableProps) => {
   const weekDays = getWeekDays(currentDate);
   const [hoveredEmployeeId, setHoveredEmployeeId] = useState<string | null>(null);
@@ -73,8 +75,8 @@ const WeekTable = ({
     currentStatus: DayStatus,
     dayName: string
   ) => {
-    // Only allow editing own cells
-    if (employee.id !== currentUserId) {
+    // Allow editing own cells or all cells if admin
+    if (employee.id !== currentUserId && !isAdmin) {
       toast({
         title: "Inte tillåtet",
         description: "Du kan bara redigera dina egna celler",
