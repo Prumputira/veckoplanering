@@ -664,6 +664,7 @@ const Index = () => {
             hasCopiedWeek={copiedWeek !== null}
             currentUserId={user?.id || null}
             officeWeeks={currentWeekOfficeWeeks}
+            isAdmin={isAdmin}
           />
         </div>
       ) : (
@@ -687,6 +688,7 @@ const Index = () => {
           prevWeekOfficeWeeks={prevWeekOfficeWeeks}
           currentWeekOfficeWeeks={currentWeekOfficeWeeks}
           nextWeekOfficeWeeks={nextWeekOfficeWeeks}
+          isAdmin={isAdmin}
         />
       )}
       {editModalState && (

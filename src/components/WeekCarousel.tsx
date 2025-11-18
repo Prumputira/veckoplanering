@@ -27,6 +27,7 @@ interface WeekCarouselProps {
   prevWeekOfficeWeeks?: OfficeWeek[];
   currentWeekOfficeWeeks?: OfficeWeek[];
   nextWeekOfficeWeeks?: OfficeWeek[];
+  isAdmin?: boolean;
 }
 
 export function WeekCarousel({
@@ -47,6 +48,7 @@ export function WeekCarousel({
   prevWeekOfficeWeeks = [],
   currentWeekOfficeWeeks = [],
   nextWeekOfficeWeeks = [],
+  isAdmin = false,
 }: WeekCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -107,6 +109,7 @@ export function WeekCarousel({
                 hasCopiedWeek={hasCopiedWeek}
                 currentUserId={currentUserId}
                 officeWeeks={prevWeekOfficeWeeks}
+                isAdmin={isAdmin}
               />
             </div>
           </CarouselItem>
@@ -127,6 +130,7 @@ export function WeekCarousel({
                 hasCopiedWeek={hasCopiedWeek}
                 currentUserId={currentUserId}
                 officeWeeks={currentWeekOfficeWeeks}
+                isAdmin={isAdmin}
               />
             </div>
           </CarouselItem>
@@ -152,6 +156,7 @@ export function WeekCarousel({
                 hasCopiedWeek={hasCopiedWeek}
                 currentUserId={currentUserId}
                 officeWeeks={nextWeekOfficeWeeks}
+                isAdmin={isAdmin}
               />
             </div>
           </CarouselItem>
