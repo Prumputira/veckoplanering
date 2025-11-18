@@ -186,7 +186,7 @@ const WeekTable = ({
                             )}>
                               {employee.name}
                             </div>
-                        {isCurrentUser && (
+                        {(isCurrentUser || isAdmin) && (
                           <button
                             onClick={() => onEditEmployee(employee.id, employee.name)}
                             className={cn(
@@ -222,7 +222,7 @@ const WeekTable = ({
                       );
                     })}
                     <td className="p-1 text-center">
-                      {isCurrentUser && (
+                      {(isCurrentUser || isAdmin) && (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button 
@@ -299,7 +299,7 @@ const WeekTable = ({
                       )}>
                         {employee.name}
                       </div>
-                      {isCurrentUser && (
+                      {(isCurrentUser || isAdmin) && (
                         <>
                           <button
                             onClick={() => onEditEmployee(employee.id, employee.name)}
