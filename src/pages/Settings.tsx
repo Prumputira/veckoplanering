@@ -192,6 +192,7 @@ const Settings = () => {
         });
         setNewUserEmail('');
         setNewUserPassword('');
+        loadUsers();
       }
     } catch (error: any) {
       toast({
