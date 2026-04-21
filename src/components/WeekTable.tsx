@@ -29,18 +29,18 @@ interface WeekTableProps {
   isAdmin?: boolean;
 }
 
-const WeekTable = ({ 
-  currentDate, 
-  employees, 
-  onUpdateStatus, 
-  onEditEmployee, 
-  onCopyWeek, 
-  onPasteWeek, 
+const WeekTable = ({
+  currentDate,
+  employees,
+  onUpdateStatus,
+  onEditEmployee,
+  onCopyWeek,
+  onPasteWeek,
   onClearWeek,
   hasCopiedWeek,
   currentUserId,
   officeWeeks = [],
-  isAdmin = false
+  isAdmin = false,
 }: WeekTableProps) => {
   const weekDays = getWeekDays(currentDate);
   const [hoveredEmployeeId, setHoveredEmployeeId] = useState<string | null>(null);
@@ -48,17 +48,17 @@ const WeekTable = ({
   const currentYear = currentDate.getFullYear();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   const isToday = (date: Date) => {
     const checkDate = new Date(date);
     checkDate.setHours(0, 0, 0, 0);
     return checkDate.getTime() === today.getTime();
   };
-  
-  // Create a map for quick office week lookup
+
   const officeWeekMap = new Map(
-    officeWeeks.map(ow => [`${ow.user_id}-${ow.week_number}-${ow.year}`, true])
+    officeWeeks.map((ow) => [`${ow.user_id}-${ow.week_number}-${ow.year}`, true])
   );
+
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     employeeId: string;
@@ -67,6 +67,7 @@ const WeekTable = ({
     employeeName: string;
     dayName: string;
   } | null>(null);
+
   const { toast } = useToast();
 
   const handleCellClick = (
@@ -75,12 +76,11 @@ const WeekTable = ({
     currentStatus: DayStatus,
     dayName: string
   ) => {
-    // Allow editing own cells or all cells if admin
     if (employee.id !== currentUserId && !isAdmin) {
       toast({
-        title: "Inte tillåtet",
-        description: "Du kan bara redigera dina egna celler",
-        variant: "destructive",
+        title: 'Inte tillåtet',
+        description: 'Du kan bara redigera dina egna celler',
+        variant: 'destructive',
       });
       return;
     }
@@ -106,7 +106,6 @@ const WeekTable = ({
     <>
       <div className="container mx-auto px-4 py-6">
         <div className="bg-card rounded-lg shadow-lg border border-border overflow-hidden">
-          {/* Desktop view */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full table-fixed">
               <colgroup>
@@ -124,18 +123,23 @@ const WeekTable = ({
                   {weekDays.map((day, index) => {
                     const isTodayColumn = isToday(day);
                     return (
-                      <th 
-                        key={index} 
+                      <th
+                        key={index}
                         className={cn(
-                          "text-center px-2 py-1.5 font-semibold text-foreground",
-                          isTodayColumn && "bg-primary/10"
+                          'text-center px-2 py-1.5 font-semibold text-foreground',
+                          isTodayColumn && 'bg-primary/10'
                         )}
                       >
                         <div className="flex flex-col">
-                          <span className={cn("text-sm", isTodayColumn && "text-primary font-bold")}>
+                          <span className={cn('text-sm', isTodayColumn && 'text-primary font-bold')}>
                             {formatDayName(day)}
                           </span>
-                          <span className={cn("text-xs", isTodayColumn ? "text-primary/70 font-semibold" : "text-muted-foreground")}>
+                          <span
+                            className={cn(
+                              'text-xs',
+                              isTodayColumn ? 'text-primary/70 font-semibold' : 'text-muted-foreground'
+                            )}
+                          >
                             {formatDate(day)}
                           </span>
                         </div>
@@ -148,244 +152,241 @@ const WeekTable = ({
                 </tr>
               </thead>
               <tbody>
-                {employees.map((employee, index) => {
+                {employees.map((employee) => {
                   const isCurrentUser = employee.id === currentUserId;
                   const hasOfficeWeek = officeWeekMap.has(`${employee.id}-${currentWeekNumber}-${currentYear}`);
-                  
-                  return (
-                    <>
-                      <tr 
-                        key={employee.id} 
-                        className={cn(
-                          "border-b border-border last:border-0",
-                          isCurrentUser && "bg-accent/10",
-                          hasOfficeWeek && "border-2 border-green-500/40 bg-green-50 dark:bg-green-950/30 shadow-md"
-                        )}
-                      >
-                        <td 
-                          className="px-3 py-1.5"
-                          onMouseEnter={() => setHoveredEmployeeId(employee.id)}
-                          onMouseLeave={() => setHoveredEmployeeId(null)}
-                        >
-                          <div className="flex items-center gap-2 group whitespace-nowrap">
-                            {hasOfficeWeek && (
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <Building2 className="h-4 w-4 text-green-600 dark:text-green-400 shrink-0" />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Kontorsvecka</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            )}
-                            <div
-                              className={cn(
-                                "font-medium text-sm whitespace-nowrap shrink min-w-0 overflow-hidden text-ellipsis",
-                                isCurrentUser ? "text-accent font-semibold" : "text-foreground"
-                              )}
-                              title={employee.name}
-                            >
-                              {employee.name}
-                            </div>
-                        {(isCurrentUser || isAdmin) && (
-                          <button
-                            onClick={() => onEditEmployee(employee.id, employee.name)}
-                            className={cn(
-                              "p-1 rounded hover:bg-muted transition-all shrink-0",
-                              hoveredEmployeeId === employee.id ? "opacity-100" : "opacity-0"
-                            )}
-                          >
-                            <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                    {weekDays.map((day, index) => {
-                      const dayKey = getDayKey(day);
-                      const status = employee.week[dayKey];
-                      const isTodayColumn = isToday(day);
-                      return (
-                        <td 
-                          key={index} 
-                          className={cn(
-                            "p-1",
-                            isTodayColumn && "bg-primary/10"
-                          )}
-                        >
-                          <StatusCell
-                            status={status}
-                            onClick={() =>
-                              handleCellClick(employee, dayKey, status, formatDayName(day))
-                            }
-                            isToday={isTodayColumn}
-                          />
-                        </td>
-                      );
-                    })}
-                    <td className="p-1 text-center">
-                      {(isCurrentUser || isAdmin) && (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              className="h-8 w-8 p-0 hover:bg-accent/20"
-                            >
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
-                              <Copy className="h-4 w-4 mr-2" />
-                              Kopiera vecka
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              onClick={() => onPasteWeek(employee.id)}
-                              disabled={!hasCopiedWeek}
-                            >
-                              <Clipboard className="h-4 w-4 mr-2" />
-                              Klistra in vecka
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              onClick={() => onClearWeek(employee.id)}
-                              className="text-destructive focus:text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Töm vecka
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                    </td>
-                  </tr>
-                </>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
 
-          {/* Mobile view */}
-          <div className="md:hidden">
-            {employees.map((employee, index) => {
-              const isCurrentUser = employee.id === currentUserId;
-              const hasOfficeWeek = officeWeekMap.has(`${employee.id}-${currentWeekNumber}-${currentYear}`);
-              
-              return (
-                <>
-                  <div 
-                    key={employee.id} 
-                    className={cn(
-                      "border-b border-border last:border-0 p-4",
-                      isCurrentUser && "bg-accent/10",
-                      hasOfficeWeek && "border-2 border-green-500/40 bg-green-50 dark:bg-green-950/30 shadow-md"
-                    )}
-                  >
-                    <div className="mb-3 flex items-center gap-2">
-                      {hasOfficeWeek && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Building2 className="h-5 w-5 text-green-600 dark:text-green-400" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Kontorsvecka</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                  return (
+                    <tr
+                      key={employee.id}
+                      className={cn(
+                        'border-b border-border last:border-0',
+                        isCurrentUser && 'bg-accent/10',
+                        hasOfficeWeek && 'border-2 border-green-500/40 bg-green-50 dark:bg-green-950/30 shadow-md'
                       )}
-                      <div
-                        className={cn(
-                          "font-semibold flex-1 text-base whitespace-nowrap min-w-0 overflow-hidden text-ellipsis",
-                          isCurrentUser ? "text-accent" : "text-foreground"
-                        )}
-                        title={employee.name}
+                    >
+                      <td
+                        className="px-3 py-1.5"
+                        onMouseEnter={() => setHoveredEmployeeId(employee.id)}
+                        onMouseLeave={() => setHoveredEmployeeId(null)}
                       >
-                        {employee.name}
-                      </div>
-                      {(isCurrentUser || isAdmin) && (
-                        <>
-                          <button
-                            onClick={() => onEditEmployee(employee.id, employee.name)}
-                            className="p-2 rounded hover:bg-muted transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
+                        <div className="flex min-w-0 items-center gap-2">
+                          {hasOfficeWeek && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Building2 className="h-4 w-4 shrink-0 text-green-600 dark:text-green-400" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Kontorsvecka</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                          <div
+                            className={cn(
+                              'min-w-0 flex-1 truncate text-sm font-medium',
+                              isCurrentUser ? 'text-accent font-semibold' : 'text-foreground'
+                            )}
+                            title={employee.name}
                           >
-                            <Pencil className="h-4 w-4 text-muted-foreground" />
-                          </button>
+                            {employee.name}
+                          </div>
+                          {(isCurrentUser || isAdmin) && (
+                            <button
+                              onClick={() => onEditEmployee(employee.id, employee.name)}
+                              className={cn(
+                                'shrink-0 rounded p-1 transition-all hover:bg-muted',
+                                hoveredEmployeeId === employee.id ? 'opacity-100' : 'opacity-0'
+                              )}
+                            >
+                              <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                      {weekDays.map((day, index) => {
+                        const dayKey = getDayKey(day);
+                        const status = employee.week[dayKey];
+                        const isTodayColumn = isToday(day);
+
+                        return (
+                          <td
+                            key={index}
+                            className={cn(
+                              'p-1',
+                              isTodayColumn && 'bg-primary/10'
+                            )}
+                          >
+                            <StatusCell
+                              status={status}
+                              onClick={() => handleCellClick(employee, dayKey, status, formatDayName(day))}
+                              isToday={isTodayColumn}
+                            />
+                          </td>
+                        );
+                      })}
+                      <td className="p-1 text-center">
+                        {(isCurrentUser || isAdmin) && (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button 
-                                variant="ghost" 
+                              <Button
+                                variant="ghost"
                                 size="sm"
-                                className="h-11 w-11 p-0 hover:bg-accent/20"
+                                className="h-8 w-8 p-0 hover:bg-accent/20"
                               >
-                                <MoreVertical className="h-5 w-5" />
+                                <MoreVertical className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                              <DropdownMenuItem onClick={() => onCopyWeek(employee.id)} className="py-3">
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
                                 <Copy className="h-4 w-4 mr-2" />
                                 Kopiera vecka
                               </DropdownMenuItem>
-                              <DropdownMenuItem 
+                              <DropdownMenuItem
                                 onClick={() => onPasteWeek(employee.id)}
                                 disabled={!hasCopiedWeek}
-                                className="py-3"
                               >
                                 <Clipboard className="h-4 w-4 mr-2" />
                                 Klistra in vecka
                               </DropdownMenuItem>
-                              <DropdownMenuItem 
+                              <DropdownMenuItem
                                 onClick={() => onClearWeek(employee.id)}
-                                className="text-destructive focus:text-destructive py-3"
+                                className="text-destructive focus:text-destructive"
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Töm vecka
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
-                        </>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="md:hidden">
+            {employees.map((employee) => {
+              const isCurrentUser = employee.id === currentUserId;
+              const hasOfficeWeek = officeWeekMap.has(`${employee.id}-${currentWeekNumber}-${currentYear}`);
+
+              return (
+                <div
+                  key={employee.id}
+                  className={cn(
+                    'border-b border-border last:border-0 p-4',
+                    isCurrentUser && 'bg-accent/10',
+                    hasOfficeWeek && 'border-2 border-green-500/40 bg-green-50 dark:bg-green-950/30 shadow-md'
+                  )}
+                >
+                  <div className="mb-3 flex min-w-0 items-center gap-2">
+                    {hasOfficeWeek && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Building2 className="h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Kontorsvecka</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                    <div
+                      className={cn(
+                        'min-w-0 flex-1 truncate text-base font-semibold',
+                        isCurrentUser ? 'text-accent' : 'text-foreground'
                       )}
+                      title={employee.name}
+                    >
+                      {employee.name}
                     </div>
-                    
-                    {/* Vertical list layout for better readability */}
-                    <div className="space-y-2">
+                    {(isCurrentUser || isAdmin) && (
+                      <div className="flex shrink-0 items-center gap-1">
+                        <button
+                          onClick={() => onEditEmployee(employee.id, employee.name)}
+                          className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 transition-all hover:bg-muted"
+                        >
+                          <Pencil className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-11 w-11 p-0 hover:bg-accent/20"
+                            >
+                              <MoreVertical className="h-5 w-5" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem onClick={() => onCopyWeek(employee.id)} className="py-3">
+                              <Copy className="h-4 w-4 mr-2" />
+                              Kopiera vecka
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => onPasteWeek(employee.id)}
+                              disabled={!hasCopiedWeek}
+                              className="py-3"
+                            >
+                              <Clipboard className="h-4 w-4 mr-2" />
+                              Klistra in vecka
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => onClearWeek(employee.id)}
+                              className="text-destructive focus:text-destructive py-3"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Töm vecka
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
                     {weekDays.map((day, index) => {
                       const dayKey = getDayKey(day);
                       const status = employee.week[dayKey];
                       const isTodayColumn = isToday(day);
+
                       return (
-                        <div 
-                          key={index} 
+                        <div
+                          key={index}
                           className={cn(
-                            "flex items-center gap-3 p-2 rounded-md",
-                            isTodayColumn && "bg-primary/10"
+                            'flex items-center gap-3 p-2 rounded-md',
+                            isTodayColumn && 'bg-primary/10'
                           )}
                         >
                           <div className="min-w-[90px] text-sm font-medium">
-                            <span className={cn(isTodayColumn && "text-primary font-bold")}>
+                            <span className={cn(isTodayColumn && 'text-primary font-bold')}>
                               {formatDayName(day)}
                             </span>
-                            <span className={cn("text-xs ml-1", isTodayColumn ? "text-primary/70 font-semibold" : "text-muted-foreground")}>
+                            <span
+                              className={cn(
+                                'text-xs ml-1',
+                                isTodayColumn ? 'text-primary/70 font-semibold' : 'text-muted-foreground'
+                              )}
+                            >
                               {formatDate(day)}
                             </span>
                           </div>
                           <div className="flex-1">
                             <StatusCell
                               status={status}
-                              onClick={() =>
-                                handleCellClick(employee, dayKey, status, formatDayName(day))
-                              }
+                              onClick={() => handleCellClick(employee, dayKey, status, formatDayName(day))}
                               isToday={isTodayColumn}
                             />
                           </div>
                         </div>
                       );
                     })}
-                    </div>
                   </div>
-                </>
+                </div>
               );
             })}
           </div>
