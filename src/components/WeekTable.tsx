@@ -108,17 +108,17 @@ const WeekTable = ({
         <div className="bg-card rounded-lg shadow-lg border border-border overflow-hidden">
           {/* Desktop view */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="min-w-full">
+            <table className="w-full table-fixed">
               <colgroup>
-                <col className="w-64" />
+                <col className="w-[calc((100%-5rem)/6)]" />
                 {weekDays.map((_, index) => (
-                  <col key={index} />
+                  <col key={index} className="w-[calc((100%-5rem)/6)]" />
                 ))}
                 <col className="w-20" />
               </colgroup>
               <thead>
                 <tr className="bg-primary/5 border-b border-border">
-                  <th className="text-left px-3 py-1.5 font-semibold text-foreground whitespace-nowrap w-64 min-w-[16rem]">
+                  <th className="text-left px-3 py-1.5 font-semibold text-foreground">
                     Medarbetare
                   </th>
                   {weekDays.map((day, index) => {
@@ -180,10 +180,13 @@ const WeekTable = ({
                                 </Tooltip>
                               </TooltipProvider>
                             )}
-                            <div className={cn(
-                              "font-medium text-sm whitespace-nowrap shrink-0",
-                              isCurrentUser ? "text-accent font-semibold" : "text-foreground"
-                            )}>
+                            <div
+                              className={cn(
+                                "font-medium text-sm whitespace-nowrap shrink min-w-0 overflow-hidden text-ellipsis",
+                                isCurrentUser ? "text-accent font-semibold" : "text-foreground"
+                              )}
+                              title={employee.name}
+                            >
                               {employee.name}
                             </div>
                         {(isCurrentUser || isAdmin) && (
@@ -293,10 +296,13 @@ const WeekTable = ({
                           </Tooltip>
                         </TooltipProvider>
                       )}
-                      <div className={cn(
-                        "font-semibold flex-1 text-base whitespace-nowrap",
-                        isCurrentUser ? "text-accent" : "text-foreground"
-                      )}>
+                      <div
+                        className={cn(
+                          "font-semibold flex-1 text-base whitespace-nowrap min-w-0 overflow-hidden text-ellipsis",
+                          isCurrentUser ? "text-accent" : "text-foreground"
+                        )}
+                        title={employee.name}
+                      >
                         {employee.name}
                       </div>
                       {(isCurrentUser || isAdmin) && (
