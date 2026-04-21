@@ -46,7 +46,7 @@ serve(async (req) => {
       );
     }
 
-    const { userId } = await req.json();
+    const { userId, mode } = await req.json();
 
     if (!userId || typeof userId !== 'string') {
       return new Response(
@@ -55,7 +55,9 @@ serve(async (req) => {
       );
     }
 
-    if (userId === user.id) {
+    const action: 'delete' | 'hide' | 'unhide' = mode === 'hide' || mode === 'unhide' ? mode : 'delete';
+
+    if (userId === user.id && action === 'delete') {
       return new Response(
         JSON.stringify({ error: 'Du kan inte ta bort ditt eget konto' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -67,7 +69,28 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Clean up dependent rows first
+    if (action === 'hide' || action === 'unhide') {
+      const { error: updateError } = await supabaseAdmin
+        .from('profiles')
+        .update({ is_hidden: action === 'hide' })
+        .eq('id', userId);
+
+      if (updateError) {
+        console.error('Hide toggle error:', updateError);
+        return new Response(
+          JSON.stringify({ error: updateError.message }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      console.log(`User ${action === 'hide' ? 'hidden' : 'unhidden'}:`, userId);
+      return new Response(
+        JSON.stringify({ success: true, mode: action }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Permanent delete
     await supabaseAdmin.from('employee_schedules').delete().eq('user_id', userId);
     await supabaseAdmin.from('office_weeks').delete().eq('user_id', userId);
     await supabaseAdmin.from('user_roles').delete().eq('user_id', userId);
@@ -86,7 +109,7 @@ serve(async (req) => {
     console.log('User deleted successfully:', userId);
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, mode: 'delete' }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
