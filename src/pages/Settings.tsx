@@ -396,42 +396,79 @@ const Settings = () => {
                       {users.map((u) => (
                         <div
                           key={u.id}
-                          className="flex items-center justify-between p-3 rounded-md border border-border bg-card"
+                          className="flex items-center justify-between gap-2 p-3 rounded-md border border-border bg-card"
                         >
                           <div className="min-w-0 flex-1">
-                            <div className="font-medium truncate">{u.name}</div>
+                            <div className="flex items-center gap-2">
+                              <span className={`font-medium truncate ${u.is_hidden ? 'text-muted-foreground line-through' : ''}`}>
+                                {u.name}
+                              </span>
+                              {u.is_hidden && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground shrink-0">
+                                  Dold
+                                </span>
+                              )}
+                            </div>
                             <div className="text-sm text-muted-foreground truncate">{u.email}</div>
                           </div>
                           {u.id !== currentUserId && (
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
+                            <div className="flex items-center gap-1 shrink-0">
+                              {u.is_hidden ? (
                                 <Button
                                   variant="ghost"
                                   size="icon"
                                   disabled={deletingUserId === u.id}
-                                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                  onClick={() => handleUserAction(u.id, u.name, 'unhide')}
+                                  title="Visa användare"
+                                  className="text-foreground hover:bg-accent/10"
                                 >
-                                  <Trash2 className="h-4 w-4" />
+                                  <Eye className="h-4 w-4" />
                                 </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Ta bort {u.name}?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Detta tar permanent bort användaren, deras schema och eventuella kontorsveckor. Åtgärden kan inte ångras.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => handleDeleteUser(u.id, u.name)}
-                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              ) : (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  disabled={deletingUserId === u.id}
+                                  onClick={() => handleUserAction(u.id, u.name, 'hide')}
+                                  title="Dölj användare"
+                                  className="text-foreground hover:bg-accent/10"
+                                >
+                                  <EyeOff className="h-4 w-4" />
+                                </Button>
+                              )}
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={deletingUserId === u.id}
+                                    title="Ta bort permanent"
+                                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                   >
-                                    Ta bort
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Ta bort {u.name} permanent?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Detta tar permanent bort användaren, deras schema och eventuella kontorsveckor. Åtgärden kan inte ångras.
+                                      <br /><br />
+                                      Vill du istället bara dölja användaren från schemat? Stäng denna dialog och klicka på ögon-ikonen.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => handleUserAction(u.id, u.name, 'delete')}
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    >
+                                      Ta bort permanent
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           )}
                         </div>
                       ))}
