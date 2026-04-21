@@ -185,7 +185,7 @@ const WeekTable = ({
                           )}
                           <div
                             className={cn(
-                              'min-w-0 flex-1 truncate text-sm font-medium',
+                              'min-w-0 flex-1 truncate whitespace-nowrap text-sm font-medium',
                               isCurrentUser ? 'text-accent font-semibold' : 'text-foreground'
                             )}
                             title={employee.name}
@@ -297,7 +297,7 @@ const WeekTable = ({
                     )}
                     <div
                       className={cn(
-                        'min-w-0 flex-1 truncate text-base font-semibold',
+                        'min-w-0 flex-1 truncate whitespace-nowrap text-base font-semibold',
                         isCurrentUser ? 'text-accent' : 'text-foreground'
                       )}
                       title={employee.name}
