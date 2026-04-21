@@ -45,7 +45,7 @@ const Settings = () => {
   const [newUserEmail, setNewUserEmail] = useState('');
   const [newUserPassword, setNewUserPassword] = useState('');
   const [creatingUser, setCreatingUser] = useState(false);
-  const [users, setUsers] = useState<Array<{ id: string; name: string; email: string }>>([]);
+  const [users, setUsers] = useState<Array<{ id: string; name: string; email: string; is_hidden?: boolean }>>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
