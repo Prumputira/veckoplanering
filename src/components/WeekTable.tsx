@@ -108,9 +108,9 @@ const WeekTable = ({
         <div className="bg-card rounded-lg shadow-lg border border-border overflow-hidden">
           {/* Desktop view */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="w-full table-fixed">
+            <table className="min-w-full">
               <colgroup>
-                <col className="w-auto" />
+                <col className="w-64" />
                 {weekDays.map((_, index) => (
                   <col key={index} />
                 ))}
@@ -118,7 +118,7 @@ const WeekTable = ({
               </colgroup>
               <thead>
                 <tr className="bg-primary/5 border-b border-border">
-                  <th className="text-left px-3 py-1.5 font-semibold text-foreground">
+                  <th className="text-left px-3 py-1.5 font-semibold text-foreground whitespace-nowrap w-64 min-w-[16rem]">
                     Medarbetare
                   </th>
                   {weekDays.map((day, index) => {
