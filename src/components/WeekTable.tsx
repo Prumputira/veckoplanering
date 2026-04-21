@@ -110,9 +110,9 @@ const WeekTable = ({
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full table-fixed">
               <colgroup>
-                <col className="w-44" />
+                <col className="w-auto" />
                 {weekDays.map((_, index) => (
-                  <col key={index} className="w-[calc((100%-14rem)/5)]" />
+                  <col key={index} />
                 ))}
                 <col className="w-20" />
               </colgroup>
@@ -181,7 +181,7 @@ const WeekTable = ({
                               </TooltipProvider>
                             )}
                             <div className={cn(
-                              "font-medium text-sm",
+                              "font-medium text-sm whitespace-nowrap",
                               isCurrentUser ? "text-accent font-semibold" : "text-foreground"
                             )}>
                               {employee.name}
