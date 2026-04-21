@@ -205,6 +205,31 @@ const Settings = () => {
     }
   };
 
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    setDeletingUserId(userId);
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-user', {
+        body: { userId }
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      toast({
+        title: 'Användare borttagen',
+        description: `${userName} har tagits bort.`,
+      });
+      setUsers((prev) => prev.filter((u) => u.id !== userId));
+    } catch (error: any) {
+      toast({
+        title: 'Fel',
+        description: error.message || 'Kunde inte ta bort användare',
+        variant: 'destructive',
+      });
+    } finally {
+      setDeletingUserId(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-8">
