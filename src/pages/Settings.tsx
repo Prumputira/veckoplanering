@@ -361,8 +361,67 @@ const Settings = () => {
               <Card className="shadow-lg border-primary/10">
                 <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
                   <CardTitle className="flex items-center gap-2 font-display text-primary">
-                    <Building2 className="h-5 w-5 text-accent" />
-                    Kontorveckor
+                    <Users className="h-5 w-5 text-accent" />
+                    Hantera användare
+                  </CardTitle>
+                  <CardDescription>
+                    Ta bort användare från systemet. Detta tar även bort deras schema och kontorsveckor.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  {usersLoading ? (
+                    <div className="text-center py-4 text-muted-foreground">Laddar användare...</div>
+                  ) : users.length === 0 ? (
+                    <div className="text-center py-4 text-muted-foreground">Inga användare hittades</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {users.map((u) => (
+                        <div
+                          key={u.id}
+                          className="flex items-center justify-between p-3 rounded-md border border-border bg-card"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium truncate">{u.name}</div>
+                            <div className="text-sm text-muted-foreground truncate">{u.email}</div>
+                          </div>
+                          {u.id !== currentUserId && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  disabled={deletingUserId === u.id}
+                                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Ta bort {u.name}?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Detta tar permanent bort användaren, deras schema och eventuella kontorsveckor. Åtgärden kan inte ångras.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDeleteUser(u.id, u.name)}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  >
+                                    Ta bort
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
                   </CardTitle>
                   <CardDescription>
                     Hantera vilka användare som har kontorsvecka för varje vecka
