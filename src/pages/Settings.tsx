@@ -7,10 +7,21 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Lock, Building2, UserPlus } from 'lucide-react';
+import { ArrowLeft, Lock, Building2, UserPlus, Trash2, Users } from 'lucide-react';
 import { z } from 'zod';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
 import { OfficeWeeksManager } from '@/components/OfficeWeeksManager';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const offices = ['Solna', 'Sundsvall', 'Enköping', 'Nyköping'];
 
@@ -34,8 +45,22 @@ const Settings = () => {
   const [newUserEmail, setNewUserEmail] = useState('');
   const [newUserPassword, setNewUserPassword] = useState('');
   const [creatingUser, setCreatingUser] = useState(false);
+  const [users, setUsers] = useState<Array<{ id: string; name: string; email: string }>>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const loadUsers = async () => {
+    setUsersLoading(true);
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, name, email')
+      .order('name');
+    if (!error && data) setUsers(data);
+    setUsersLoading(false);
+  };
 
   useEffect(() => {
     // Check authentication and load profile
@@ -65,6 +90,10 @@ const Settings = () => {
         .maybeSingle();
 
       setIsAdmin(!!roleData);
+      setCurrentUserId(session.user.id);
+      if (roleData) {
+        loadUsers();
+      }
       setProfileLoading(false);
     });
 
@@ -163,6 +192,7 @@ const Settings = () => {
         });
         setNewUserEmail('');
         setNewUserPassword('');
+        loadUsers();
       }
     } catch (error: any) {
       toast({
@@ -172,6 +202,31 @@ const Settings = () => {
       });
     } finally {
       setCreatingUser(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    setDeletingUserId(userId);
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-user', {
+        body: { userId }
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      toast({
+        title: 'Användare borttagen',
+        description: `${userName} har tagits bort.`,
+      });
+      setUsers((prev) => prev.filter((u) => u.id !== userId));
+    } catch (error: any) {
+      toast({
+        title: 'Fel',
+        description: error.message || 'Kunde inte ta bort användare',
+        variant: 'destructive',
+      });
+    } finally {
+      setDeletingUserId(null);
     }
   };
 
@@ -300,6 +355,70 @@ const Settings = () => {
                       {creatingUser ? 'Skapar...' : 'Skapa användare'}
                     </Button>
                   </form>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-lg border-primary/10">
+                <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+                  <CardTitle className="flex items-center gap-2 font-display text-primary">
+                    <Users className="h-5 w-5 text-accent" />
+                    Hantera användare
+                  </CardTitle>
+                  <CardDescription>
+                    Ta bort användare från systemet. Detta tar även bort deras schema och kontorsveckor.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  {usersLoading ? (
+                    <div className="text-center py-4 text-muted-foreground">Laddar användare...</div>
+                  ) : users.length === 0 ? (
+                    <div className="text-center py-4 text-muted-foreground">Inga användare hittades</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {users.map((u) => (
+                        <div
+                          key={u.id}
+                          className="flex items-center justify-between p-3 rounded-md border border-border bg-card"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium truncate">{u.name}</div>
+                            <div className="text-sm text-muted-foreground truncate">{u.email}</div>
+                          </div>
+                          {u.id !== currentUserId && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  disabled={deletingUserId === u.id}
+                                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Ta bort {u.name}?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Detta tar permanent bort användaren, deras schema och eventuella kontorsveckor. Åtgärden kan inte ångras.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDeleteUser(u.id, u.name)}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  >
+                                    Ta bort
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
