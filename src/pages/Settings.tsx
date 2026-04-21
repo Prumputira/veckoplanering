@@ -383,7 +383,7 @@ const Settings = () => {
                     Hantera användare
                   </CardTitle>
                   <CardDescription>
-                    Ta bort användare från systemet. Detta tar även bort deras schema och kontorsveckor.
+                    Dölj användare från schemat (data sparas) eller ta bort dem permanent.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-6">
