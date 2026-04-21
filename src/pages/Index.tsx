@@ -231,6 +231,7 @@ const Index = () => {
       const { data: nextProfiles } = await supabase
         .from('profiles')
         .select('*')
+        .eq('is_hidden', false)
         .order('name');
 
       const { data: nextSchedules } = await supabase
