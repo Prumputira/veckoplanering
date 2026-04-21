@@ -87,6 +87,7 @@ const Index = () => {
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
+        .eq('is_hidden', false)
         .order('name');
 
       if (profilesError) throw profilesError;
