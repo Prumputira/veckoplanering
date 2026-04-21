@@ -43,6 +43,7 @@ export const OfficeWeeksManager = () => {
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('id, name, email')
+        .eq('is_hidden', false)
         .order('name');
 
       if (profilesError) throw profilesError;

@@ -87,6 +87,7 @@ const Index = () => {
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
+        .eq('is_hidden', false)
         .order('name');
 
       if (profilesError) throw profilesError;
@@ -182,6 +183,7 @@ const Index = () => {
       const { data: prevProfiles } = await supabase
         .from('profiles')
         .select('*')
+        .eq('is_hidden', false)
         .order('name');
 
       const { data: prevSchedules } = await supabase
@@ -229,6 +231,7 @@ const Index = () => {
       const { data: nextProfiles } = await supabase
         .from('profiles')
         .select('*')
+        .eq('is_hidden', false)
         .order('name');
 
       const { data: nextSchedules } = await supabase

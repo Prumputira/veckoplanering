@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Lock, Building2, UserPlus, Trash2, Users } from 'lucide-react';
+import { ArrowLeft, Lock, Building2, UserPlus, Trash2, Users, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
 import { OfficeWeeksManager } from '@/components/OfficeWeeksManager';
@@ -45,7 +45,7 @@ const Settings = () => {
   const [newUserEmail, setNewUserEmail] = useState('');
   const [newUserPassword, setNewUserPassword] = useState('');
   const [creatingUser, setCreatingUser] = useState(false);
-  const [users, setUsers] = useState<Array<{ id: string; name: string; email: string }>>([]);
+  const [users, setUsers] = useState<Array<{ id: string; name: string; email: string; is_hidden?: boolean }>>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -56,9 +56,9 @@ const Settings = () => {
     setUsersLoading(true);
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, name, email')
+      .select('id, name, email, is_hidden')
       .order('name');
-    if (!error && data) setUsers(data);
+    if (!error && data) setUsers(data as any);
     setUsersLoading(false);
   };
 
@@ -205,24 +205,42 @@ const Settings = () => {
     }
   };
 
-  const handleDeleteUser = async (userId: string, userName: string) => {
+  const handleUserAction = async (
+    userId: string,
+    userName: string,
+    mode: 'delete' | 'hide' | 'unhide'
+  ) => {
     setDeletingUserId(userId);
     try {
       const { data, error } = await supabase.functions.invoke('delete-user', {
-        body: { userId }
+        body: { userId, mode }
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      toast({
-        title: 'Användare borttagen',
-        description: `${userName} har tagits bort.`,
-      });
-      setUsers((prev) => prev.filter((u) => u.id !== userId));
+      const titleMap = {
+        delete: 'Användare borttagen',
+        hide: 'Användare dold',
+        unhide: 'Användare synlig igen',
+      };
+      const descMap = {
+        delete: `${userName} har tagits bort permanent.`,
+        hide: `${userName} visas inte längre i schemat.`,
+        unhide: `${userName} visas nu i schemat igen.`,
+      };
+      toast({ title: titleMap[mode], description: descMap[mode] });
+
+      if (mode === 'delete') {
+        setUsers((prev) => prev.filter((u) => u.id !== userId));
+      } else {
+        setUsers((prev) =>
+          prev.map((u) => (u.id === userId ? { ...u, is_hidden: mode === 'hide' } : u))
+        );
+      }
     } catch (error: any) {
       toast({
         title: 'Fel',
-        description: error.message || 'Kunde inte ta bort användare',
+        description: error.message || 'Åtgärden misslyckades',
         variant: 'destructive',
       });
     } finally {
@@ -365,7 +383,7 @@ const Settings = () => {
                     Hantera användare
                   </CardTitle>
                   <CardDescription>
-                    Ta bort användare från systemet. Detta tar även bort deras schema och kontorsveckor.
+                    Dölj användare från schemat (data sparas) eller ta bort dem permanent.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-6">
@@ -378,42 +396,79 @@ const Settings = () => {
                       {users.map((u) => (
                         <div
                           key={u.id}
-                          className="flex items-center justify-between p-3 rounded-md border border-border bg-card"
+                          className="flex items-center justify-between gap-2 p-3 rounded-md border border-border bg-card"
                         >
                           <div className="min-w-0 flex-1">
-                            <div className="font-medium truncate">{u.name}</div>
+                            <div className="flex items-center gap-2">
+                              <span className={`font-medium truncate ${u.is_hidden ? 'text-muted-foreground line-through' : ''}`}>
+                                {u.name}
+                              </span>
+                              {u.is_hidden && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground shrink-0">
+                                  Dold
+                                </span>
+                              )}
+                            </div>
                             <div className="text-sm text-muted-foreground truncate">{u.email}</div>
                           </div>
                           {u.id !== currentUserId && (
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
+                            <div className="flex items-center gap-1 shrink-0">
+                              {u.is_hidden ? (
                                 <Button
                                   variant="ghost"
                                   size="icon"
                                   disabled={deletingUserId === u.id}
-                                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                  onClick={() => handleUserAction(u.id, u.name, 'unhide')}
+                                  title="Visa användare"
+                                  className="text-foreground hover:bg-accent/10"
                                 >
-                                  <Trash2 className="h-4 w-4" />
+                                  <Eye className="h-4 w-4" />
                                 </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Ta bort {u.name}?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Detta tar permanent bort användaren, deras schema och eventuella kontorsveckor. Åtgärden kan inte ångras.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => handleDeleteUser(u.id, u.name)}
-                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              ) : (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  disabled={deletingUserId === u.id}
+                                  onClick={() => handleUserAction(u.id, u.name, 'hide')}
+                                  title="Dölj användare"
+                                  className="text-foreground hover:bg-accent/10"
+                                >
+                                  <EyeOff className="h-4 w-4" />
+                                </Button>
+                              )}
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={deletingUserId === u.id}
+                                    title="Ta bort permanent"
+                                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                   >
-                                    Ta bort
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Ta bort {u.name} permanent?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Detta tar permanent bort användaren, deras schema och eventuella kontorsveckor. Åtgärden kan inte ångras.
+                                      <br /><br />
+                                      Vill du istället bara dölja användaren från schemat? Stäng denna dialog och klicka på ögon-ikonen.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => handleUserAction(u.id, u.name, 'delete')}
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    >
+                                      Ta bort permanent
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           )}
                         </div>
                       ))}

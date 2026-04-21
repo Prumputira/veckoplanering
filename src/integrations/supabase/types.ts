@@ -99,6 +99,7 @@ export type Database = {
           default_office: string | null
           email: string
           id: string
+          is_hidden: boolean
           name: string
           updated_at: string
         }
@@ -107,6 +108,7 @@ export type Database = {
           default_office?: string | null
           email: string
           id: string
+          is_hidden?: boolean
           name: string
           updated_at?: string
         }
@@ -115,6 +117,7 @@ export type Database = {
           default_office?: string | null
           email?: string
           id?: string
+          is_hidden?: boolean
           name?: string
           updated_at?: string
         }
