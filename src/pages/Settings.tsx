@@ -45,8 +45,22 @@ const Settings = () => {
   const [newUserEmail, setNewUserEmail] = useState('');
   const [newUserPassword, setNewUserPassword] = useState('');
   const [creatingUser, setCreatingUser] = useState(false);
+  const [users, setUsers] = useState<Array<{ id: string; name: string; email: string }>>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const loadUsers = async () => {
+    setUsersLoading(true);
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, name, email')
+      .order('name');
+    if (!error && data) setUsers(data);
+    setUsersLoading(false);
+  };
 
   useEffect(() => {
     // Check authentication and load profile
