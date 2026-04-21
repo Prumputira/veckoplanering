@@ -90,6 +90,10 @@ const Settings = () => {
         .maybeSingle();
 
       setIsAdmin(!!roleData);
+      setCurrentUserId(session.user.id);
+      if (roleData) {
+        loadUsers();
+      }
       setProfileLoading(false);
     });
 
