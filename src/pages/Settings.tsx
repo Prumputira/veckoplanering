@@ -56,9 +56,9 @@ const Settings = () => {
     setUsersLoading(true);
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, name, email')
+      .select('id, name, email, is_hidden')
       .order('name');
-    if (!error && data) setUsers(data);
+    if (!error && data) setUsers(data as any);
     setUsersLoading(false);
   };
 
