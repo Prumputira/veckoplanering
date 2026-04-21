@@ -167,12 +167,12 @@ const WeekTable = ({
                           onMouseEnter={() => setHoveredEmployeeId(employee.id)}
                           onMouseLeave={() => setHoveredEmployeeId(null)}
                         >
-                          <div className="flex items-center gap-2 group">
+                          <div className="flex items-center gap-2 group whitespace-nowrap">
                             {hasOfficeWeek && (
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger>
-                                    <Building2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                    <Building2 className="h-4 w-4 text-green-600 dark:text-green-400 shrink-0" />
                                   </TooltipTrigger>
                                   <TooltipContent>
                                     <p>Kontorsvecka</p>
@@ -181,7 +181,7 @@ const WeekTable = ({
                               </TooltipProvider>
                             )}
                             <div className={cn(
-                              "font-medium text-sm whitespace-nowrap",
+                              "font-medium text-sm whitespace-nowrap shrink-0",
                               isCurrentUser ? "text-accent font-semibold" : "text-foreground"
                             )}>
                               {employee.name}
@@ -190,7 +190,7 @@ const WeekTable = ({
                           <button
                             onClick={() => onEditEmployee(employee.id, employee.name)}
                             className={cn(
-                              "p-1 rounded hover:bg-muted transition-all",
+                              "p-1 rounded hover:bg-muted transition-all shrink-0",
                               hoveredEmployeeId === employee.id ? "opacity-100" : "opacity-0"
                             )}
                           >
