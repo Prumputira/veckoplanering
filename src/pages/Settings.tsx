@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Lock, Building2, UserPlus, Trash2, Users } from 'lucide-react';
+import { ArrowLeft, Lock, Building2, UserPlus, Trash2, Users, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
 import { OfficeWeeksManager } from '@/components/OfficeWeeksManager';
