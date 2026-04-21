@@ -205,24 +205,42 @@ const Settings = () => {
     }
   };
 
-  const handleDeleteUser = async (userId: string, userName: string) => {
+  const handleUserAction = async (
+    userId: string,
+    userName: string,
+    mode: 'delete' | 'hide' | 'unhide'
+  ) => {
     setDeletingUserId(userId);
     try {
       const { data, error } = await supabase.functions.invoke('delete-user', {
-        body: { userId }
+        body: { userId, mode }
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      toast({
-        title: 'Användare borttagen',
-        description: `${userName} har tagits bort.`,
-      });
-      setUsers((prev) => prev.filter((u) => u.id !== userId));
+      const titleMap = {
+        delete: 'Användare borttagen',
+        hide: 'Användare dold',
+        unhide: 'Användare synlig igen',
+      };
+      const descMap = {
+        delete: `${userName} har tagits bort permanent.`,
+        hide: `${userName} visas inte längre i schemat.`,
+        unhide: `${userName} visas nu i schemat igen.`,
+      };
+      toast({ title: titleMap[mode], description: descMap[mode] });
+
+      if (mode === 'delete') {
+        setUsers((prev) => prev.filter((u) => u.id !== userId));
+      } else {
+        setUsers((prev) =>
+          prev.map((u) => (u.id === userId ? { ...u, is_hidden: mode === 'hide' } : u))
+        );
+      }
     } catch (error: any) {
       toast({
         title: 'Fel',
-        description: error.message || 'Kunde inte ta bort användare',
+        description: error.message || 'Åtgärden misslyckades',
         variant: 'destructive',
       });
     } finally {
