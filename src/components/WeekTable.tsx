@@ -181,7 +181,7 @@ const WeekTable = ({
                               </TooltipProvider>
                             )}
                             <div className={cn(
-                              "font-medium text-sm",
+                              "font-medium text-sm whitespace-nowrap",
                               isCurrentUser ? "text-accent font-semibold" : "text-foreground"
                             )}>
                               {employee.name}
