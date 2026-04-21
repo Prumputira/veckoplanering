@@ -422,6 +422,11 @@ const Settings = () => {
                 </CardContent>
               </Card>
 
+              <Card className="shadow-lg border-primary/10">
+                <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+                  <CardTitle className="flex items-center gap-2 font-display text-primary">
+                    <Building2 className="h-5 w-5 text-accent" />
+                    Kontorveckor
                   </CardTitle>
                   <CardDescription>
                     Hantera vilka användare som har kontorsvecka för varje vecka
