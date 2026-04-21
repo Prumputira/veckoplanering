@@ -180,10 +180,13 @@ const WeekTable = ({
                                 </Tooltip>
                               </TooltipProvider>
                             )}
-                            <div className={cn(
-                              "font-medium text-sm whitespace-nowrap shrink-0",
-                              isCurrentUser ? "text-accent font-semibold" : "text-foreground"
-                            )}>
+                            <div
+                              className={cn(
+                                "font-medium text-sm whitespace-nowrap shrink min-w-0 overflow-hidden text-ellipsis",
+                                isCurrentUser ? "text-accent font-semibold" : "text-foreground"
+                              )}
+                              title={employee.name}
+                            >
                               {employee.name}
                             </div>
                         {(isCurrentUser || isAdmin) && (
@@ -293,10 +296,13 @@ const WeekTable = ({
                           </Tooltip>
                         </TooltipProvider>
                       )}
-                      <div className={cn(
-                        "font-semibold flex-1 text-base whitespace-nowrap",
-                        isCurrentUser ? "text-accent" : "text-foreground"
-                      )}>
+                      <div
+                        className={cn(
+                          "font-semibold flex-1 text-base whitespace-nowrap min-w-0 overflow-hidden text-ellipsis",
+                          isCurrentUser ? "text-accent" : "text-foreground"
+                        )}
+                        title={employee.name}
+                      >
                         {employee.name}
                       </div>
                       {(isCurrentUser || isAdmin) && (
