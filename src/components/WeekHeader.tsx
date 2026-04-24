@@ -63,10 +63,6 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const referenceDate = new Date(weekDays[0]);
   referenceDate.setDate(referenceDate.getDate() - 1);
   const nextHoliday = getNextHoliday(referenceDate);
-  const isViewingCurrentWeek =
-    getWeekNumber(currentDate) === getWeekNumber(today) && getWeekYear(currentDate) === getWeekYear(today);
-  const vacationReferenceDate = isViewingCurrentWeek ? today : currentDate;
-
   const buildVacationStart = (targetYear: number) => {
     const vacationMonday = getMondayOfIsoWeek(27, new Date(targetYear, 0, 1));
     const vacationSaturday = new Date(vacationMonday);
@@ -75,7 +71,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
     return vacationSaturday;
   };
 
-  const normalizedReferenceDate = new Date(vacationReferenceDate);
+  const normalizedReferenceDate = new Date(today);
   normalizedReferenceDate.setHours(0, 0, 0, 0);
 
   const currentYearVacationStart = buildVacationStart(normalizedReferenceDate.getFullYear());
