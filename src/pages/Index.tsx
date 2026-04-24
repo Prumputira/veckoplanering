@@ -5,7 +5,7 @@ import WeekTable from '@/components/WeekTable';
 import EmployeeModal from '@/components/EmployeeModal';
 import { WeekCarousel } from '@/components/WeekCarousel';
 import { OfficeWeekReminder } from '@/components/OfficeWeekReminder';
-import { navigateWeek, getWeekNumber, getWeekYear, getDayKey, getWeekDays } from '@/utils/dateUtils';
+import { navigateWeek, getWeekNumber, getWeekYear, getDayKey } from '@/utils/dateUtils';
 import { Employee, DayStatus, OfficeWeek } from '@/types/schedule';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -325,8 +325,6 @@ const Index = () => {
     const nextDate = navigateWeek(currentDate, 'next');
     if (isSameWeek(date, nextDate)) return nextWeekEmployees;
 
-    if (isTodayWeek(date)) return todayWeekEmployees;
-
     return [];
   };
 
@@ -347,10 +345,6 @@ const Index = () => {
     const nextDate = navigateWeek(currentDate, 'next');
     if (isSameWeek(date, nextDate)) {
       setNextWeekEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, updater));
-    }
-
-    if (isTodayWeek(date)) {
-      setTodayWeekEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, updater));
     }
   };
 
@@ -479,10 +473,9 @@ const Index = () => {
     reason?: string;
   }
 
-  // Calculate today's stats
+  // Calculate stats for the currently viewed week's active day
   const getTodayStats = () => {
-    const today = new Date();
-    const todayKey = getDayKey(today);
+    const selectedDayKey = getDayKey(currentDate);
 
     let office = 0;
     let home = 0;
@@ -491,17 +484,10 @@ const Index = () => {
     const homeNames: PersonInfo[] = [];
     const absentNames: PersonInfo[] = [];
 
-    // Använd alltid innevarande veckas data så statistiken visas oavsett vald vecka
-    const currentWeekNum = getWeekNumber(today);
-    const currentYear = getWeekYear(today);
-    const viewingWeekNum = getWeekNumber(currentDate);
-    const viewingYear = getWeekYear(currentDate);
-    const isViewingCurrentWeek =
-      currentWeekNum === viewingWeekNum && currentYear === viewingYear;
-    const sourceEmployees = isViewingCurrentWeek ? employees : todayWeekEmployees;
+    const sourceEmployees = getEmployeesForDate(currentDate);
 
     sourceEmployees.forEach((employee) => {
-      const dayStatus = employee.week[todayKey];
+      const dayStatus = employee.week[selectedDayKey];
       if (dayStatus && dayStatus.segments) {
         dayStatus.segments.forEach((segment) => {
           if (segment.status === 'office') {
