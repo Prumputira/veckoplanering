@@ -18,11 +18,11 @@ import { useToast } from '@/hooks/use-toast';
 interface WeekTableProps {
   currentDate: Date;
   employees: Employee[];
-  onUpdateStatus: (employeeId: string, dayKey: string, status: DayStatus) => void;
+  onUpdateStatus: (employeeId: string, dayKey: string, status: DayStatus, date: Date) => void;
   onEditEmployee: (employeeId: string, currentName: string) => void;
-  onCopyWeek: (employeeId: string) => void;
-  onPasteWeek: (employeeId: string) => void;
-  onClearWeek: (employeeId: string) => void;
+  onCopyWeek: (employeeId: string, date: Date) => void;
+  onPasteWeek: (employeeId: string, date: Date) => void;
+  onClearWeek: (employeeId: string, date: Date) => void;
   hasCopiedWeek: boolean;
   currentUserId: string | null;
   officeWeeks?: OfficeWeek[];
@@ -97,7 +97,7 @@ const WeekTable = ({
 
   const handleSaveStatus = (status: DayStatus) => {
     if (modalState) {
-      onUpdateStatus(modalState.employeeId, modalState.dayKey, status);
+      onUpdateStatus(modalState.employeeId, modalState.dayKey, status, currentDate);
     }
     setModalState(null);
   };
@@ -239,19 +239,19 @@ const WeekTable = ({
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => onCopyWeek(employee.id)}>
+                              <DropdownMenuItem onClick={() => onCopyWeek(employee.id, currentDate)}>
                                 <Copy className="h-4 w-4 mr-2" />
                                 Kopiera vecka
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                onClick={() => onPasteWeek(employee.id)}
+                                onClick={() => onPasteWeek(employee.id, currentDate)}
                                 disabled={!hasCopiedWeek}
                               >
                                 <Clipboard className="h-4 w-4 mr-2" />
                                 Klistra in vecka
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                onClick={() => onClearWeek(employee.id)}
+                                onClick={() => onClearWeek(employee.id, currentDate)}
                                 className="text-destructive focus:text-destructive"
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
@@ -323,12 +323,12 @@ const WeekTable = ({
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem onClick={() => onCopyWeek(employee.id)} className="py-3">
+                            <DropdownMenuItem onClick={() => onCopyWeek(employee.id, currentDate)} className="py-3">
                               <Copy className="h-4 w-4 mr-2" />
                               Kopiera vecka
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => onPasteWeek(employee.id)}
+                              onClick={() => onPasteWeek(employee.id, currentDate)}
                               disabled={!hasCopiedWeek}
                               className="py-3"
                             >
@@ -336,7 +336,7 @@ const WeekTable = ({
                               Klistra in vecka
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => onClearWeek(employee.id)}
+                              onClick={() => onClearWeek(employee.id, currentDate)}
                               className="text-destructive focus:text-destructive py-3"
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
