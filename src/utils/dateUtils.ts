@@ -1,5 +1,24 @@
-import { format, startOfWeek, addDays, getWeek, getYear, addWeeks } from 'date-fns';
+import { format, startOfWeek, addDays, getWeek, getYear, addWeeks, setISOWeek, setISOWeekYear, startOfDay, differenceInCalendarDays } from 'date-fns';
 import { sv } from 'date-fns/locale';
+
+/**
+ * Returnerar måndagen för en given ISO-vecka (svensk standard).
+ * Om veckan redan passerat i år, hoppar vi till nästa år.
+ */
+export const getMondayOfIsoWeek = (weekNumber: number, from: Date = new Date()): Date => {
+  const today = startOfDay(from);
+  let year = getYear(today);
+  let candidate = startOfWeek(setISOWeek(setISOWeekYear(new Date(year, 0, 4), year), weekNumber), { weekStartsOn: 1 });
+  if (candidate.getTime() <= today.getTime()) {
+    year += 1;
+    candidate = startOfWeek(setISOWeek(setISOWeekYear(new Date(year, 0, 4), year), weekNumber), { weekStartsOn: 1 });
+  }
+  return candidate;
+};
+
+export const daysUntil = (target: Date, from: Date = new Date()): number => {
+  return differenceInCalendarDays(startOfDay(target), startOfDay(from));
+};
 
 export const getWeekDays = (date: Date) => {
   const start = startOfWeek(date, { weekStartsOn: 1 }); // Monday
