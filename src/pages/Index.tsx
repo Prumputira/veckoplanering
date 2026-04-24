@@ -20,6 +20,7 @@ const Index = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [prevWeekEmployees, setPrevWeekEmployees] = useState<Employee[]>([]);
   const [nextWeekEmployees, setNextWeekEmployees] = useState<Employee[]>([]);
+  const [todayWeekEmployees, setTodayWeekEmployees] = useState<Employee[]>([]);
   const [currentWeekOfficeWeeks, setCurrentWeekOfficeWeeks] = useState<OfficeWeek[]>([]);
   const [prevWeekOfficeWeeks, setPrevWeekOfficeWeeks] = useState<OfficeWeek[]>([]);
   const [nextWeekOfficeWeeks, setNextWeekOfficeWeeks] = useState<OfficeWeek[]>([]);
@@ -76,6 +77,55 @@ const Index = () => {
       }
     }
   }, [currentDate, user]);
+
+  // Hämta alltid innevarande veckas scheman separat så todayStats fungerar oavsett vald vecka
+  useEffect(() => {
+    if (!user) return;
+    const fetchTodayWeek = async () => {
+      const today = new Date();
+      const weekNumber = getWeekNumber(today);
+      const year = getWeekYear(today);
+
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('is_hidden', false)
+        .order('name');
+
+      const { data: schedulesData } = await supabase
+        .from('employee_schedules')
+        .select('*')
+        .eq('week_number', weekNumber)
+        .eq('year', year);
+
+      const schedulesMap = new Map<string, Map<string, DayStatus>>();
+      schedulesData?.forEach((schedule) => {
+        if (!schedulesMap.has(schedule.user_id)) {
+          schedulesMap.set(schedule.user_id, new Map());
+        }
+        const statusData = typeof schedule.status === 'string'
+          ? JSON.parse(schedule.status)
+          : schedule.status;
+        schedulesMap.get(schedule.user_id)?.set(schedule.day_key, statusData as DayStatus);
+      });
+
+      const built: Employee[] = (profilesData || []).map(profile => ({
+        id: profile.id,
+        name: profile.name,
+        week: {
+          mon: schedulesMap.get(profile.id)?.get('mon') || { segments: [{ status: 'unset' }] },
+          tue: schedulesMap.get(profile.id)?.get('tue') || { segments: [{ status: 'unset' }] },
+          wed: schedulesMap.get(profile.id)?.get('wed') || { segments: [{ status: 'unset' }] },
+          thu: schedulesMap.get(profile.id)?.get('thu') || { segments: [{ status: 'unset' }] },
+          fri: schedulesMap.get(profile.id)?.get('fri') || { segments: [{ status: 'unset' }] },
+        },
+      }));
+
+      setTodayWeekEmployees(built);
+    };
+
+    fetchTodayWeek();
+  }, [user, currentDate]);
 
   const fetchEmployeesAndSchedules = async () => {
     setLoading(true);
@@ -431,16 +481,6 @@ const Index = () => {
   const getTodayStats = () => {
     const today = new Date();
     const todayKey = getDayKey(today);
-    
-    // Only show stats if we're viewing the current week
-    const currentWeekNum = getWeekNumber(today);
-    const currentYear = getWeekYear(today);
-    const viewingWeekNum = getWeekNumber(currentDate);
-    const viewingYear = getWeekYear(currentDate);
-    
-    if (currentWeekNum !== viewingWeekNum || currentYear !== viewingYear) {
-      return null;
-    }
 
     let office = 0;
     let home = 0;
@@ -449,7 +489,16 @@ const Index = () => {
     const homeNames: PersonInfo[] = [];
     const absentNames: PersonInfo[] = [];
 
-    employees.forEach((employee) => {
+    // Använd alltid innevarande veckas data så statistiken visas oavsett vald vecka
+    const currentWeekNum = getWeekNumber(today);
+    const currentYear = getWeekYear(today);
+    const viewingWeekNum = getWeekNumber(currentDate);
+    const viewingYear = getWeekYear(currentDate);
+    const isViewingCurrentWeek =
+      currentWeekNum === viewingWeekNum && currentYear === viewingYear;
+    const sourceEmployees = isViewingCurrentWeek ? employees : todayWeekEmployees;
+
+    sourceEmployees.forEach((employee) => {
       const dayStatus = employee.week[todayKey];
       if (dayStatus && dayStatus.segments) {
         dayStatus.segments.forEach((segment) => {
