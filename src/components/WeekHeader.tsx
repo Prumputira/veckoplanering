@@ -390,6 +390,13 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                   <span className="font-medium text-destructive">{nextHoliday.name}</span>
                   <span className="text-muted-foreground">({formatHolidayDate(nextHoliday.date)})</span>
                 </div>
+                {daysToVacation > 0 && (
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <Sun className="h-4 w-4 text-amber-500" />
+                    <span className="text-muted-foreground">Semester v.28 om</span>
+                    <span className="font-medium text-amber-600">{daysToVacation} {daysToVacation === 1 ? 'dag' : 'dagar'}</span>
+                  </div>
+                )}
               </div>
             )}
             <div className="flex items-center gap-1.5">
