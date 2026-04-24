@@ -37,8 +37,9 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
-  // Använd slutet av visad vecka som referens, så den röda dagen byts när man bläddrar förbi veckan
-  const referenceDate = weekDays[weekDays.length - 1];
+  // Visa nästa röda dag baserat på dagen FÖRE visad vecka, så helgdagar i veckan fortfarande räknas som "nästa"
+  const referenceDate = new Date(weekDays[0]);
+  referenceDate.setDate(referenceDate.getDate() - 1);
   const nextHoliday = getNextHoliday(referenceDate);
 
   return (
