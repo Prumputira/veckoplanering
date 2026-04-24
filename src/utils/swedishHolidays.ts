@@ -68,7 +68,7 @@ export const getNextHoliday = (from: Date = new Date()): Holiday | null => {
   const today = startOfDay(from);
   const year = today.getFullYear();
   const candidates = [...getSwedishHolidays(year), ...getSwedishHolidays(year + 1)]
-    .filter((h) => startOfDay(h.date).getTime() >= today.getTime())
+    .filter((h) => startOfDay(h.date).getTime() > today.getTime())
     .sort((a, b) => a.date.getTime() - b.date.getTime());
   return candidates[0] ?? null;
 };
