@@ -482,16 +482,6 @@ const Index = () => {
     const today = new Date();
     const todayKey = getDayKey(today);
 
-    // Statistiken gäller alltid dagens datum.
-    // När man tittar på en annan vecka använder vi `employees` om man råkar
-    // vara på innevarande vecka, annars saknas data och vi returnerar tomma värden.
-    const currentWeekNum = getWeekNumber(today);
-    const currentYear = getWeekYear(today);
-    const viewingWeekNum = getWeekNumber(currentDate);
-    const viewingYear = getWeekYear(currentDate);
-    const isViewingCurrentWeek =
-      currentWeekNum === viewingWeekNum && currentYear === viewingYear;
-
     let office = 0;
     let home = 0;
     let absent = 0;
@@ -499,7 +489,14 @@ const Index = () => {
     const homeNames: PersonInfo[] = [];
     const absentNames: PersonInfo[] = [];
 
-    const sourceEmployees = isViewingCurrentWeek ? employees : [];
+    // Använd alltid innevarande veckas data så statistiken visas oavsett vald vecka
+    const currentWeekNum = getWeekNumber(today);
+    const currentYear = getWeekYear(today);
+    const viewingWeekNum = getWeekNumber(currentDate);
+    const viewingYear = getWeekYear(currentDate);
+    const isViewingCurrentWeek =
+      currentWeekNum === viewingWeekNum && currentYear === viewingYear;
+    const sourceEmployees = isViewingCurrentWeek ? employees : todayWeekEmployees;
 
     sourceEmployees.forEach((employee) => {
       const dayStatus = employee.week[todayKey];
