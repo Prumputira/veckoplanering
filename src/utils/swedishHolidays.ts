@@ -74,5 +74,6 @@ export const getNextHoliday = (from: Date = new Date()): Holiday | null => {
 };
 
 export const formatHolidayDate = (date: Date): string => {
-  return format(date, 'd MMM', { locale: sv });
+  const weekday = format(date, 'EEEE', { locale: sv });
+  return `${format(date, 'd MMM', { locale: sv })} ${weekday}`;
 };
