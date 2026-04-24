@@ -1,6 +1,7 @@
-import { ChevronLeft, ChevronRight, Building2, Home, Ban, Settings, LogOut } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Building2, Home, Ban, Settings, LogOut, CalendarHeart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getWeekNumber, getWeekYear, formatDate, getWeekDays } from '@/utils/dateUtils';
+import { getNextHoliday, formatHolidayDate } from '@/utils/swedishHolidays';
 import WeekPicker from './WeekPicker';
 import ScheduleChat from './ScheduleChat';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
@@ -36,6 +37,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
+  const nextHoliday = getNextHoliday();
 
   return (
     <TooltipProvider>
@@ -84,6 +86,15 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
+
+          {nextHoliday && (
+            <div className="flex items-center justify-center gap-1.5 text-xs">
+              <CalendarHeart className="h-3.5 w-3.5 text-destructive" />
+              <span className="text-muted-foreground">Nästa röda dag:</span>
+              <span className="font-medium text-destructive">{nextHoliday.name}</span>
+              <span className="text-muted-foreground">({formatHolidayDate(nextHoliday.date)})</span>
+            </div>
+          )}
 
           {/* Fourth row: Stats + Actions */}
           <div className="flex items-center justify-between gap-2">
@@ -352,6 +363,14 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
+            {nextHoliday && (
+              <div className="flex items-center gap-1.5 text-sm">
+                <CalendarHeart className="h-4 w-4 text-destructive" />
+                <span className="text-muted-foreground">Nästa röda dag:</span>
+                <span className="font-medium text-destructive">{nextHoliday.name}</span>
+                <span className="text-muted-foreground">({formatHolidayDate(nextHoliday.date)})</span>
+              </div>
+            )}
           </div>
           
           {/* Right column: actions and office responsible */}
