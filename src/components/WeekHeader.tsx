@@ -5,7 +5,7 @@ import { getWeekNumber, getWeekYear, formatDate, getWeekDays } from '@/utils/dat
 import { getNextHoliday, formatHolidayDate } from '@/utils/swedishHolidays';
 import WeekPicker from './WeekPicker';
 import ScheduleChat from './ScheduleChat';
-import { Employee } from '@/types/schedule';
+import logo from '@/assets/nordiska-brand-logo-primary.png';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
