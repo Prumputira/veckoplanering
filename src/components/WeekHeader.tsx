@@ -368,7 +368,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
           {/* Right column: actions and office responsible */}
           <div className="relative flex flex-col items-end justify-center gap-2">
             {nextHoliday && (
-              <div className="absolute -left-32 bottom-0 flex items-center gap-1.5 text-sm whitespace-nowrap">
+              <div className="absolute -left-16 bottom-0 flex items-center gap-1.5 text-sm whitespace-nowrap">
                 <CalendarHeart className="h-4 w-4 text-destructive" />
                 <span className="text-muted-foreground">Nästa röda dag:</span>
                 <span className="font-medium text-destructive">{nextHoliday.name}</span>
