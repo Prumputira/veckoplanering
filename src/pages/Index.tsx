@@ -343,6 +343,25 @@ const Index = () => {
     setCurrentDate(new Date(date));
   };
 
+  const isTodayWeek = (date: Date) => {
+    const today = new Date();
+    return getWeekNumber(date) === getWeekNumber(today) && getWeekYear(date) === getWeekYear(today);
+  };
+
+  const updateEmployeeWeekInList = (
+    list: Employee[],
+    employeeId: string,
+    updater: (week: Employee['week']) => Employee['week']
+  ) =>
+    list.map((emp) =>
+      emp.id === employeeId
+        ? {
+            ...emp,
+            week: updater(emp.week),
+          }
+        : emp
+    );
+
   const handleUpdateStatus = async (employeeId: string, dayKey: string, status: DayStatus) => {
     const weekNumber = getWeekNumber(currentDate);
     const year = getWeekYear(currentDate);
@@ -368,18 +387,20 @@ const Index = () => {
 
       // Update local state
       setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === employeeId
-            ? {
-                ...emp,
-                week: {
-                  ...emp.week,
-                  [dayKey]: status,
-                },
-              }
-            : emp
-        )
+        updateEmployeeWeekInList(prev, employeeId, (week) => ({
+          ...week,
+          [dayKey]: status,
+        }))
       );
+
+      if (isTodayWeek(currentDate)) {
+        setTodayWeekEmployees((prev) =>
+          updateEmployeeWeekInList(prev, employeeId, (week) => ({
+            ...week,
+            [dayKey]: status,
+          }))
+        );
+      }
 
       toast({
         title: 'Sparat',
@@ -596,16 +617,11 @@ const Index = () => {
       }
 
       // Update local state
-      setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === employeeId
-            ? {
-                ...emp,
-                week: { ...copiedWeek },
-              }
-            : emp
-        )
-      );
+      setEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, () => ({ ...copiedWeek })));
+
+      if (isTodayWeek(currentDate)) {
+        setTodayWeekEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, () => ({ ...copiedWeek })));
+      }
 
       toast({
         title: 'Vecka inklistrad',
@@ -648,21 +664,26 @@ const Index = () => {
 
       // Update local state
       setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === employeeId
-            ? {
-                ...emp,
-                week: {
-                  mon: emptyStatus,
-                  tue: emptyStatus,
-                  wed: emptyStatus,
-                  thu: emptyStatus,
-                  fri: emptyStatus,
-                },
-              }
-            : emp
-        )
+        updateEmployeeWeekInList(prev, employeeId, () => ({
+          mon: emptyStatus,
+          tue: emptyStatus,
+          wed: emptyStatus,
+          thu: emptyStatus,
+          fri: emptyStatus,
+        }))
       );
+
+      if (isTodayWeek(currentDate)) {
+        setTodayWeekEmployees((prev) =>
+          updateEmployeeWeekInList(prev, employeeId, () => ({
+            mon: emptyStatus,
+            tue: emptyStatus,
+            wed: emptyStatus,
+            thu: emptyStatus,
+            fri: emptyStatus,
+          }))
+        );
+      }
 
       toast({
         title: 'Vecka tömd',
