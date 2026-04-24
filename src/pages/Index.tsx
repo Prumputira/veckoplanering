@@ -20,6 +20,7 @@ const Index = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [prevWeekEmployees, setPrevWeekEmployees] = useState<Employee[]>([]);
   const [nextWeekEmployees, setNextWeekEmployees] = useState<Employee[]>([]);
+  const [todayWeekEmployees, setTodayWeekEmployees] = useState<Employee[]>([]);
   const [currentWeekOfficeWeeks, setCurrentWeekOfficeWeeks] = useState<OfficeWeek[]>([]);
   const [prevWeekOfficeWeeks, setPrevWeekOfficeWeeks] = useState<OfficeWeek[]>([]);
   const [nextWeekOfficeWeeks, setNextWeekOfficeWeeks] = useState<OfficeWeek[]>([]);
