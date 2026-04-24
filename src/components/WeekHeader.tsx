@@ -63,10 +63,21 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const referenceDate = new Date(weekDays[0]);
   referenceDate.setDate(referenceDate.getDate() - 1);
   const nextHoliday = getNextHoliday(referenceDate);
-  // Semestern börjar lördagen i v.27 (dvs. 5 dagar efter måndagen i v.27)
-  const vacationWeekMonday = getMondayOfIsoWeek(27, today);
-  const vacationStart = new Date(vacationWeekMonday);
-  vacationStart.setDate(vacationStart.getDate() + 5);
+  // Semestern börjar lördagen i v.27. Vi räknar från exakt semesterdatum,
+  // inte från måndagen i veckan, så nedräkningen fortsätter vara korrekt hela v.27.
+  const currentYearVacationMonday = getMondayOfIsoWeek(27, new Date(today.getFullYear(), 0, 1));
+  const currentYearVacationStart = new Date(currentYearVacationMonday);
+  currentYearVacationStart.setDate(currentYearVacationStart.getDate() + 5);
+
+  const vacationStart = currentYearVacationStart.getTime() > today.getTime()
+    ? currentYearVacationStart
+    : (() => {
+        const nextYearVacationMonday = getMondayOfIsoWeek(27, new Date(today.getFullYear() + 1, 0, 1));
+        const nextYearVacationStart = new Date(nextYearVacationMonday);
+        nextYearVacationStart.setDate(nextYearVacationStart.getDate() + 5);
+        return nextYearVacationStart;
+      })();
+
   const daysToVacation = daysUntil(vacationStart, today);
 
   return (
