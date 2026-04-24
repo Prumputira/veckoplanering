@@ -63,22 +63,27 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const referenceDate = new Date(weekDays[0]);
   referenceDate.setDate(referenceDate.getDate() - 1);
   const nextHoliday = getNextHoliday(referenceDate);
-  // Semestern börjar lördagen i v.27. Vi räknar från exakt semesterdatum,
-  // inte från måndagen i veckan, så nedräkningen fortsätter vara korrekt hela v.27.
-  const currentYearVacationMonday = getMondayOfIsoWeek(27, new Date(today.getFullYear(), 0, 1));
-  const currentYearVacationStart = new Date(currentYearVacationMonday);
-  currentYearVacationStart.setDate(currentYearVacationStart.getDate() + 5);
+  const isViewingCurrentWeek =
+    getWeekNumber(currentDate) === getWeekNumber(today) && getWeekYear(currentDate) === getWeekYear(today);
+  const vacationReferenceDate = isViewingCurrentWeek ? today : currentDate;
 
-  const vacationStart = currentYearVacationStart.getTime() > today.getTime()
+  const buildVacationStart = (targetYear: number) => {
+    const vacationMonday = getMondayOfIsoWeek(27, new Date(targetYear, 0, 1));
+    const vacationSaturday = new Date(vacationMonday);
+    vacationSaturday.setDate(vacationSaturday.getDate() + 5);
+    vacationSaturday.setHours(0, 0, 0, 0);
+    return vacationSaturday;
+  };
+
+  const normalizedReferenceDate = new Date(vacationReferenceDate);
+  normalizedReferenceDate.setHours(0, 0, 0, 0);
+
+  const currentYearVacationStart = buildVacationStart(normalizedReferenceDate.getFullYear());
+  const vacationStart = currentYearVacationStart >= normalizedReferenceDate
     ? currentYearVacationStart
-    : (() => {
-        const nextYearVacationMonday = getMondayOfIsoWeek(27, new Date(today.getFullYear() + 1, 0, 1));
-        const nextYearVacationStart = new Date(nextYearVacationMonday);
-        nextYearVacationStart.setDate(nextYearVacationStart.getDate() + 5);
-        return nextYearVacationStart;
-      })();
+    : buildVacationStart(normalizedReferenceDate.getFullYear() + 1);
 
-  const daysToVacation = daysUntil(vacationStart, today);
+  const daysToVacation = daysUntil(vacationStart, normalizedReferenceDate);
 
   return (
     <TooltipProvider>
