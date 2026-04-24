@@ -280,7 +280,7 @@ const Index = () => {
   };
 
   const handleNavigate = (direction: 'prev' | 'next') => {
-    setCurrentDate(navigateWeek(currentDate, direction));
+    setCurrentDate((prevDate) => navigateWeek(prevDate, direction));
   };
 
   // Enable swipe gestures on mobile with smooth animation
@@ -290,7 +290,7 @@ const Index = () => {
   });
 
   const handleSelectWeek = (date: Date) => {
-    setCurrentDate(date);
+    setCurrentDate(new Date(date));
   };
 
   const handleUpdateStatus = async (employeeId: string, dayKey: string, status: DayStatus) => {
