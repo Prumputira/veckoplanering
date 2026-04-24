@@ -17,11 +17,11 @@ interface WeekCarouselProps {
   currentDate: Date;
   nextWeekDate: Date;
   onNavigate: (direction: 'prev' | 'next') => void;
-  onUpdateStatus: (employeeId: string, dayKey: string, status: DayStatus) => void;
+  onUpdateStatus: (employeeId: string, dayKey: string, status: DayStatus, date: Date) => void;
   onEditEmployee: (employeeId: string, currentName: string) => void;
-  onCopyWeek: (employeeId: string) => void;
-  onPasteWeek: (employeeId: string) => void;
-  onClearWeek: (employeeId: string) => void;
+  onCopyWeek: (employeeId: string, date: Date) => void;
+  onPasteWeek: (employeeId: string, date: Date) => void;
+  onClearWeek: (employeeId: string, date: Date) => void;
   hasCopiedWeek: boolean;
   currentUserId: string | null;
   prevWeekOfficeWeeks?: OfficeWeek[];

@@ -348,6 +348,10 @@ const Index = () => {
     return getWeekNumber(date) === getWeekNumber(today) && getWeekYear(date) === getWeekYear(today);
   };
 
+  const isSameWeek = (left: Date, right: Date) => {
+    return getWeekNumber(left) === getWeekNumber(right) && getWeekYear(left) === getWeekYear(right);
+  };
+
   const updateEmployeeWeekInList = (
     list: Employee[],
     employeeId: string,
@@ -362,9 +366,47 @@ const Index = () => {
         : emp
     );
 
-  const handleUpdateStatus = async (employeeId: string, dayKey: string, status: DayStatus) => {
-    const weekNumber = getWeekNumber(currentDate);
-    const year = getWeekYear(currentDate);
+  const getEmployeesForDate = (date: Date) => {
+    if (isSameWeek(date, currentDate)) return employees;
+
+    const prevDate = navigateWeek(currentDate, 'prev');
+    if (isSameWeek(date, prevDate)) return prevWeekEmployees;
+
+    const nextDate = navigateWeek(currentDate, 'next');
+    if (isSameWeek(date, nextDate)) return nextWeekEmployees;
+
+    if (isTodayWeek(date)) return todayWeekEmployees;
+
+    return [];
+  };
+
+  const syncEmployeeWeekState = (
+    date: Date,
+    employeeId: string,
+    updater: (week: Employee['week']) => Employee['week']
+  ) => {
+    if (isSameWeek(date, currentDate)) {
+      setEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, updater));
+    }
+
+    const prevDate = navigateWeek(currentDate, 'prev');
+    if (isSameWeek(date, prevDate)) {
+      setPrevWeekEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, updater));
+    }
+
+    const nextDate = navigateWeek(currentDate, 'next');
+    if (isSameWeek(date, nextDate)) {
+      setNextWeekEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, updater));
+    }
+
+    if (isTodayWeek(date)) {
+      setTodayWeekEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, updater));
+    }
+  };
+
+  const handleUpdateStatus = async (employeeId: string, dayKey: string, status: DayStatus, date: Date) => {
+    const weekNumber = getWeekNumber(date);
+    const year = getWeekYear(date);
 
     try {
       // Update database - user_id instead of employee_id
@@ -386,21 +428,10 @@ const Index = () => {
       if (error) throw error;
 
       // Update local state
-      setEmployees((prev) =>
-        updateEmployeeWeekInList(prev, employeeId, (week) => ({
+      syncEmployeeWeekState(date, employeeId, (week) => ({
           ...week,
           [dayKey]: status,
-        }))
-      );
-
-      if (isTodayWeek(currentDate)) {
-        setTodayWeekEmployees((prev) =>
-          updateEmployeeWeekInList(prev, employeeId, (week) => ({
-            ...week,
-            [dayKey]: status,
-          }))
-        );
-      }
+        }));
 
       toast({
         title: 'Sparat',
@@ -574,8 +605,8 @@ const Index = () => {
 
   const todayStats = getTodayStats();
 
-  const handleCopyWeek = (employeeId: string) => {
-    const employee = employees.find(emp => emp.id === employeeId);
+  const handleCopyWeek = (employeeId: string, date: Date) => {
+    const employee = getEmployeesForDate(date).find(emp => emp.id === employeeId);
     if (employee) {
       setCopiedWeek({ ...employee.week });
       toast({
@@ -585,12 +616,12 @@ const Index = () => {
     }
   };
 
-  const handlePasteWeek = async (employeeId: string) => {
+  const handlePasteWeek = async (employeeId: string, date: Date) => {
     if (!copiedWeek) return;
 
-    const weekNumber = getWeekNumber(currentDate);
-    const year = getWeekYear(currentDate);
-    const employee = employees.find(emp => emp.id === employeeId);
+    const weekNumber = getWeekNumber(date);
+    const year = getWeekYear(date);
+    const employee = getEmployeesForDate(date).find(emp => emp.id === employeeId);
 
     try {
       // Update all days for this employee
@@ -617,11 +648,7 @@ const Index = () => {
       }
 
       // Update local state
-      setEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, () => ({ ...copiedWeek })));
-
-      if (isTodayWeek(currentDate)) {
-        setTodayWeekEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, () => ({ ...copiedWeek })));
-      }
+      syncEmployeeWeekState(date, employeeId, () => ({ ...copiedWeek }));
 
       toast({
         title: 'Vecka inklistrad',
@@ -636,10 +663,10 @@ const Index = () => {
     }
   };
 
-  const handleClearWeek = async (employeeId: string) => {
-    const weekNumber = getWeekNumber(currentDate);
-    const year = getWeekYear(currentDate);
-    const employee = employees.find(emp => emp.id === employeeId);
+  const handleClearWeek = async (employeeId: string, date: Date) => {
+    const weekNumber = getWeekNumber(date);
+    const year = getWeekYear(date);
+    const employee = getEmployeesForDate(date).find(emp => emp.id === employeeId);
 
     try {
       const emptyStatus: DayStatus = { segments: [{ status: 'unset' }] };
@@ -663,27 +690,13 @@ const Index = () => {
       }
 
       // Update local state
-      setEmployees((prev) =>
-        updateEmployeeWeekInList(prev, employeeId, () => ({
+      syncEmployeeWeekState(date, employeeId, () => ({
           mon: emptyStatus,
           tue: emptyStatus,
           wed: emptyStatus,
           thu: emptyStatus,
           fri: emptyStatus,
-        }))
-      );
-
-      if (isTodayWeek(currentDate)) {
-        setTodayWeekEmployees((prev) =>
-          updateEmployeeWeekInList(prev, employeeId, () => ({
-            mon: emptyStatus,
-            tue: emptyStatus,
-            wed: emptyStatus,
-            thu: emptyStatus,
-            fri: emptyStatus,
-          }))
-        );
-      }
+        }));
 
       toast({
         title: 'Vecka tömd',
