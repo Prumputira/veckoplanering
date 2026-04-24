@@ -1,7 +1,7 @@
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Building2, Home, Ban, Settings, LogOut, CalendarHeart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getWeekNumber, getWeekYear, formatDate, getWeekDays } from '@/utils/dateUtils';
-import { getNextHoliday, formatHolidayDate } from '@/utils/swedishHolidays';
 import WeekPicker from './WeekPicker';
 import ScheduleChat from './ScheduleChat';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
@@ -37,7 +37,36 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
-  const nextHoliday = getNextHoliday();
+  const [today, setToday] = useState(() => new Date());
+  const nextHoliday = getNextHoliday(today);
+
+  useEffect(() => {
+    const scheduleNextRefresh = () => {
+      const nextMidnight = new Date();
+      nextMidnight.setHours(24, 0, 1, 0);
+
+      return window.setTimeout(() => {
+        setToday(new Date());
+      }, Math.max(1000, nextMidnight.getTime() - Date.now()));
+    };
+
+    let timeoutId = scheduleNextRefresh();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setToday(new Date());
+        window.clearTimeout(timeoutId);
+        timeoutId = scheduleNextRefresh();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   return (
     <TooltipProvider>
