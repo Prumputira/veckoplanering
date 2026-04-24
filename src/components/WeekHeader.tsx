@@ -1,6 +1,6 @@
-import { ChevronLeft, ChevronRight, Building2, Home, Ban, Settings, LogOut, CalendarHeart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Building2, Home, Ban, Settings, LogOut, CalendarHeart, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getWeekNumber, getWeekYear, formatDate, getWeekDays } from '@/utils/dateUtils';
+import { getWeekNumber, getWeekYear, formatDate, getWeekDays, getMondayOfIsoWeek, daysUntil } from '@/utils/dateUtils';
 import { getNextHoliday, formatHolidayDate } from '@/utils/swedishHolidays';
 import WeekPicker from './WeekPicker';
 import ScheduleChat from './ScheduleChat';
