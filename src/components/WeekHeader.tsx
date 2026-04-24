@@ -63,7 +63,10 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const referenceDate = new Date(weekDays[0]);
   referenceDate.setDate(referenceDate.getDate() - 1);
   const nextHoliday = getNextHoliday(referenceDate);
-  const vacationStart = getMondayOfIsoWeek(28, today);
+  // Semestern börjar lördagen i v.27 (dvs. 5 dagar efter måndagen i v.27)
+  const vacationWeekMonday = getMondayOfIsoWeek(27, today);
+  const vacationStart = new Date(vacationWeekMonday);
+  vacationStart.setDate(vacationStart.getDate() + 5);
   const daysToVacation = daysUntil(vacationStart, today);
 
   return (
@@ -126,7 +129,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
           {daysToVacation > 0 && (
             <div className="flex items-center justify-center gap-1.5 text-xs">
               <Sun className="h-3.5 w-3.5 text-amber-500" />
-              <span className="text-muted-foreground">Semester v.28 om</span>
+              <span className="text-muted-foreground">Semester v.27 om:</span>
               <span className="font-medium text-amber-600">{daysToVacation} {daysToVacation === 1 ? 'dag' : 'dagar'}</span>
             </div>
           )}
@@ -384,10 +387,10 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                 <div className="absolute left-12 -translate-x-full -bottom-1 flex flex-col items-start gap-0.5 text-sm whitespace-nowrap">
                   <div className="flex items-center gap-1.5">
                     <Sun className="h-4 w-4 text-amber-500" />
-                    <span className="text-muted-foreground">Semester om</span>
+                    <span className="text-muted-foreground">Semester om:</span>
                   </div>
                   <div className="flex items-center gap-1.5 pl-[22px]">
-                    <span className="font-medium text-amber-600">v.28 ({daysToVacation} {daysToVacation === 1 ? 'dag' : 'dagar'})</span>
+                    <span className="font-medium text-amber-600">v.27 ({daysToVacation} {daysToVacation === 1 ? 'dag' : 'dagar'})</span>
                   </div>
                 </div>
               )}
