@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Building2, Home, Ban, Settings, LogOut, CalendarHeart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getWeekNumber, getWeekYear, formatDate, getWeekDays } from '@/utils/dateUtils';
@@ -38,23 +37,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
-  const [now, setNow] = useState(() => new Date());
-  const nextHoliday = getNextHoliday(now);
-
-  useEffect(() => {
-    const tick = () => {
-      const next = new Date();
-      next.setHours(24, 0, 5, 0); // strax efter midnatt
-      const ms = next.getTime() - Date.now();
-      const timeout = setTimeout(() => {
-        setNow(new Date());
-        tick();
-      }, ms);
-      return timeout;
-    };
-    const t = tick();
-    return () => clearTimeout(t);
-  }, []);
+  const nextHoliday = getNextHoliday(currentDate);
 
   return (
     <TooltipProvider>
