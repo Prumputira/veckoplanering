@@ -78,6 +78,55 @@ const Index = () => {
     }
   }, [currentDate, user]);
 
+  // Hämta alltid innevarande veckas scheman separat så todayStats fungerar oavsett vald vecka
+  useEffect(() => {
+    if (!user) return;
+    const fetchTodayWeek = async () => {
+      const today = new Date();
+      const weekNumber = getWeekNumber(today);
+      const year = getWeekYear(today);
+
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('is_hidden', false)
+        .order('name');
+
+      const { data: schedulesData } = await supabase
+        .from('employee_schedules')
+        .select('*')
+        .eq('week_number', weekNumber)
+        .eq('year', year);
+
+      const schedulesMap = new Map<string, Map<string, DayStatus>>();
+      schedulesData?.forEach((schedule) => {
+        if (!schedulesMap.has(schedule.user_id)) {
+          schedulesMap.set(schedule.user_id, new Map());
+        }
+        const statusData = typeof schedule.status === 'string'
+          ? JSON.parse(schedule.status)
+          : schedule.status;
+        schedulesMap.get(schedule.user_id)?.set(schedule.day_key, statusData as DayStatus);
+      });
+
+      const built: Employee[] = (profilesData || []).map(profile => ({
+        id: profile.id,
+        name: profile.name,
+        week: {
+          mon: schedulesMap.get(profile.id)?.get('mon') || { segments: [{ status: 'unset' }] },
+          tue: schedulesMap.get(profile.id)?.get('tue') || { segments: [{ status: 'unset' }] },
+          wed: schedulesMap.get(profile.id)?.get('wed') || { segments: [{ status: 'unset' }] },
+          thu: schedulesMap.get(profile.id)?.get('thu') || { segments: [{ status: 'unset' }] },
+          fri: schedulesMap.get(profile.id)?.get('fri') || { segments: [{ status: 'unset' }] },
+        },
+      }));
+
+      setTodayWeekEmployees(built);
+    };
+
+    fetchTodayWeek();
+  }, [user, currentDate]);
+
   const fetchEmployeesAndSchedules = async () => {
     setLoading(true);
     try {
