@@ -40,6 +40,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
+  const isViewingCurrentWeek = getWeekNumber(currentDate) === getWeekNumber(today) && getWeekYear(currentDate) === getWeekYear(today);
   // Visa nästa röda dag baserat på dagen FÖRE visad vecka, så helgdagar i veckan fortfarande räknas som "nästa"
   const referenceDate = new Date(weekDays[0]);
   referenceDate.setDate(referenceDate.getDate() - 1);
@@ -52,7 +53,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
     return vacationSaturday;
   };
 
-  const normalizedReferenceDate = new Date(today);
+  const normalizedReferenceDate = new Date(isViewingCurrentWeek ? today : currentDate);
   normalizedReferenceDate.setHours(0, 0, 0, 0);
 
   const currentYearVacationStart = buildVacationStart(normalizedReferenceDate.getFullYear());
