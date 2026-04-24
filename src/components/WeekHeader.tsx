@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Building2, Home, Ban, Settings, LogOut, CalendarHeart, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getWeekNumber, getWeekYear, formatDate, getWeekDays, getMondayOfIsoWeek, daysUntil } from '@/utils/dateUtils';
@@ -34,6 +35,27 @@ interface WeekHeaderProps {
 }
 
 const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeResponsible, todayStats, onNavigateSettings, onLogout }: WeekHeaderProps) => {
+  const [today, setToday] = useState(() => new Date());
+
+  useEffect(() => {
+    let intervalId: number | undefined;
+
+    const updateToday = () => setToday(new Date());
+    const now = new Date();
+    const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const timeoutId = window.setTimeout(() => {
+      updateToday();
+      intervalId = window.setInterval(updateToday, 24 * 60 * 60 * 1000);
+    }, nextMidnight.getTime() - now.getTime());
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (intervalId) {
+        window.clearInterval(intervalId);
+      }
+    };
+  }, []);
+
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
@@ -41,8 +63,8 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const referenceDate = new Date(weekDays[0]);
   referenceDate.setDate(referenceDate.getDate() - 1);
   const nextHoliday = getNextHoliday(referenceDate);
-  const vacationStart = getMondayOfIsoWeek(28);
-  const daysToVacation = daysUntil(vacationStart);
+  const vacationStart = getMondayOfIsoWeek(28, today);
+  const daysToVacation = daysUntil(vacationStart, today);
 
   return (
     <TooltipProvider>
