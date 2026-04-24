@@ -8,6 +8,7 @@ import ScheduleChat from './ScheduleChat';
 import logo from '@/assets/nordiska-brand-logo-primary.png';
 import { Employee } from '@/types/schedule';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PersonInfo {
   name: string;
