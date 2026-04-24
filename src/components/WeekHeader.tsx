@@ -101,6 +101,14 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             </div>
           )}
 
+          {daysToVacation > 0 && (
+            <div className="flex items-center justify-center gap-1.5 text-xs">
+              <Sun className="h-3.5 w-3.5 text-amber-500" />
+              <span className="text-muted-foreground">Semester v.28 om</span>
+              <span className="font-medium text-amber-600">{daysToVacation} {daysToVacation === 1 ? 'dag' : 'dagar'}</span>
+            </div>
+          )}
+
           {/* Fourth row: Stats + Actions */}
           <div className="flex items-center justify-between gap-2">
             {todayStats && (
