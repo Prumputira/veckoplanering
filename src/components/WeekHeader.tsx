@@ -41,6 +41,8 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const referenceDate = new Date(weekDays[0]);
   referenceDate.setDate(referenceDate.getDate() - 1);
   const nextHoliday = getNextHoliday(referenceDate);
+  const vacationStart = getMondayOfIsoWeek(28);
+  const daysToVacation = daysUntil(vacationStart);
 
   return (
     <TooltipProvider>
