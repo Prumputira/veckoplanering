@@ -37,7 +37,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);
   const weekDays = getWeekDays(currentDate);
-  const nextHoliday = getNextHoliday(currentDate);
+  const nextHoliday = getNextHoliday();
 
   return (
     <TooltipProvider>
