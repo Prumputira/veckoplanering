@@ -38,21 +38,47 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
   const [today, setToday] = useState(() => new Date());
 
   useEffect(() => {
-    let intervalId: number | undefined;
+    let timeoutId: number | undefined;
 
-    const updateToday = () => setToday(new Date());
-    const now = new Date();
-    const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const timeoutId = window.setTimeout(() => {
-      updateToday();
-      intervalId = window.setInterval(updateToday, 24 * 60 * 60 * 1000);
-    }, nextMidnight.getTime() - now.getTime());
+    const syncToday = () => {
+      setToday((previousToday) => {
+        const nextToday = new Date();
+
+        return previousToday.toDateString() === nextToday.toDateString()
+          ? previousToday
+          : nextToday;
+      });
+    };
+
+    const scheduleNextMidnightUpdate = () => {
+      const now = new Date();
+      const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+      timeoutId = window.setTimeout(() => {
+        setToday(new Date());
+        scheduleNextMidnightUpdate();
+      }, nextMidnight.getTime() - now.getTime() + 1000);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        syncToday();
+      }
+    };
+
+    syncToday();
+    scheduleNextMidnightUpdate();
+
+    window.addEventListener('focus', syncToday);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      window.clearTimeout(timeoutId);
-      if (intervalId) {
-        window.clearInterval(intervalId);
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
       }
+
+      window.removeEventListener('focus', syncToday);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
