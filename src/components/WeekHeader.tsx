@@ -359,7 +359,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             </h1>
             <div className="flex gap-1.5 items-center">
               {daysToVacation > 0 && (
-                <div className="absolute -left-4 -translate-x-full -bottom-1 flex items-center gap-1.5 text-sm whitespace-nowrap">
+                <div className="absolute left-4 -translate-x-full -bottom-1 flex items-center gap-1.5 text-sm whitespace-nowrap">
                   <Sun className="h-4 w-4 text-amber-500" />
                   <span className="text-muted-foreground">Semester v.28 om</span>
                   <span className="font-medium text-amber-600">{daysToVacation} {daysToVacation === 1 ? 'dag' : 'dagar'}</span>
