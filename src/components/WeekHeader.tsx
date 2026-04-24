@@ -87,6 +87,15 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
             </Button>
           </div>
 
+          {nextHoliday && (
+            <div className="flex items-center justify-center gap-1.5 text-xs">
+              <CalendarHeart className="h-3.5 w-3.5 text-destructive" />
+              <span className="text-muted-foreground">Nästa röda dag:</span>
+              <span className="font-medium text-destructive">{nextHoliday.name}</span>
+              <span className="text-muted-foreground">({formatHolidayDate(nextHoliday.date)})</span>
+            </div>
+          )}
+
           {/* Fourth row: Stats + Actions */}
           <div className="flex items-center justify-between gap-2">
             {todayStats && (
