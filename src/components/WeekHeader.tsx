@@ -144,7 +144,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                   </HoverCardTrigger>
                   <HoverCardContent className="w-72">
                     <div className="space-y-2.5">
-                      <h4 className="font-semibold text-xs">På kontoret idag</h4>
+                      <h4 className="font-semibold text-xs">På kontoret</h4>
                       {todayStats.officeByLocation && Object.entries(todayStats.officeByLocation)
                         .sort(([a], [b]) => a.localeCompare(b))
                         .map(([office, persons]) => (
@@ -163,7 +163,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                           </div>
                         ))}
                       {(!todayStats.officeByLocation || Object.keys(todayStats.officeByLocation).length === 0) && (
-                        <p className="text-xs text-muted-foreground">Ingen på kontoret idag</p>
+                        <p className="text-xs text-muted-foreground">Ingen på kontoret</p>
                       )}
                     </div>
                   </HoverCardContent>
@@ -178,7 +178,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                   </HoverCardTrigger>
                   <HoverCardContent className="w-72">
                     <div className="space-y-2">
-                      <h4 className="font-semibold text-xs">Hemma idag</h4>
+                      <h4 className="font-semibold text-xs">Hemma</h4>
                       {todayStats.homeNames && todayStats.homeNames.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
                           {todayStats.homeNames.map((person, i) => (
@@ -191,7 +191,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                           ))}
                         </div>
                       ) : (
-                        <p className="text-xs text-muted-foreground">Ingen hemma idag</p>
+                          <p className="text-xs text-muted-foreground">Ingen hemma</p>
                       )}
                     </div>
                   </HoverCardContent>
@@ -206,7 +206,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                   </HoverCardTrigger>
                   <HoverCardContent className="w-72">
                     <div className="space-y-2">
-                      <h4 className="font-semibold text-xs">Frånvarande idag</h4>
+                      <h4 className="font-semibold text-xs">Frånvarande</h4>
                       {todayStats.absentNames && todayStats.absentNames.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
                           {todayStats.absentNames.map((person, i) => (
@@ -219,7 +219,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                           ))}
                         </div>
                       ) : (
-                        <p className="text-xs text-muted-foreground">Ingen frånvarande idag</p>
+                          <p className="text-xs text-muted-foreground">Ingen frånvarande</p>
                       )}
                     </div>
                   </HoverCardContent>
@@ -288,7 +288,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                   </HoverCardTrigger>
                   <HoverCardContent className="w-96">
                     <div className="space-y-3">
-                      <h4 className="font-semibold text-sm">På kontoret idag</h4>
+                      <h4 className="font-semibold text-sm">På kontoret</h4>
                       {todayStats.officeByLocation && Object.entries(todayStats.officeByLocation)
                         .sort(([a], [b]) => a.localeCompare(b))
                         .map(([office, persons]) => (
@@ -307,7 +307,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                           </div>
                         ))}
                       {(!todayStats.officeByLocation || Object.keys(todayStats.officeByLocation).length === 0) && (
-                        <p className="text-sm text-muted-foreground">Ingen på kontoret idag</p>
+                        <p className="text-sm text-muted-foreground">Ingen på kontoret</p>
                       )}
                     </div>
                   </HoverCardContent>
@@ -323,7 +323,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                   </HoverCardTrigger>
                   <HoverCardContent className="w-96">
                     <div className="space-y-2.5">
-                      <h4 className="font-semibold text-sm">Hemma idag</h4>
+                      <h4 className="font-semibold text-sm">Hemma</h4>
                       {todayStats.homeNames && todayStats.homeNames.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {todayStats.homeNames.map((person, i) => (
@@ -336,7 +336,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                           ))}
                         </div>
                       ) : (
-                        <p className="text-sm text-muted-foreground">Ingen hemma idag</p>
+                          <p className="text-sm text-muted-foreground">Ingen hemma</p>
                       )}
                     </div>
                   </HoverCardContent>
@@ -352,7 +352,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                   </HoverCardTrigger>
                   <HoverCardContent className="w-96">
                     <div className="space-y-2.5">
-                      <h4 className="font-semibold text-sm">Frånvarande idag</h4>
+                      <h4 className="font-semibold text-sm">Frånvarande</h4>
                       {todayStats.absentNames && todayStats.absentNames.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {todayStats.absentNames.map((person, i) => (
@@ -365,7 +365,7 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                           ))}
                         </div>
                       ) : (
-                        <p className="text-sm text-muted-foreground">Ingen frånvarande idag</p>
+                          <p className="text-sm text-muted-foreground">Ingen frånvarande</p>
                       )}
                     </div>
                   </HoverCardContent>
