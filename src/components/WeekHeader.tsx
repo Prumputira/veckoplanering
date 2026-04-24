@@ -366,18 +366,18 @@ const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeRe
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
+          </div>
+          
+          {/* Right column: actions and office responsible */}
+          <div className="relative flex flex-col items-end justify-center gap-2">
             {nextHoliday && (
-              <div className="flex items-center gap-1.5 text-sm whitespace-nowrap mt-1">
+              <div className="absolute -left-16 bottom-0 flex items-center gap-1.5 text-sm whitespace-nowrap">
                 <CalendarHeart className="h-4 w-4 text-destructive" />
                 <span className="text-muted-foreground">Nästa röda dag:</span>
                 <span className="font-medium text-destructive">{nextHoliday.name}</span>
                 <span className="text-muted-foreground">({formatHolidayDate(nextHoliday.date)})</span>
               </div>
             )}
-          </div>
-          
-          {/* Right column: actions and office responsible */}
-          <div className="flex flex-col items-end justify-center gap-2">
             <div className="flex items-center gap-1.5">
               <Tooltip>
                 <TooltipTrigger asChild>
