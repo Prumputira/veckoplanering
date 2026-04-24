@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useToday } from '@/hooks/use-today';
 import { ChevronLeft, ChevronRight, Building2, Home, Ban, Settings, LogOut, CalendarHeart, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getWeekNumber, getWeekYear, formatDate, getWeekDays, getMondayOfIsoWeek, daysUntil } from '@/utils/dateUtils';
@@ -35,52 +35,7 @@ interface WeekHeaderProps {
 }
 
 const WeekHeader = ({ currentDate, onNavigate, onSelectWeek, employees, officeResponsible, todayStats, onNavigateSettings, onLogout }: WeekHeaderProps) => {
-  const [today, setToday] = useState(() => new Date());
-
-  useEffect(() => {
-    let timeoutId: number | undefined;
-
-    const syncToday = () => {
-      setToday((previousToday) => {
-        const nextToday = new Date();
-
-        return previousToday.toDateString() === nextToday.toDateString()
-          ? previousToday
-          : nextToday;
-      });
-    };
-
-    const scheduleNextMidnightUpdate = () => {
-      const now = new Date();
-      const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-
-      timeoutId = window.setTimeout(() => {
-        setToday(new Date());
-        scheduleNextMidnightUpdate();
-      }, nextMidnight.getTime() - now.getTime() + 1000);
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        syncToday();
-      }
-    };
-
-    syncToday();
-    scheduleNextMidnightUpdate();
-
-    window.addEventListener('focus', syncToday);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      if (timeoutId) {
-        window.clearTimeout(timeoutId);
-      }
-
-      window.removeEventListener('focus', syncToday);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, []);
+  const today = useToday();
 
   const weekNumber = getWeekNumber(currentDate);
   const year = getWeekYear(currentDate);

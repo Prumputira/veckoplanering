@@ -14,6 +14,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { LogOut, Settings } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
+import { useToday } from '@/hooks/use-today';
 
 const Index = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -31,6 +32,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const today = useToday();
 
   const checkAdminStatus = async (userId: string) => {
     const { data, error } = await supabase.rpc('has_role', {
@@ -475,7 +477,7 @@ const Index = () => {
 
   // Calculate stats for the currently viewed week's active day
   const getTodayStats = () => {
-    const selectedDayKey = getDayKey(currentDate);
+    const selectedDayKey = getDayKey(today);
 
     let office = 0;
     let home = 0;
@@ -484,7 +486,7 @@ const Index = () => {
     const homeNames: PersonInfo[] = [];
     const absentNames: PersonInfo[] = [];
 
-    const sourceEmployees = getEmployeesForDate(currentDate);
+    const sourceEmployees = isSameWeek(currentDate, today) ? employees : getEmployeesForDate(today);
 
     sourceEmployees.forEach((employee) => {
       const dayStatus = employee.week[selectedDayKey];
