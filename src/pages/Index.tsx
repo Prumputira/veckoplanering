@@ -605,8 +605,8 @@ const Index = () => {
 
   const todayStats = getTodayStats();
 
-  const handleCopyWeek = (employeeId: string) => {
-    const employee = employees.find(emp => emp.id === employeeId);
+  const handleCopyWeek = (employeeId: string, date: Date) => {
+    const employee = getEmployeesForDate(date).find(emp => emp.id === employeeId);
     if (employee) {
       setCopiedWeek({ ...employee.week });
       toast({
@@ -616,12 +616,12 @@ const Index = () => {
     }
   };
 
-  const handlePasteWeek = async (employeeId: string) => {
+  const handlePasteWeek = async (employeeId: string, date: Date) => {
     if (!copiedWeek) return;
 
-    const weekNumber = getWeekNumber(currentDate);
-    const year = getWeekYear(currentDate);
-    const employee = employees.find(emp => emp.id === employeeId);
+    const weekNumber = getWeekNumber(date);
+    const year = getWeekYear(date);
+    const employee = getEmployeesForDate(date).find(emp => emp.id === employeeId);
 
     try {
       // Update all days for this employee
@@ -648,11 +648,7 @@ const Index = () => {
       }
 
       // Update local state
-      setEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, () => ({ ...copiedWeek })));
-
-      if (isTodayWeek(currentDate)) {
-        setTodayWeekEmployees((prev) => updateEmployeeWeekInList(prev, employeeId, () => ({ ...copiedWeek })));
-      }
+      syncEmployeeWeekState(date, employeeId, () => ({ ...copiedWeek }));
 
       toast({
         title: 'Vecka inklistrad',
@@ -667,10 +663,10 @@ const Index = () => {
     }
   };
 
-  const handleClearWeek = async (employeeId: string) => {
-    const weekNumber = getWeekNumber(currentDate);
-    const year = getWeekYear(currentDate);
-    const employee = employees.find(emp => emp.id === employeeId);
+  const handleClearWeek = async (employeeId: string, date: Date) => {
+    const weekNumber = getWeekNumber(date);
+    const year = getWeekYear(date);
+    const employee = getEmployeesForDate(date).find(emp => emp.id === employeeId);
 
     try {
       const emptyStatus: DayStatus = { segments: [{ status: 'unset' }] };
@@ -694,27 +690,13 @@ const Index = () => {
       }
 
       // Update local state
-      setEmployees((prev) =>
-        updateEmployeeWeekInList(prev, employeeId, () => ({
+      syncEmployeeWeekState(date, employeeId, () => ({
           mon: emptyStatus,
           tue: emptyStatus,
           wed: emptyStatus,
           thu: emptyStatus,
           fri: emptyStatus,
-        }))
-      );
-
-      if (isTodayWeek(currentDate)) {
-        setTodayWeekEmployees((prev) =>
-          updateEmployeeWeekInList(prev, employeeId, () => ({
-            mon: emptyStatus,
-            tue: emptyStatus,
-            wed: emptyStatus,
-            thu: emptyStatus,
-            fri: emptyStatus,
-          }))
-        );
-      }
+        }));
 
       toast({
         title: 'Vecka tömd',
