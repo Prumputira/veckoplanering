@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { getWeekNumber } from '@/utils/dateUtils';
+import { getSwedishHolidays } from '@/utils/swedishHolidays';
 
 interface WeekPickerProps {
   currentDate: Date;
