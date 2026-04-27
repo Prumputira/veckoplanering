@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Employee, DayStatus, OfficeWeek } from '@/types/schedule';
 import { getWeekDays, formatDate, formatDayName, getDayKey, getWeekNumber } from '@/utils/dateUtils';
+import { getSwedishHolidays } from '@/utils/swedishHolidays';
 import StatusCell from './StatusCell';
 import StatusModal from './StatusModal';
 import { Pencil, Copy, Clipboard, Trash2, MoreVertical, Building2 } from 'lucide-react';
@@ -53,6 +54,23 @@ const WeekTable = ({
     const checkDate = new Date(date);
     checkDate.setHours(0, 0, 0, 0);
     return checkDate.getTime() === today.getTime();
+  };
+
+  const holidayMap = new Map<string, string>();
+  weekDays.forEach((d) => {
+    const yearHolidays = getSwedishHolidays(d.getFullYear());
+    yearHolidays.forEach((h) => {
+      const key = `${h.date.getFullYear()}-${h.date.getMonth()}-${h.date.getDate()}`;
+      holidayMap.set(key, h.name);
+    });
+  });
+  const isRedDay = (date: Date) => {
+    const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    return date.getDay() === 0 || holidayMap.has(key);
+  };
+  const getHolidayName = (date: Date) => {
+    const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    return holidayMap.get(key);
   };
 
   const officeWeekMap = new Map(
@@ -122,6 +140,8 @@ const WeekTable = ({
                   </th>
                   {weekDays.map((day, index) => {
                     const isTodayColumn = isToday(day);
+                    const redDay = isRedDay(day);
+                    const holidayName = getHolidayName(day);
                     return (
                       <th
                         key={index}
@@ -129,15 +149,26 @@ const WeekTable = ({
                           'text-center px-2 py-1.5 font-semibold text-foreground',
                           isTodayColumn && 'bg-primary/10'
                         )}
+                        title={holidayName}
                       >
                         <div className="flex flex-col">
-                          <span className={cn('text-sm', isTodayColumn && 'text-primary font-bold')}>
+                          <span
+                            className={cn(
+                              'text-sm',
+                              isTodayColumn && 'text-primary font-bold',
+                              redDay && !isTodayColumn && 'text-red-600 dark:text-red-400'
+                            )}
+                          >
                             {formatDayName(day)}
                           </span>
                           <span
                             className={cn(
                               'text-xs',
-                              isTodayColumn ? 'text-primary/70 font-semibold' : 'text-muted-foreground'
+                              isTodayColumn
+                                ? 'text-primary/70 font-semibold'
+                                : redDay
+                                ? 'text-red-600 dark:text-red-400'
+                                : 'text-muted-foreground'
                             )}
                           >
                             {formatDate(day)}
@@ -353,6 +384,8 @@ const WeekTable = ({
                       const dayKey = getDayKey(day);
                       const status = employee.week[dayKey];
                       const isTodayColumn = isToday(day);
+                      const redDay = isRedDay(day);
+                      const holidayName = getHolidayName(day);
 
                       return (
                         <div
@@ -361,15 +394,25 @@ const WeekTable = ({
                             'flex items-center gap-3 p-2 rounded-md',
                             isTodayColumn && 'bg-primary/10'
                           )}
+                          title={holidayName}
                         >
                           <div className="min-w-[90px] text-sm font-medium">
-                            <span className={cn(isTodayColumn && 'text-primary font-bold')}>
+                            <span
+                              className={cn(
+                                isTodayColumn && 'text-primary font-bold',
+                                redDay && !isTodayColumn && 'text-red-600 dark:text-red-400'
+                              )}
+                            >
                               {formatDayName(day)}
                             </span>
                             <span
                               className={cn(
                                 'text-xs ml-1',
-                                isTodayColumn ? 'text-primary/70 font-semibold' : 'text-muted-foreground'
+                                isTodayColumn
+                                  ? 'text-primary/70 font-semibold'
+                                  : redDay
+                                  ? 'text-red-600 dark:text-red-400'
+                                  : 'text-muted-foreground'
                               )}
                             >
                               {formatDate(day)}
