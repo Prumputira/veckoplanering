@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Employee, DayStatus, OfficeWeek } from '@/types/schedule';
 import { getWeekDays, formatDate, formatDayName, getDayKey, getWeekNumber } from '@/utils/dateUtils';
+import { getSwedishHolidays } from '@/utils/swedishHolidays';
 import StatusCell from './StatusCell';
 import StatusModal from './StatusModal';
 import { Pencil, Copy, Clipboard, Trash2, MoreVertical, Building2 } from 'lucide-react';
@@ -53,6 +54,23 @@ const WeekTable = ({
     const checkDate = new Date(date);
     checkDate.setHours(0, 0, 0, 0);
     return checkDate.getTime() === today.getTime();
+  };
+
+  const holidayMap = new Map<string, string>();
+  weekDays.forEach((d) => {
+    const yearHolidays = getSwedishHolidays(d.getFullYear());
+    yearHolidays.forEach((h) => {
+      const key = `${h.date.getFullYear()}-${h.date.getMonth()}-${h.date.getDate()}`;
+      holidayMap.set(key, h.name);
+    });
+  });
+  const isRedDay = (date: Date) => {
+    const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    return date.getDay() === 0 || holidayMap.has(key);
+  };
+  const getHolidayName = (date: Date) => {
+    const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    return holidayMap.get(key);
   };
 
   const officeWeekMap = new Map(
