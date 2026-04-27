@@ -52,6 +52,21 @@ const WeekPicker = ({ currentDate, onSelectWeek }: WeekPickerProps) => {
           onSelect={handleSelect}
           initialFocus
           locale={sv}
+          modifiers={{
+            redDay: (date) => {
+              if (date.getDay() === 0) return true;
+              const holidays = getSwedishHolidays(date.getFullYear());
+              return holidays.some(
+                (h) =>
+                  h.date.getFullYear() === date.getFullYear() &&
+                  h.date.getMonth() === date.getMonth() &&
+                  h.date.getDate() === date.getDate()
+              );
+            },
+          }}
+          modifiersClassNames={{
+            redDay: 'text-red-600 dark:text-red-400 font-semibold',
+          }}
         />
       </PopoverContent>
     </Popover>
